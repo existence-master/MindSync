@@ -9,13 +9,13 @@
 
 @layer components {
     .primary-text {
-        @apply font-serif font-montserrat font-bold text-6xl text-lividBrown;
+        @apply xs:max-md:text-3xl md:max-lg:text-5xl font-serif font-montserrat font-bold text-6xl text-lividBrown;
     }
     .secondary-text {
-        @apply font-serif font-poppins font-semibold text-xl text-hibiscus
+        @apply xs:max-md:text-sm md:max-lg:text-base text-xl font-serif font-poppins font-semibold text-xl text-hibiscus
     }
     .ternary-text {
-        @apply font-serif font-quicksand font-semibold text-base text-black;
+        @apply xs:max-md:text-sm md:max-lg:text-base text-lg font-serif font-quicksand font-semibold text-black;
     }
     .primary-btn {
         @apply px-8 py-4 rounded-xl text-sm font-serif font-quicksand font-semibold bg-stilleto text-white;
