@@ -4,6 +4,7 @@ import ErrorDisplay from "@components/ErrorDisplay" // Custom error component
 import Navbar from "@components/Navbar" // Navbar component
 import { useState, useEffect } from "react"
 import mermaid from "mermaid" // MermaidJS
+import Image from "next/image"
 
 const Home = () => {
 	// State to store the mode and input value
@@ -25,8 +26,10 @@ const Home = () => {
 	const [recognition, setRecognition] = useState(null);
 
 	// State to distinguish between audio file and live recording
-
 	const [liveRecording, setLiveRecording] = useState(false)
+
+	// State to trigger the button animation
+	const [isRecording, setIsRecording] = useState(false)
 
 	// load mermaid dynamically
 	useEffect(() => {
@@ -72,11 +75,13 @@ const Home = () => {
 	
 	const handleStartRecording = () => {
 		recognition.start();
-		setLiveRecording(true)
+		setLiveRecording(true);
+		setIsRecording(true)
 	};
 
 	const handleStopRecording = () => {
 		recognition.stop();
+		setIsRecording(false)
 	};
 
 	// Function to handle form submission
@@ -157,161 +162,185 @@ const Home = () => {
 	};
 
 	return (
-		<main className="m-5">
-			<Navbar />
-			<section className="mt-[35px] lg:mt-[75px] lg:mx-[30px] flex flex-col items-center">
-				<div className="max-w-max">
-					<h1 className="text-center primary-text">
-						MindSync
-					</h1>
-					<h2 className="xs:max-lg:mt-[10px] mt-[20px] text-center secondary-text">
-						Sync your thoughts to mindmaps in seconds
-					</h2>
-					{mindmap ? (
-						<div className="mt-[20px] lg:mt-[50px] w-full gap-5 lg:gap-7 flex flex-col">
-							<h1 className="xs:max-md:text-sm md:max-lg:text-md text-center secondary-text">
-								Here's your mindmap
-							</h1>
-							<pre className="mermaid">{mindmap}</pre>
-							<button
-								onClick={handleRestart}
-								className="mx-auto primary-btn" // Center align the button
+		<>
+			<main className="m-5 max-h-screen">
+				<Navbar />
+				<section className="mt-[35px] lg:mt-[75px] lg:mx-[30px] flex flex-col items-center">
+					<div className="max-w-max">
+						<h1 className="text-center primary-text">MindSync</h1>
+						<h2 className="xs:max-lg:mt-[10px] mt-[20px] text-center secondary-text">
+							Sync your thoughts to mindmaps in seconds
+						</h2>
+						{mindmap ? (
+							<div className="mt-[20px] lg:mt-[50px] w-full gap-5 lg:gap-7 flex flex-col">
+								<h1 className="xs:max-md:text-sm md:max-lg:text-md text-center secondary-text">
+									Here's your mindmap
+								</h1>
+								<pre className="mermaid">{mindmap}</pre>
+								<button
+									onClick={handleRestart}
+									className="mx-auto primary-btn" // Center align the button
+								>
+									Restart
+								</button>
+							</div>
+						) : (
+							<form
+								onSubmit={handleSubmit}
+								className="mt-[20px] lg:mt-[50px] w-full gap-5 lg:gap-7 flex flex-col"
 							>
-								Restart
-							</button>
-						</div>
-					) : (
-						<form
-							onSubmit={handleSubmit}
-							className="mt-[20px] lg:mt-[50px] w-full gap-5 lg:gap-7 flex flex-col"
-						>
-							{/* Select for choosing mind mapping mode */}
-							<label
-								htmlFor="mindMappingMode"
-								className="text-tawnyPort ternary-text"
-							>
-								Select a mind mapping mode:
-							</label>
-							<select
-								id="mindMappingMode"
-								name="mode"
-								className="input"
-								value={formData.mode}
-								onChange={handleChange}
-							>
-								<option value="Text">Text</option>
-								<option value="Audio">Audio</option>
-								<option value="Video">Video</option>
-							</select>
-							{/* Label and input based on selected mode */}
-							{formData.mode === "Text" && (
-								<>
-									<label
-										htmlFor="textInput"
-										className="text-tawnyPort ternary-text"
-									>
-										Enter your text:
-									</label>
-									<textarea
-										id="textInput"
-										name="input"
-										className="input"
-										value={formData.input}
-										onChange={handleChange}
-										rows="4"
-										cols="35"
-										placeholder="Enter your text"
-									></textarea>
-								</>
-							)}
-							{formData.mode === "Audio" && (
-								<>
-									<div className="flex justify-evenly">
-										<button
-											type="button"
-											onClick={handleStartRecording}
-											className="primary-btn"
+								{/* Select for choosing mind mapping mode */}
+								<label
+									htmlFor="mindMappingMode"
+									className="text-tawnyPort ternary-text"
+								>
+									Select a mind mapping mode:
+								</label>
+								<select
+									id="mindMappingMode"
+									name="mode"
+									className="input"
+									value={formData.mode}
+									onChange={handleChange}
+								>
+									<option value="Text">Text</option>
+									<option value="Audio">Audio</option>
+									<option value="Video">Video</option>
+								</select>
+								{/* Label and input based on selected mode */}
+								{formData.mode === "Text" && (
+									<>
+										<label
+											htmlFor="textInput"
+											className="text-tawnyPort ternary-text"
 										>
-											Start Recording
-										</button>
-										<button
-											type="button"
-											onClick={handleStopRecording}
-											className="primary-btn"
+											Enter your text:
+										</label>
+										<textarea
+											id="textInput"
+											name="input"
+											className="input"
+											value={formData.input}
+											onChange={handleChange}
+											rows="4"
+											cols="35"
+											placeholder="Enter your text"
+										></textarea>
+									</>
+								)}
+								{formData.mode === "Audio" && (
+									<>
+										<div className="flex justify-evenly">
+											<button
+												id="startRecordingButton"
+												type="button"
+												onClick={handleStartRecording}
+												className={`primary-btn ${
+													isRecording
+														? "bg-red-500 text-white animate-pulse"
+														: ""
+												}`}
+											>
+												{isRecording
+													? "Recording..."
+													: "Start Recording"}
+											</button>
+											<button
+												type="button"
+												onClick={handleStopRecording}
+												className="primary-btn"
+											>
+												Stop Recording
+											</button>
+										</div>
+										<textarea
+											id="textInput"
+											name="input"
+											className="input"
+											value={formData.input}
+											rows="4"
+											cols="35"
+											placeholder="You said..."
+											disabled
+										></textarea>
+										<span className="text-center ternary-text">
+											or
+										</span>{" "}
+										{/* Added 'or' option */}
+										<label
+											htmlFor="audioUpload"
+											className="text-tawnyPort ternary-text"
 										>
-											Stop Recording
-										</button>
-									</div>
-									<textarea
-										id="textInput"
-										name="input"
-										className="input"
-										value={formData.input}
-										rows="4"
-										cols="35"
-										placeholder="You said..."
-										disabled
-									></textarea>
-									<span className="text-center ternary-text">
-										or
-									</span>{" "}
-									{/* Added 'or' option */}
-									<label
-										htmlFor="audioUpload"
-										className="text-tawnyPort ternary-text"
-									>
-										Upload audio file:
-									</label>
-									<input
-										id="audioUpload"
-										name="input"
-										className="input"
-										type="file"
-										accept="audio/*"
-										onChange={handleChange}
-									/>
-								</>
-							)}
-							{formData.mode === "Video" && (
-								<>
-									<label
-										htmlFor="videoLink"
-										className="text-tawnyPort ternary-text"
-									>
-										Paste YouTube link:
-									</label>
-									<input
-										id="videoLink"
-										name="input"
-										type="text"
-										className="input"
-										value={formData.input}
-										onChange={handleChange}
-										placeholder="Paste YouTube link"
-									/>
-								</>
-							)}
-							{/* Submit button */}
-							<button
-								type="submit"
-								className="mx-auto primary-btn" // Center align the button
-							>
-								{isSubmitting ? "Processing" : "Convert"}
-							</button>
-						</form>
-					)}
-				</div>
-			</section>
-			{/* Display custom error if any*/}
-			{error && (
-				<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-					<ErrorDisplay
-						errorMessage={error}
-						handleError={handleError}
-					/>
-				</div>
-			)}
-		</main>
+											Upload audio file:
+										</label>
+										<input
+											id="audioUpload"
+											name="input"
+											className="input"
+											type="file"
+											accept="audio/*"
+											onChange={handleChange}
+										/>
+									</>
+								)}
+								{formData.mode === "Video" && (
+									<>
+										<label
+											htmlFor="videoLink"
+											className="text-tawnyPort ternary-text"
+										>
+											Paste YouTube link:
+										</label>
+										<input
+											id="videoLink"
+											name="input"
+											type="text"
+											className="input"
+											value={formData.input}
+											onChange={handleChange}
+											placeholder="Paste YouTube link"
+										/>
+									</>
+								)}
+								{/* Submit button */}
+								<button
+									type="submit"
+									className="mx-auto primary-btn" // Center align the button
+								>
+									{isSubmitting ? "Processing" : "Convert"}
+								</button>
+							</form>
+						)}
+					</div>
+				</section>
+
+				{/* Display custom error if any*/}
+				{error && (
+					<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+						<ErrorDisplay
+							errorMessage={error}
+							handleError={handleError}
+						/>
+					</div>
+				)}
+			</main>
+			<div className="absolute top-[125px] -right-[325px]">
+				<Image
+					src="/blob-1.svg"
+					width={500}
+					height={500}
+					alt="Blob 1"
+				/>
+			</div>
+			<div className="absolute -bottom-[275px] -left-[275px]">
+				<Image
+					src="/blob-2.svg"
+					width={500}
+					height={500}
+					alt="Blob 2"
+				/>
+			</div>
+		</>
 	);
 }
 
