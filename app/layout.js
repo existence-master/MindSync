@@ -1,12 +1,13 @@
-import "./globals.css";
+import "@styles/globals.css";
+import Image from "next/image";
 
 export const metadata = {
-  title: "MindSync",
-  description: "AI Based Mindmapping Tool",
+	title: "MindSync",
+	description: "AI Based Mindmapping Tool",
 };
 
 export default function RootLayout({ children }) {
-  return (
+	return (
 		<html lang="en">
 			<head>
 				<link
@@ -17,9 +18,12 @@ export default function RootLayout({ children }) {
 					referrerPolicy="no-referrer"
 				/>
 			</head>
-			<body className="bg-paleRose overflow-x-hidden max-h-[3000px]" >
-				{children}
+			<body className="bg-paleRose">
+				<div className="h-screen overflow-x-hidden overflow-y-auto relative">
+					{/* Add a container div */}
+					{children}
+				</div>
 			</body>
 		</html>
-  );
+	);
 }
