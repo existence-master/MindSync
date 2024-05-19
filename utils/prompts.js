@@ -8,7 +8,7 @@ root((main idea))
 
 3. Except for the root node, Ideas and sub-ideas shouldn't include any types of brackets, like curly brackets, brackets, or square brackets
 
-4. Also, you can use ::icon(fa fa-icon-name) from https://fontawesome.com/ to illustrate a node with relevant in a seperate line under the node or subnode for illustation
+4. Also, you can use ::icon(fa fa-icon-name) from https://fontawesome.com/ to illustrate a node with relevance in a seperate line under the node or subnode for illustation
 
 5. Limit the node to 3 words maximum and the sub-nodes and downwards to 2 words maximum. 
 
@@ -30,7 +30,8 @@ root((Technology))
         Improved Efficiency
             Automation
         Cutting Edge
-            Artificial Intelligence ::icon(fa fa-cogs)
+            Artificial Intelligence
+            ::icon(fa fa-cogs)
 `,
 	},
 	{
@@ -47,10 +48,12 @@ root((Travel))
         Thrilling Journeys
             Adrenaline-pumping Activities
             Unique Encounters
-        Backpacking ::icon(fa fa-hiking)
+        Backpacking
+        ::icon(fa fa-hiking)
             Sense of Freedom
             Immersion in Nature
-        Safari ::icon(fa fa-binoculars)
+        Safari
+        ::icon(fa fa-binoculars)
             Wildlife Observation
             Natural Habitats
 `,
@@ -73,7 +76,8 @@ root((Education))
         Structured Learning
             Comprehensive Understanding
                 Various Subjects
-    Research ::icon(fa fa-flask)
+    Research
+    ::icon(fa fa-flask)
         Innovation Drive
         Intellectual Curiosity
             Pushing Boundaries
