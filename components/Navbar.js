@@ -11,7 +11,12 @@ const Navbar = () => {
 
 	return (
 		<nav className="flex justify-between items-center relative">
-			<Image src="/logo.svg" width={75} height={75} alt="MindSync Logo" />
+			<Image
+				src="/images/logo.svg"
+				width={75}
+				height={75}
+				alt="MindSync Logo"
+			/>
 			<div className="hidden lg:flex justify-evenly items-center w-[50%]">
 				{[
 					["Home", "/"],
