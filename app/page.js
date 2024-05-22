@@ -40,6 +40,11 @@ const Home = () => {
 		setError("Couldn't convert to mindmap. Please try a different context");
 	};
 
+	// Utility function to detect mobile devices
+	const isMobileDevice = () => {
+		return /Mobi|Android/i.test(window?.navigator.userAgent);
+	};
+
 	// load mermaid dynamically
 	useEffect(() => {
 		mermaid.initialize({ startOnLoad: true });
@@ -49,6 +54,7 @@ const Home = () => {
 		mermaid.run();
 	}, [mindmap]);
 
+
 	useEffect(() => {
 		if (formData.mode === "Audio") {
 			const speechRecognition =
@@ -56,8 +62,8 @@ const Home = () => {
 			if (speechRecognition) {
 				// Initialize SpeechRecognition when mode is "Audio"
 				const recognitionInstance = new speechRecognition();
-				recognitionInstance.continuous = true; // Continuous recording
-				recognitionInstance.interimResults = true;
+				recognitionInstance.continuous = !isMobileDevice(); // Continuous recording
+				recognitionInstance.interimResults = !isMobileDevice();
 
 				// Set the state when recording is done
 				recognitionInstance.onresult = (event) => {
