@@ -45,7 +45,7 @@ const Home = () => {
 		return /Mobi|Android/i.test(window?.navigator.userAgent);
 	};
 
-	// load mermaid dynamically
+	// Load mermaid dynamically
 	useEffect(() => {
 		mermaid.initialize({ startOnLoad: true });
 	}, []);
@@ -53,7 +53,6 @@ const Home = () => {
 	useEffect(() => {
 		mermaid.run();
 	}, [mindmap]);
-
 
 	useEffect(() => {
 		if (formData.mode === "Audio") {
@@ -80,7 +79,14 @@ const Home = () => {
 	// Function to handle mode change and input change
 	const handleChange = (event) => {
 		const { name, value, files } = event.target;
-		if (
+		if (name === "mode") {
+			setFormData({ mode: value, input: "" });
+			setLiveRecording(false);
+			setIsRecording(false);
+			if (recognition) {
+				recognition.stop();
+			}
+		} else if (
 			name === "input" &&
 			formData.mode === "Audio" &&
 			liveRecording === false
@@ -99,6 +105,7 @@ const Home = () => {
 			recognition.stop();
 		} else {
 			recognition.start();
+			setFormData({ ...formData, input: "" });
 			setLiveRecording(true); // Toggle liveRecording state
 		}
 
@@ -159,7 +166,7 @@ const Home = () => {
 			// Handle response
 			if (response.ok) {
 				let { mindmap } = await response.json();
-				mindmap = setMindmap(mindmap);
+				setMindmap(mindmap);
 			} else {
 				throw new Error("Failed to render mindmap");
 			}
@@ -176,18 +183,31 @@ const Home = () => {
 		const mindmapSVG = mindmapRef.current.innerHTML; // Get the mindmap SVG content
 
 		// Load the SVG string into fabric.js
-		fabric.loadSVGFromString(mindmapSVG, (objects) => {
+		fabric.loadSVGFromString(mindmapSVG, (objects, options) => {
 			const svgElement = mindmapRef.current.childNodes[0];
 			const svgWidth = svgElement.width.baseVal.value;
 			const svgHeight = svgElement.height.baseVal.value;
-			// Create a new fabric.js canvas
-			const canvas = new fabric.Canvas("canvas", {
+
+			// Create a new fabric.js canvas with correct dimensions
+			const canvas = new fabric.Canvas(document.createElement("canvas"), {
 				width: svgWidth,
 				height: svgHeight,
 			});
 
-			// Add the SVG objects to the canvas
-			canvas.add(...objects);
+			// Create a group from the SVG objects
+			const svgGroup = fabric.util.groupSVGElements(objects, options);
+
+			// Optional: Center and fit the SVG within the canvas
+			svgGroup.scaleToWidth(svgWidth);
+			svgGroup.scaleToHeight(svgHeight);
+			svgGroup.set({
+				left: 0,
+				top: 0,
+			});
+
+			// Add the group to the canvas
+			canvas.add(svgGroup);
+			canvas.renderAll();
 
 			// Convert the canvas content to a PNG data URL
 			const pngUrl = canvas.toDataURL({
@@ -334,7 +354,11 @@ const Home = () => {
 											id="textInput"
 											name="input"
 											className="input"
-											value={formData.input}
+											value={
+												liveRecording
+													? formData.input
+													: ""
+											}
 											rows="4"
 											cols="35"
 											placeholder="You said..."
