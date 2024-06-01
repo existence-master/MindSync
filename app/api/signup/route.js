@@ -30,7 +30,8 @@ export const POST = async (request) => {
 		const newUser = new User({
 			email: email, // Set the user's email
 			password: hashedPassword, // Set the hashed password
-			username: username, // Generate a temporary fake username
+			username: username, // Set the username
+			googleUser: false, // Indicate the user signed up with email and password
 		});
 
 		// Save the new user to the database

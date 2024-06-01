@@ -39,13 +39,53 @@ export const authOptions = {
 				}
 			},
 		}),
+
+		// Google provider for authentication via Google accounts
+		GoogleProvider({
+			clientId: process.env.GOOGLE_CLIENT_ID, // Google client ID from environment variables
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Google client secret from environment variables
+		}),
+
+		// Additional providers can be added here
 	],
+
 	// Callbacks for additional behavior
-  callbacks: {
-    async signIn() {      
-      return true
-    },
-  },
+	callbacks: {
+		async signIn({ user, account }) {
+			// Check if the sign-in provider is Google
+			if (account.provider === "google") {
+				await connect(); // Connect to the database
+				try {
+					// Check if the user already exists in the database
+					const existingUser = await User.findOne({
+						email: user.email,
+					});
+
+					console.log(user)
+
+					if (!existingUser) {
+						// If the user doesn't exist, create a new user
+						const newUser = new User({
+							email: user.email, // Set the email for the new user
+							googleUser: true, // Indicate that the user signed up with Google
+							username: user.name // Set the username for the new user
+						});
+
+						await newUser.save(); // Save the new user to the database
+
+						// If the user is new, redirect to the /details page
+						return `/dashboard`;
+					}
+
+					return true; // If the user exists, no need to set the cookie
+				} catch (err) {
+					console.error("Error in signIn callback:", err); // Log errors that occur during sign-in
+					return false; // Return false to indicate a failure
+				}
+			}
+			return true;
+		},
+	},
 };
 
 // Define the handler for NextAuth using the specified options

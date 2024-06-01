@@ -12,11 +12,10 @@ const userSchema = new Schema(
 		},
 		password: {
 			type: String, // Data type for the password field
-			required: true, // Password is optional
+			required: false, // Password is optional
 		},
 		username: {
 			type: String, // Data type for the username field
-			unique: true, // Ensures each username is unique
 			required: true, // Username is required
 		},
 		mindmaps: [
@@ -26,6 +25,10 @@ const userSchema = new Schema(
 				required: false, // This field can be optional
 			},
 		],
+		googleUser: {
+			type: Boolean, // Indicates if the user signed up with Google
+			required: false, // This field is optional
+		},
 	},
 	{ timestamps: true } // Enable automatic timestamps for created and updated times
 );

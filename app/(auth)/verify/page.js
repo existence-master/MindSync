@@ -210,78 +210,98 @@ const Verify = () => {
     },
   ];
 
-  return (
-    <main className="mt-5 mb-10 mx-5">
-      <section className="mt-[35px] lg:mt-[75px] lg:mx-[30px] flex flex-col items-center">
-        <div className="max-w-max flex flex-col items-center justify-center">
-          <h1 className="text-center primary-text">Verify</h1>
-          <h2 className="xs:max-lg:mt-[10px] mt-[20px] text-center secondary-text">
-            {magicLink
-              ? "Check your email for the magic link!"
-              : token ? "Verifying magic link..." : "Sending magic link..."}
-          </h2>
-          {magicLink && (
-            <div className="mt-4 flex flex-col items-center border border-black p-8 mb-10">
-              <p className="mb-4">
-                <span className="text-tawnyPort secondary-text">From: </span>
-                <span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
-                  {fromEmail}
-                </span>
-              </p>
-              <p className="mb-4">
-                <span className="text-tawnyPort secondary-text">Subject: </span>
-                <span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
-                  {subject}
-                </span>
-              </p>
-              <p className="mb-4">
-                <span className="text-tawnyPort secondary-text">To: </span>
-                <span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
-                  {toEmail}
-                </span>
-              </p>
-              <div className="mt-2 flex space-x-4">
-                {mailClientButtons.map((button) => (
-                  <a
-                    key={button.name}
-                    href={button.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 primary-btn"
-                  >
-                    {button.name}
-                  </a>
-                ))}
-              </div>
+    return (
+        <>
+            <main className="mt-5 mb-10 mx-5">
+            <section className="mt-[35px] lg:mt-[75px] lg:mx-[30px] flex flex-col items-center">
+                <div className="max-w-max flex flex-col items-center justify-center">
+                <h1 className="text-center primary-text">Verify</h1>
+                <h2 className="xs:max-lg:mt-[10px] mt-[20px] text-center secondary-text">
+                    {magicLink
+                    ? "Check your email for the magic link!"
+                    : token ? "Verifying magic link..." : "Sending magic link..."}
+                </h2>
+                {magicLink && (
+                    <div className="mt-4 flex flex-col items-center border border-black p-8 mb-10">
+                    <p className="mb-4">
+                        <span className="text-tawnyPort secondary-text">From: </span>
+                        <span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
+                        {fromEmail}
+                        </span>
+                    </p>
+                    <p className="mb-4">
+                        <span className="text-tawnyPort secondary-text">Subject: </span>
+                        <span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
+                        {subject}
+                        </span>
+                    </p>
+                    <p className="mb-4">
+                        <span className="text-tawnyPort secondary-text">To: </span>
+                        <span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
+                        {toEmail}
+                        </span>
+                    </p>
+                    <div className="mt-2 flex space-x-4">
+                        {mailClientButtons.map((button) => (
+                        <a
+                            key={button.name}
+                            href={button.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 primary-btn"
+                        >
+                            {button.name}
+                        </a>
+                        ))}
+                    </div>
+                    </div>
+                )}
+                {resendTimeout > 0 ? (
+                    <p className="mt-4 text-center">
+                    You can resend the magic link in {resendTimeout} seconds.
+                    </p>
+                ) : magicLink ? (
+                    <button onClick={resendMagicLink} className="mt-4 p-2 primary-btn">
+                    Resend Magic Link
+                    </button>
+                ): ""}
+                </div>
+            </section>
+            {/* Display custom error if any*/}
+            {error && (
+                <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+                <div className="bg-white p-4 rounded-md">
+                    <p className="text-red-500">{error}</p>
+                    <button
+                    onClick={() => setError(null)}
+                    className="mt-2 p-2 bg-blue-500 text-white rounded-md"
+                    >
+                    Close
+                    </button>
+                </div>
+                </div>
+            )}
+            </main>
+            <div className="xs:max-md:hidden absolute top-[100px] xs:max-md:-right-[225px] lg:max-lg:-right-[250px] -right-[275px]">
+                <NextImage
+                src="/images/blob-1.svg"
+                width={0}
+                height={0}
+                alt="Blob 1"
+                className="blob"
+                />
             </div>
-          )}
-          {resendTimeout > 0 ? (
-            <p className="mt-4 text-center">
-              You can resend the magic link in {resendTimeout} seconds.
-            </p>
-          ) : magicLink ? (
-            <button onClick={resendMagicLink} className="mt-4 p-2 primary-btn">
-              Resend Magic Link
-            </button>
-          ): ""}
-        </div>
-      </section>
-      {/* Display custom error if any*/}
-      {error && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-4 rounded-md">
-            <p className="text-red-500">{error}</p>
-            <button
-              onClick={() => setError(null)}
-              className="mt-2 p-2 bg-blue-500 text-white rounded-md"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-    </main>
-  );
+            <div className="xs:max-md:hidden absolute -bottom-[275px] xs:max-md:-left-[175px] md:max-lg:-left-[200px] -left-[225px]">
+                <NextImage
+                src="/images/blob-2.svg"
+                width={0}
+                height={0}
+                alt="Blob 2"
+                className="blob"
+                />
+            </div>
+        </>
+    );
 };
 
 export default Verify;
