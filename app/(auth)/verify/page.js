@@ -250,35 +250,49 @@ const Verify = () => {
               )}
             </h2>
             {magicLink && (
-              <div className="mt-4 flex flex-col items-center border border-black p-8 mb-10">
-                <p className="mb-4">
-                  <span className="text-tawnyPort secondary-text">From: </span>
+              <div className="mt-4 flex flex-col items-center border border-black mb-10 md:w-[500px] md:h-[250px] xs:w-[350px] xs:h-[220px]">
+                <div className="mb-4 flex flex-row justify-center mt-8 w-[500px]">
+                  <span className="text-tawnyPort secondary-text w-[75px] ml-3">
+                    From
+                  </span>
+                  <span className="text-tawnyPort secondary-text ml-2 mr-2">
+                    :
+                  </span>
                   <span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
                     {fromEmail}
                   </span>
-                </p>
-                <p className="mb-4">
-                  <span className="text-tawnyPort secondary-text">
-                    Subject:{" "}
+                </div>
+                <div className="mb-4 flex flex-row justify-center w-[500px]">
+                  <span className="text-tawnyPort secondary-text w-[75px]">
+                    Subject
+                  </span>
+                  <span className="text-tawnyPort secondary-text ml-2 mr-2">
+                    :
                   </span>
                   <span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
                     {subject}
                   </span>
-                </p>
-                <p className="mb-4">
-                  <span className="text-tawnyPort secondary-text">To: </span>
+                </div>
+                <div className="mb-4 flex flex-row justify-center w-[500px]">
+                  <span className="text-tawnyPort secondary-text w-[75px] ml-2">
+                    To
+                  </span>
+                  <span className="text-tawnyPort secondary-text ml-2 mr-3">
+                    :
+                  </span>
                   <span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
                     {toEmail}
                   </span>
-                </p>
-                <div className="mt-2 flex space-x-4">
+                </div>
+
+                <div className="mt-2 flex space-x-4 mb-8">
                   {mailClientButtons.map((button) => (
                     <a
                       key={button.name}
                       href={button.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 primary-btn"
+                      className="p-0 primary-btn bg-transparent"
                     >
                       <NextImage
                         src={button.image}
