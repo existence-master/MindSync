@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getCookie } from "cookies-next";
 import { useSession } from "next-auth/react";
-import jwt from "jsonwebtoken"; // Ensure you have this package installed
 import NextImage from "next/image";
 
 const Verify = () => {
@@ -16,18 +15,18 @@ const Verify = () => {
   const [message, setMessage] = useState("");
   const [magicLink, setMagicLink] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false); // State to track authorization status
-  const [resendTimeout, setResendTimeout] = useState(60); // Initial timeout for resending the magic link
+  const [resendTimeout, setResendTimeout] = useState(0); // Initial timeout for resending the magic link
 
   const fromEmail = "existence.mindsync@gmail.com";
   const { status } = useSession(); // Hook to get the current session status
-  const token = searchParams.get("token");
+    const token = searchParams.get("token");
+    const email = searchParams.get("email");
 
   // If the user is authenticated, redirect to the dashboard
-  useEffect(() => {
+  
     if (status === "authenticated") {
       router.push("/dashboard");
     }
-  }, [status, router]);
 
   useEffect(() => {
     // Check the "signup-flow" and "forgot-password-flow" cookies to determine if the user is authorized
@@ -35,111 +34,92 @@ const Verify = () => {
     const forgotPasswordFlowCookie = getCookie("forgot-password-flow"); // Retrieve the "forgot-password-flow" cookie
 
     if (signupFlowCookie === "true" || forgotPasswordFlowCookie === "true") {
-      setIsAuthorized(true); // Mark as authorized if any of the conditions are met
+		setIsAuthorized(true); // Mark as authorized if any of the conditions are met
+		setToEmail(email);
+		if (signupFlowCookie === "true") {
+			setSubject("Signup For MindSync");
+			setMessage("Signup For MindSync");
+		} else if (forgotPasswordFlowCookie === "true") {
+			setSubject("Reset Password For MindSync");
+			setMessage("Reset Password For MindSync");
+		}
     } else {
       router.push("/login"); // Redirect to the login page if not authorized
     }
-  }, [router]);
+  }, [router, searchParams]);
 
-  useEffect(() => {
-    if (!isAuthorized) {
-      return;
-    }
+	useEffect(() => {
+		if (token) {
+			const verifyToken = async () => {
+				try {
+					let response = await fetch("/api/verify-magic-link", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ token }),
+					});
 
-    const verifyToken = async () => {
-      if (token) {
-        try {
-          let response = await fetch("/api/verify-magic-link", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token }),
-          });
+					if (response.ok) {
+						// Check which flow the user is in
+						const signupFlow = getCookie("signup-flow");
+						const forgotPasswordFlow = getCookie(
+							"forgot-password-flow"
+						);
 
-          if (response.ok) {
-            // Check which flow the user is in
-            const signupFlow = getCookie("signup-flow");
-            const forgotPasswordFlow = getCookie("forgot-password-flow");
+						// Redirect based on the flow
+						if (signupFlow) {
+							// Proceed with the signup flow
+							// Get user session data from the server
+							let response = await fetch("/api/get-session", {
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+								},
+							});
 
-            // Redirect based on the flow
-            if (signupFlow) {
-              // Proceed with the signup flow
-              // Get user session data from the server
-              let response = await fetch("/api/get-session", {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              });
+							if (response.ok) {
+								// If the session data retrieval is successful, proceed to signup
+								const { email, password, username } =
+									await response.json(); // Get user details from the server response
+								response = await fetch("/api/signup", {
+									method: "POST",
+									headers: {
+										"Content-Type": "application/json", // Content type for JSON data
+									},
+									body: JSON.stringify({
+										email,
+										password,
+										username,
+									}),
+								});
 
-              if (response.ok) {
-                // If the session data retrieval is successful, proceed to signup
-                const { email, password, username } = await response.json(); // Get user details from the server response
-                response = await fetch("/api/signup", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json", // Content type for JSON data
-                  },
-                  body: JSON.stringify({
-                    email,
-                    password,
-                    username,
-                  }),
-                });
-
-                if (response.ok) {
-                  // Redirect to the login page
-                  router.push("/login");
-                } else {
-                  const errorMessage = await response.text();
-                  setError(errorMessage);
-                }
-              }
-            } else if (forgotPasswordFlow) {
-              router.push(`/reset-password?email=${email}`);
-            } else {
-              router.push("/login");
-            }
-          } else {
-            throw new Error("Failed to verify magic link");
-          }
-        } catch (error) {
-          console.error("Invalid token", error);
-          setError(
-            "Invalid or expired token. Please request a new magic link."
-          );
-        }
-      }
-    };
-
-    verifyToken();
-  }, [token, router, isAuthorized]);
-
-  useEffect(() => {
-    if (!isAuthorized) {
-      return;
-    }
-
-    const email = searchParams.get("email");
-    setToEmail(email);
-
-    const signupFlowCookie = getCookie("signup-flow");
-    const forgotPasswordFlowCookie = getCookie("forgot-password-flow");
-
-    if (signupFlowCookie === "true") {
-      setSubject("Signup For MindSync");
-      setMessage("Signup For MindSync");
-    } else if (forgotPasswordFlowCookie === "true") {
-      setSubject("Reset Password For MindSync");
-      setMessage("Reset Password For MindSync");
-    } else {
-      router.push("/login");
-    }
-  }, [router, searchParams, isAuthorized]);
-
-  useEffect(() => {
-    if (toEmail && subject && message) {
+								if (response.ok) {
+									// Redirect to the login page
+									router.push("/login");
+								} else {
+									const errorMessage =
+										await response.text();
+									setError(errorMessage);
+								}
+							}
+						} else if (forgotPasswordFlow) {
+							router.push(`/reset-password?email=${email}`);
+						} else {
+							router.push("/login");
+						}
+					} else {
+						throw new Error("Failed to verify magic link");
+					}
+				} catch (error) {
+					console.error("Invalid token", error);
+					setError(
+						"Invalid or expired token. Please request a new magic link."
+					);
+				}
+			};
+			verifyToken()
+		} else if (toEmail && subject && message) {
       const sendMagicLink = async () => {
         try {
           const response = await fetch("/api/send-magic-link", {
@@ -155,7 +135,8 @@ const Verify = () => {
           });
 
           if (response.ok) {
-            setMagicLink(true);
+              setMagicLink(true);
+              setResendTimeout(60)
           } else {
             const errorText = await response.text();
             throw new Error(errorText);
@@ -167,7 +148,7 @@ const Verify = () => {
       };
       sendMagicLink();
     }
-  }, []);
+  }, [token, router, toEmail]);
 
   useEffect(() => {
     // Timer for enabling the resend button
@@ -204,9 +185,13 @@ const Verify = () => {
       console.error(error);
       setMessage("Failed to resend magic link. Please try again.");
     }
-  };
+	};
+	
+	if (!isAuthorized) {
+		return null;
+	}
 
-  const mailClientButtons = [
+    const mailClientButtons = [
     {
       name: "Gmail",
       url: `https://mail.google.com/mail/u/0/#search/${fromEmail}`,
@@ -233,7 +218,7 @@ const Verify = () => {
           <h2 className="xs:max-lg:mt-[10px] mt-[20px] text-center secondary-text">
             {magicLink
               ? "Check your email for the magic link!"
-              : "Sending magic link..."}
+              : token ? "Verifying magic link..." : "Sending magic link..."}
           </h2>
           {magicLink && (
             <div className="mt-4 flex flex-col items-center border border-black p-8 mb-10">
@@ -274,11 +259,11 @@ const Verify = () => {
             <p className="mt-4 text-center">
               You can resend the magic link in {resendTimeout} seconds.
             </p>
-          ) : (
+          ) : magicLink ? (
             <button onClick={resendMagicLink} className="mt-4 p-2 primary-btn">
               Resend Magic Link
             </button>
-          )}
+          ): ""}
         </div>
       </section>
       {/* Display custom error if any*/}

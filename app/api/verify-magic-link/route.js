@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 
 export const POST = async (req) => {
-    console.log(req)
 	const { token } = await req.json(); // Extract details from the request body
     try {
         const decoded = jwt.verify(
