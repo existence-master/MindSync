@@ -15,6 +15,15 @@ const Dashboard = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [mindmapName, setMindmapName] = useState("");
 	const [showDialog, setShowDialog] = useState(false);
+	const [showExportDropdown, setShowExportDropdown] = useState(false);
+	const [isRecording, setIsRecording] = useState(false);
+	const [recognition, setRecognition] = useState(null);
+	const [videoLinkInput, setVideoInput] = useState({
+		type: "link", // or "file"
+		name: "",
+		value: ""
+	});
+	const [showVideoDialog, setShowVideoDialog] = useState(false);
 
 	const mindmapRef = useRef(null);
 
@@ -30,6 +39,33 @@ const Dashboard = () => {
 		mermaid.run();
 	}, [mindmap]);
 
+	useEffect(() => {
+		// Initialize SpeechRecognition
+		const SpeechRecognition =
+			window?.SpeechRecognition || window?.webkitSpeechRecognition;
+		if (SpeechRecognition) {
+			const newRecognition = new SpeechRecognition();
+			newRecognition.continuous = true;
+			newRecognition.interimResults = true;
+			newRecognition.onresult = (event) => {
+				const transcript = Array.from(event.results)
+					.map((result) => result[0].transcript)
+					.join("");
+				setInput(transcript);
+			};
+			setRecognition(newRecognition);
+		}
+	}, []);
+
+	const handleToggleRecording = () => {
+		if (isRecording) {
+			recognition.stop();
+		} else {
+			recognition.start();
+		}
+		setIsRecording(!isRecording);
+	};
+
 	const handleFileChange = (event) => {
 		const selectedFiles = Array.from(event.target.files);
 		setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
@@ -37,6 +73,14 @@ const Dashboard = () => {
 
 	const removeFile = (index) => {
 		setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+	};
+
+	const handleVideoLinkInput = (event) => {
+		setVideoInput((prevState) => ({
+			...prevState,
+			name: event.target.value,
+			value: event.target.value
+		}));
 	};
 
 	const handleConvert = async () => {
@@ -76,6 +120,19 @@ const Dashboard = () => {
 				const response = await fetch("/api/video-to-text", {
 					method: "POST",
 					body: formData,
+				});
+				if (response.ok) {
+					const output = await response.json();
+					textResponse += `\n${output.text}`;
+				}
+			}
+			else if (fileType.startsWith("link")) {
+				const response = await fetch("/api/video-to-text", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ url: videoLinkInput.value }),
 				});
 				if (response.ok) {
 					const output = await response.json();
@@ -160,7 +217,7 @@ const Dashboard = () => {
 				body: JSON.stringify({ mindmap, mindmapName }),
 			});
 			if (response.ok) {
-				console.log("Mindmap saved")
+				console.log("Mindmap saved");
 				setShowDialog(false);
 			} else {
 				throw new Error("Failed to save mindmap");
@@ -232,25 +289,34 @@ const Dashboard = () => {
 							}}
 						>
 							<div className="dropdown">
-								<button className="primary-btn dropdown-btn">
+								<button
+									className="primary-btn dropdown-btn"
+									onClick={() =>
+										setShowExportDropdown(
+											!showExportDropdown
+										)
+									}
+								>
 									Export
 								</button>
-								<div className="dropdown-content">
-									<button
-										onClick={() =>
-											handleExportMindmap("svg")
-										}
-									>
-										Export as SVG
-									</button>
-									<button
-										onClick={() =>
-											handleExportMindmap("png")
-										}
-									>
-										Export as PNG
-									</button>
-								</div>
+								{showExportDropdown && (
+									<div className="dropdown-content">
+										<button
+											onClick={() =>
+												handleExportMindmap("svg")
+											}
+										>
+											Export as SVG
+										</button>
+										<button
+											onClick={() =>
+												handleExportMindmap("png")
+											}
+										>
+											Export as PNG
+										</button>
+									</div>
+								)}
 							</div>
 							<button
 								onClick={() => setShowDialog(true)}
@@ -338,13 +404,7 @@ const Dashboard = () => {
 									>
 										Audio
 									</button>
-									<button
-										onClick={() =>
-											document
-												.getElementById("fileInput")
-												.click()
-										}
-									>
+									<button onClick={() => setShowVideoDialog(true)}>
 										Video
 									</button>
 									<button
@@ -370,13 +430,25 @@ const Dashboard = () => {
 							<textarea
 								value={input}
 								onChange={(e) => setInput(e.target.value)}
-								placeholder="Type your thoughts here..."
+								placeholder="Type or speak your thoughts here..."
 								style={{
 									width: "100%",
 									height: "100px",
 									marginLeft: "10px",
 								}}
 							/>
+							<button
+								onClick={() => handleToggleRecording()}
+								className={`primary-btn ${
+									isRecording
+										? "bg-red-500 text-white animate-pulse"
+										: ""
+								}`}
+							>
+								{isRecording
+									? "Stop Recording"
+									: "Start Recording"}
+							</button>
 							<input
 								id="fileInput"
 								type="file"
@@ -384,7 +456,7 @@ const Dashboard = () => {
 								onChange={handleFileChange}
 								style={{ display: "none" }}
 							/>
-						</div>
+							</div>
 						{files.map((file, index) => (
 							<FileDisplay
 								key={index}
@@ -398,8 +470,92 @@ const Dashboard = () => {
 						>
 							{isSubmitting ? "Processing..." : "Convert"}
 						</button>
+						{/* Video Dialog */}
+						{showVideoDialog && (
+							<div className="modal">
+								<div className="modal-content">
+									<h2>Select Video Input</h2>
+									<div>
+										<input
+											type="radio"
+											name="videoLinkInputType"
+											value="link"
+											checked={videoLinkInput.type === "link"}
+											onChange={() =>
+												setVideoInput({
+													type: "link",
+													name: "",
+												})
+											}
+										/>
+										<label htmlFor="videoLink">
+											YouTube Link
+										</label>
+									</div>
+									<div>
+										<input
+											type="radio"
+											name="videoLinkInputType"
+											value="file"
+											checked={videoLinkInput.type === "file"}
+											onChange={() =>
+												setVideoInput({
+													type: "file",
+													value: "",
+												})
+											}
+										/>
+										<label htmlFor="videoFile">
+											Video File
+										</label>
+									</div>
+									{videoLinkInput.type === "link" && (
+										<input
+											type="text"
+											value={videoLinkInput.value}
+											onChange={handleVideoLinkInput}
+											placeholder="Enter YouTube Link"
+										/>
+									)}
+									{videoLinkInput.type === "file" && (
+										<input
+											type="file"
+											accept="video/*"
+											onChange={handleFileChange}
+										/>
+									)}
+									<div
+										style={{
+											display: "flex",
+											justifyContent: "center",
+											marginTop: "10px",
+										}}
+									>
+										<button
+											onClick={() =>
+												setShowVideoDialog(false)
+											}
+											className="primary-btn"
+										>
+											Cancel
+										</button>
+										<button
+												onClick={() => {
+													setShowVideoDialog(false)
+													if (videoLinkInput.value != "") {
+														setFiles((prevFiles) => [...prevFiles, videoLinkInput])
+													}
+												}}
+											className="primary-btn"
+										>
+											Select
+										</button>
+									</div>
+								</div>
+							</div>
+						)}
 					</div>
-				)}
+				)}	
 
 				{error && (
 					<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
