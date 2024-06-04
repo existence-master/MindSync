@@ -21,7 +21,7 @@ const userSchema = new Schema(
 		mindmaps: [
 			{
 				type: Schema.Types.ObjectId, // References to the Chat model
-				ref: "MindMap", // Reference the Chat collection
+				ref: "Mindmap", // Reference the Chat collection
 				required: false, // This field can be optional
 			},
 		],

@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server"; // Import Next.js server response handling
-import nodemailer from "nodemailer"; // Library to send emails
 import jwt from "jsonwebtoken";
-import { v4 as uuidv4 } from "uuid";
 
 export const POST = async (req) => {
 	const { token } = await req.json(); // Extract details from the request body
