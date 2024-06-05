@@ -12,12 +12,12 @@ root((main idea))
 
 5. Limit the node to 3 words maximum and the sub-nodes and downwards to 2 words maximum. 
 
-I will send you some text and as per the mermaid mindmap notation above, please summarize the text into a mermaid mindmap notation. Return only the notation and nothing else`
+I will send you some text and as per the mermaid mindmap notation above, please summarize the text into a mermaid mindmap notation. Return only MERMAID MINDMAP CODE. DO NOT RETURN TEXT. DO NOT RETURN TEXT DESCRIPTIONS, UNDERSTANDINGS, OR ANYTHING ELSE.`;
 
 const inputOutputPairs = [
-	{
-		input: `Technology has greatly influenced modern society. It encompasses various aspects of human life, from communication to transportation. Innovation drives technological advancements, leading to new products and services that enhance our daily lives. Automation, a significant outcome of technological progress, streamlines processes and improves efficiency. Artificial Intelligence (AI) represents the cutting edge of technology, enabling machines to perform tasks that typically require human intelligence.`,
-		output: `mindmap
+  {
+    input: `Technology has greatly influenced modern society. It encompasses various aspects of human life, from communication to transportation. Innovation drives technological advancements, leading to new products and services that enhance our daily lives. Automation, a significant outcome of technological progress, streamlines processes and improves efficiency. Artificial Intelligence (AI) represents the cutting edge of technology, enabling machines to perform tasks that typically require human intelligence.`,
+    output: `mindmap
 root((Technology))
     Influence
         Communication
@@ -33,10 +33,10 @@ root((Technology))
             Artificial Intelligence
             ::icon(fa fa-cogs)
 `,
-	},
-	{
-		input: `Travel broadens one's horizons and exposes individuals to diverse cultures and experiences. Exploration fuels the desire to discover new places and uncover hidden treasures. Adventure seekers often embark on thrilling journeys, seeking adrenaline-pumping activities and unique encounters. Backpacking offers a sense of freedom and allows travelers to immerse themselves in nature while Safari adventures provide opportunities to observe wildlife in their natural habitats.`,
-		output: `mindmap
+  },
+  {
+    input: `Travel broadens one's horizons and exposes individuals to diverse cultures and experiences. Exploration fuels the desire to discover new places and uncover hidden treasures. Adventure seekers often embark on thrilling journeys, seeking adrenaline-pumping activities and unique encounters. Backpacking offers a sense of freedom and allows travelers to immerse themselves in nature while Safari adventures provide opportunities to observe wildlife in their natural habitats.`,
+    output: `mindmap
 root((Travel))
     Broadening Horizons
         Exposure to Cultures
@@ -57,10 +57,10 @@ root((Travel))
             Wildlife Observation
             Natural Habitats
 `,
-	},
-	{
-		input: `Education plays a crucial role in shaping individuals and societies. Learning is a lifelong process that begins from infancy and continues throughout one's life. Knowledge acquisition empowers individuals with the necessary skills and information to navigate the complexities of the world. Curriculums are designed to facilitate structured learning experiences, providing students with a comprehensive understanding of various subjects. Research drives innovation and fosters intellectual curiosity, pushing the boundaries of human knowledge.`,
-		output: `mindmap
+  },
+  {
+    input: `Education plays a crucial role in shaping individuals and societies. Learning is a lifelong process that begins from infancy and continues throughout one's life. Knowledge acquisition empowers individuals with the necessary skills and information to navigate the complexities of the world. Curriculums are designed to facilitate structured learning experiences, providing students with a comprehensive understanding of various subjects. Research drives innovation and fosters intellectual curiosity, pushing the boundaries of human knowledge.`,
+    output: `mindmap
 root((Education))
     Shaping Individuals and Societies
         Crucial Role
@@ -83,8 +83,7 @@ root((Education))
             Pushing Boundaries
                 Human Knowledge
 `,
-	},
+  },
 ];
 
-
-export {system_prompt, inputOutputPairs}
+export { system_prompt, inputOutputPairs };
