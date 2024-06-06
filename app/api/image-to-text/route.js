@@ -33,8 +33,6 @@ export const POST = async (request) => {
 			data: { text },
 		} = await worker.recognize(filePath);
 
-		console.log(text);
-
 		// Delete the file after transcription
 		await unlink(filePath);
 

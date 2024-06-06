@@ -4,6 +4,13 @@ import connect from "@utils/db"; // Utility for database connection
 import { authOptions } from "../auth/[...nextauth]/route"; // Import NextAuth options
 import { getServerSession } from "next-auth/next"; // Import NextAuth session handling
 import { NextResponse } from "next/server"; // Import Next.js server response
+import cloudinary from "@utils/cloudinary"; // Import Cloudinary configuration
+import { promisify } from "util";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
+
+const writeFile = promisify(fs.writeFile);
+const unlink = promisify(fs.unlink);
 
 export const POST = async (request) => {
 	const session = await getServerSession(authOptions); // Get the current user session
@@ -16,7 +23,10 @@ export const POST = async (request) => {
 		}
 
 		// Extract mindmap data and name from the request body
-		const { mindmap, mindmapName } = await request.json();
+		const formData = await request.formData();
+		const mindmap = formData.get("mindmap");
+		const mindmapName = formData.get("mindmapName");
+		const previewImage = formData.get("previewImage");
 
 		// Find the user based on the email in the session
 		const user = await User.findOne({ email: session.user.email });
@@ -26,10 +36,31 @@ export const POST = async (request) => {
 			return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
 		}
 
+		// Define the directory where you want to store the uploaded file
+		const uploadDir = "./public/uploads";
+
+		// Generate a unique filename
+		const fileName = `${uuidv4()}-${previewImage.name}`;
+		const filePath = `${uploadDir}/${fileName}`;
+
+		// Read the file as a buffer and save it
+		const arrayBuffer = await previewImage.arrayBuffer();
+		const buffer = Buffer.from(arrayBuffer);
+		await writeFile(filePath, buffer);
+
+		// Upload the preview image to Cloudinary
+		const uploadResult = await cloudinary.uploader.upload(filePath, {
+			folder: "mindmap_previews",
+		});
+
+		// Delete the local file after uploading
+		await unlink(filePath);
+
 		// Create a new mindmap object
 		const newMindmap = new Mindmap({
 			name: mindmapName,
 			code: mindmap,
+			previewImageURL: uploadResult.secure_url, // Use the Cloudinary URL
 		});
 
 		// Save the mindmap to the database
