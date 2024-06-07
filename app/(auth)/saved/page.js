@@ -44,6 +44,10 @@ const Saved = () => {
     router.push(`/edit/${id}`);
   };
 
+  const handleError = () => {
+    setError(null);
+  };
+
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`/api/delete-mindmap`, {
@@ -205,36 +209,48 @@ const Saved = () => {
             Saved
           </h1>
           {error && <p className="text-red-500">{error}</p>}
-          <form
-            onSubmit={handleSearch}
-            className="mb-6 w-full p-4 px-12 flex flex-col justify-center items-center"
-          >
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search mindmaps by name"
-              className="border p-2 mr-2 w-full input mb-4"
-            />
-            <button
-              type="submit"
-              className="mt-2 primary-btn w-1/6 text-white p-2"
-            >
-              Search
-            </button>
+          <form onSubmit={handleSearch} className="mb-6 w-full p-4 px-12">
+            <div className="relative w-full flex flex-col justify-center items-center">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search mindmaps by name"
+                className="border p-2 mr-2 w-2/3 input mb-4"
+              />
+              <button
+                type="submit"
+                className="absolute -top-1 right-64 cursor-pointer mt-2 text-white p-2"
+              >
+                <Image
+                  src="/images/searchicon.svg"
+                  width={20}
+                  height={20}
+                  alt="Search"
+                />
+              </button>
+            </div>
           </form>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {mindmaps.length > 0
-              ? mindmaps.map((mindmap, index) => (
-                  <MindmapCard
-                    key={index}
-                    mindmap={mindmap}
-                    onDelete={handleDelete}
-                    onExport={handleExport}
-                    onEdit={handleEdit}
-                  />
-                ))
-              : "No mindmaps found"}
+          <div
+            className={
+              mindmaps.length > 0
+                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                : "w-full flex justify-center items-center"
+            }
+          >
+            {mindmaps.length > 0 ? (
+              mindmaps.map((mindmap, index) => (
+                <MindmapCard
+                  key={index}
+                  mindmap={mindmap}
+                  onDelete={handleDelete}
+                  onExport={handleExport}
+                  onEdit={handleEdit}
+                />
+              ))
+            ) : (
+              <p className="text-center">No mindmaps found</p>
+            )}
           </div>
         </div>
         {error && (

@@ -7,10 +7,10 @@ const Unauthenticated = () => {
       {" "}
       {/* Background color and full screen height */}
       <Image
-        src="/navbarlogo.svg"
+        src="/images/logo.svg"
         width={200}
         height={50}
-        alt="Bloomify Logo"
+        alt="Mindsync Logo"
         className="mb-10"
       />{" "}
       {/* Bloomify logo */}

@@ -45,7 +45,7 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
           />
         )}
       </div>
-      <div className="w-[300px] h-2/6 translate-y-5 rounded-b-lg bg-stilleto px-4">
+      <div className="w-[300px] h-fit py-2 pb-2 translate-y-5 rounded-b-lg bg-stilleto px-4">
         <h3 className="primary-text text-xl mt-3 font-inter font-medium text-white">
           {mindmap.name}
         </h3>
