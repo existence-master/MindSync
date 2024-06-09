@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
+import FileDisplay from "@components/FileDisplay";
 import SignoutButton from "@components/SignoutButton";
 import mermaid from "mermaid";
 import { fabric } from "fabric";
