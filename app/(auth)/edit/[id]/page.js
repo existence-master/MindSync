@@ -12,11 +12,21 @@ import MonacoEditor from "react-monaco-editor";
 
 const Edit = () => {
 	const { id } = useParams();
+    const [input, setInput] = useState("");
+    const [files, setFiles] = useState([]);
+    const [showAttachmentOptions, setShowAttachmentOptions] = useState(false); 
 	const [mindmapDetails, setMindmapDetails] = useState(null);
 	const [mindmapCode, setMindmapCode] = useState("");
 	const [mindmapName, setMindmapName] = useState("");
-	const [mindmapText, setMindmapText] = useState("");
-	const [showExportDropdown, setShowExportDropdown] = useState(false);
+    const [showExportDropdown, setShowExportDropdown] = useState(false);
+    const [isRecording, setIsRecording] = useState(false);
+    const [recognition, setRecognition] = useState(null);
+    const [videoLinkInput, setVideoInput] = useState({
+        type: "link", // or "file"
+        name: "",
+        value: "",
+    });
+    const [showVideoDialog, setShowVideoDialog] = useState(false);
 	const [error, setError] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const mindmapRef = useRef(null);
@@ -46,7 +56,6 @@ const Edit = () => {
 						.replace(/\"/g, "");
 					setMindmapCode(processedCode);
 					setMindmapName(data.name);
-					setMindmapText(data.text);
 				} else {
 					throw new Error("Failed to fetch mindmap details");
 				}
@@ -67,6 +76,157 @@ const Edit = () => {
 	useEffect(() => {
 		mermaid.run();
 	}, [mindmapCode]);
+
+	useEffect(() => {
+    // Initialize SpeechRecognition
+    const SpeechRecognition =
+      window?.SpeechRecognition || window?.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const newRecognition = new SpeechRecognition();
+      newRecognition.continuous = true;
+      newRecognition.interimResults = true;
+      newRecognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join("");
+        setInput(transcript);
+      };
+      setRecognition(newRecognition);
+    }
+  }, []);
+
+  const handleToggleRecording = () => {
+    if (isRecording) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+    setIsRecording(!isRecording);
+  };
+
+  const handleFileChange = (event) => {
+    const selectedFiles = Array.from(event.target.files);
+    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+
+    // Reset the value of the file input
+    event.target.value = null;
+  };
+
+  const removeFile = (index) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
+  const triggerFileInput = (acceptType) => {
+    const fileInput = document.getElementById("fileInput");
+    fileInput.setAttribute("accept", acceptType);
+    fileInput.click();
+  };
+
+  const handleVideoLinkInput = (event) => {
+    setVideoInput((prevState) => ({
+      ...prevState,
+      name: event.target.value,
+      value: event.target.value,
+    }));
+  };
+
+  const handleEdit = async () => {
+    setIsSubmitting(true);
+    let instruction = input;
+    try {
+      for (let file of files) {
+        const fileType = file.type;
+        if (
+          fileType.startsWith("text/") ||
+          fileType === "application/pdf" ||
+          fileType ===
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+          fileType === "application/msword"
+        ) {
+          const formData = new FormData();
+          formData.append("text", file);
+          const response = await fetch("/api/extract-text", {
+            method: "POST",
+            body: formData,
+          });
+          if (response.ok) {
+            const output = await response.json();
+            instruction += `\n${output.text}`;
+          }
+        } else if (fileType.startsWith("audio/")) {
+          const formData = new FormData();
+          formData.append("audio", file);
+          const response = await fetch("/api/audio-to-text", {
+            method: "POST",
+            body: formData,
+          });
+          if (response.ok) {
+            const output = await response.json();
+            instruction += `\n${output.text}`;
+          }
+        } else if (fileType.startsWith("image/")) {
+          const formData = new FormData();
+          formData.append("image", file);
+          const response = await fetch("/api/image-to-text", {
+            method: "POST",
+            body: formData,
+          });
+          if (response.ok) {
+            const output = await response.json();
+            instruction += `\n${output.text}`;
+          }
+        } else if (fileType.startsWith("video/")) {
+          const formData = new FormData();
+          formData.append("video", file);
+          const response = await fetch("/api/video-to-text", {
+            method: "POST",
+            body: formData,
+          });
+          if (response.ok) {
+            const output = await response.json();
+            instruction += `\n${output.text}`;
+          }
+        } else if (fileType.startsWith("link")) {
+          const response = await fetch("/api/video-to-text", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ url: videoLinkInput.value }),
+          });
+          if (response.ok) {
+            const output = await response.json();
+            instruction += `\n${output.text}`;
+          }
+        } else {
+          throw new Error("Unsupported file type");
+        }
+      }
+
+      const response = await fetch("/api/update-with-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ instruction, mindmapCode }),
+      });
+
+      if (response.ok) {
+        const { mindmap } = await response.json();
+        const processedCode = mindmap
+			.replace(/\\n/g, "\n")
+			.replace(/\"/g, "");
+		setMindmapCode(processedCode);
+        setInput("")
+      } else {
+        throw new Error("Failed to update mindmap");
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsSubmitting(false);
+      }
+	};
 
 	// Handle mindmap name change
 	const handleMindmapNameChange = (e) => {
@@ -199,27 +359,8 @@ const Edit = () => {
 		);
 	}
 
-	// Render error if there is one
-	if (error) {
-		return (
-			<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-				<div
-					style={{
-						backgroundColor: "white",
-						padding: "20px",
-						borderRadius: "5px",
-					}}
-				>
-					<h2>Error</h2>
-					<p>{error}</p>
-					<button onClick={() => setError(null)}>Close</button>
-				</div>
-			</div>
-		);
-	}
-
 	// Render edit page if mindmap details are loaded
-	if (mindmapDetails) {
+	if (status==="authenticated" && mindmapDetails) {
 		return (
 			<div className="flex h-screen w-screen">
 				<div className="w-1/6 h-screen bg-paleRose flex flex-col justify-between border-double border-r-4 border-tickleMePink">
@@ -301,7 +442,7 @@ const Edit = () => {
 									htmlFor="mindmapCode"
 									className="block text-lg font-medium text-gray-700"
 									>
-									Mindmap Code
+									Edit With Code
 								</label>
 								<MonacoEditor
 									id="mindmapCode"
@@ -326,8 +467,225 @@ const Edit = () => {
 									editorDidMount={(editor) => {
 										monacoEditorRef.current = editor;
 									}}
+                                />
+                                <span>
+                                    or
+                                </span>
+								<label htmlFor="editMessage" className="block text-lg font-medium text-gray-700">
+									Edit with Message
+								</label>
+								<div className="relative">
+									{showAttachmentOptions && (
+									<div className="absolute -left-36 -top-16 gap-y-2 flex flex-col justify-center items-center">
+										<button
+										onClick={() =>
+											triggerFileInput(".txt,.doc,.docx,.pdf")
+										}
+										className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+										>
+										<Image
+											src="/images/savedicon.svg"
+											width={20}
+											height={20}
+											alt="Saved"
+											className="py-1"
+										/>
+										Text
+										</button>
+										<button
+										onClick={() => triggerFileInput("audio/*")}
+										className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+										>
+										<Image
+											src="/images/savedicon.svg"
+											width={20}
+											height={20}
+											alt="Saved"
+											className="py-1"
+										/>
+										Audio
+										</button>
+										<button
+										onClick={() => setShowVideoDialog(true)}
+										className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+										>
+										<Image
+											src="/images/savedicon.svg"
+											width={20}
+											height={20}
+											alt="Saved"
+											className="py-1"
+										/>
+										Video
+										</button>
+										<button
+										onClick={() => triggerFileInput("image/*")}
+										className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+										>
+										<Image
+											src="/images/savedicon.svg"
+											width={20}
+											height={20}
+											alt="Saved"
+											className="py-1"
+										/>
+										Image
+										</button>
+									</div>
+									)}
+
+									<button
+									onClick={() =>
+										setShowAttachmentOptions(!showAttachmentOptions)
+									}
+									>
+									<Image
+										src="/images/attachicon.svg"
+										width={30}
+										height={30}
+										alt="Attachment"
+										className="absolute left-4 top-[12px]"
+									/>
+									</button>
+									<textarea
+									value={input}
+									onChange={(e) => setInput(e.target.value)}
+									placeholder="Type or speak your thoughts here..."
+									className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort text-md mind-h-[60px]"
+									/>
+									<button
+									onClick={() => handleToggleRecording()}
+									className={`bg-transparent absolute right-5 top-[10px] ${
+										isRecording ? "animate-pulse" : ""
+									}`}
+									>
+									{isRecording ? (
+										<Image
+										src="/images/micoff.svg"
+										width={27}
+										height={27}
+										alt="Recording"
+										/>
+									) : (
+										<Image
+										src="/images/micicon.svg"
+										width={27}
+										height={27}
+										alt="Recording"
+										/>
+									)}
+									</button>
+								</div>
+								<input
+									id="fileInput"
+									type="file"
+									multiple
+									onChange={handleFileChange}
+									style={{ display: "none" }}
 								/>
-							</div>
+								<div className="mt-2 w-full flex flex-row justify-start items-start gap-2 flex-wrap">
+									{files.map((file, index) => (
+										<FileDisplay
+										key={index}
+										file={file}
+										removeFile={() => removeFile(index)}
+										/>
+									))}
+								</div>
+								<div className="w-full flex justify-center items-center mt-6">
+									<button
+										onClick={handleEdit}
+										className="primary-btn text-xl"
+									>
+										{isSubmitting ? "Processing..." : "Edit"}
+									</button>
+								</div>
+								{/* Video Dialog */}
+								{showVideoDialog && (
+								<div className="absolute inset-0 flex justify-center items-center gap-y-2 border-2 border-black w-1/4 h-1/4 bg-white rounded-xl left-[620px] top-[360px]">
+									<div className="w-full p-4 flex flex-col">
+										<h2 className="secondary-text text-center">
+											Select Video Input
+										</h2>
+										<div>
+											<input
+											type="radio"
+											name="videoLinkInputType"
+											value="link"
+											checked={videoLinkInput.type === "link"}
+											onChange={() =>
+												setVideoInput({
+												type: "link",
+												name: "",
+												})
+											}
+											className="ml-6"
+											/>
+											<label htmlFor="videoLink" className="ml-2">
+											YouTube Link
+											</label>
+										</div>
+										<div>
+											<input
+											type="radio"
+											name="videoLinkInputType"
+											value="file"
+											checked={videoLinkInput.type === "file"}
+											onChange={() =>
+												setVideoInput({
+												type: "file",
+												value: "",
+												})
+											}
+											className="ml-6"
+											/>
+											<label htmlFor="videoFile" className="ml-2">
+											Video File
+											</label>
+										</div>
+										{videoLinkInput.type === "link" && (
+											<input
+											type="text"
+											value={videoLinkInput.value}
+											onChange={handleVideoLinkInput}
+											placeholder="Enter YouTube Link"
+											className="border-2 border-black rounded-xl p-2 mt-2"
+											/>
+										)}
+										{videoLinkInput.type === "file" && (
+											<input
+											type="file"
+											accept="video/*"
+											onChange={handleFileChange}
+											className="border-2 border-black rounded-xl p-2 mt-2"
+											/>
+										)}
+										<div className="flex flex-row items-center justify-center mt-2 gap-4">
+											<button
+											onClick={() => setShowVideoDialog(false)}
+											className="primary-btn"
+											>
+											Cancel
+											</button>
+											<button
+											onClick={() => {
+												setShowVideoDialog(false);
+												if (videoLinkInput.value != "") {
+												setFiles((prevFiles) => [
+													...prevFiles,
+													videoLinkInput,
+												]);
+												}
+											}}
+											className="primary-btn"
+											>
+											Select
+											</button>
+										</div>
+									</div>
+								</div>
+							)}
+              			</div>
 							<div className="mr-20 w-1/2 p-4 flex flex-col justify-between">
 								<div className="border-2 border-black rounded-xl h-[90%]">
 									<h2 className="secondary-text p-2 mb-2 font-semibold">

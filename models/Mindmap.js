@@ -13,10 +13,6 @@ const mindmapSchema = new Schema(
 			type: String, // Data type for the mindmap code field
 			required: true, // Mindmap code is required
 		},
-		text: {
-			type: String, // Data type for the mindmap text field
-			required: true, // Mindmap text is required
-		},
 		previewImageURL: {
 			type: String, // Data type for the preview image path
 			required: true, // Preview image path is required

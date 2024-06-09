@@ -25,8 +25,11 @@ export const POST = async (request) => {
 		// Extract mindmap data and name from the request body
 		const formData = await request.formData();
 		const mindmap = formData.get("mindmap");
+		const processedCode = mindmap
+			.replace(/\\n/g, "\n")
+			.replace(/\"/g, "");
+		setMindmapCode(processedCode);
 		const mindmapName = formData.get("mindmapName");
-		const mindmapText = formData.get("mindmapText");
 		const previewImage = formData.get("previewImage");
 
 		// Find the user based on the email in the session
@@ -60,8 +63,7 @@ export const POST = async (request) => {
 		// Create a new mindmap object
 		const newMindmap = new Mindmap({
 			name: mindmapName,
-			code: mindmap,
-			text: mindmapText,
+			code: processedCode,
 			previewImageURL: uploadResult.secure_url, // Use the Cloudinary URL
 		});
 

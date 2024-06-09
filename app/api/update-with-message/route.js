@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { updateMindmapPrompt } from "@utils/prompts";
+import { updateMindmapInputOutputPairs, updateMindmapPrompt, updateMindmapSystemPrompt } from "@utils/prompts";
 import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
@@ -10,9 +10,26 @@ export const POST = async (request) => {
 		// For text-only input, use the gemini-pro model
 		const model = genAI.getGenerativeModel({
 			model: "gemini-1.5-pro-latest",
+			systemInstruction: updateMindmapSystemPrompt,
 		});
 
-		const chat = model.startChat({
+		const chatHistory = updateMindmapInputOutputPairs
+			.map((pair) => {
+				return [
+					{
+						role: "user",
+						parts: [{ text: pair.input }],
+					},
+					{
+						role: "model",
+						parts: [{ text: pair.output }],
+					},
+				];
+			})
+			.flat();
+
+        const chat = model.startChat({
+            history: chatHistory,
 			generationConfig: {
 				maxOutputTokens: 300,
 				temperature: 0.9,
@@ -21,7 +38,9 @@ export const POST = async (request) => {
 			},
 		});
 
-		const { mindmapCode, instruction } = await request.json();
+        const { mindmapCode, instruction } = await request.json();
+        console.log(mindmapCode)
+        console.log(instruction)
 		const prompt = updateMindmapPrompt
 			.replace("[MERMAID_MINDMAP_CODE]", mindmapCode)
 			.replace("[INSTRUCTION]", instruction);
