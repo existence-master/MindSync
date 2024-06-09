@@ -432,31 +432,34 @@ const Dashboard = () => {
                     Restart
                   </button>
                   {showDialog && (
-                    <div className="absolute inset-0 flex justify-center items-center gap-y-2 border-2 border-black w-1/4 h-1/4 bg-white rounded-xl left-[620px] top-[360px]">
-                      <div className="w-full p-4">
-                        <h2 className="secondary-text mb-2">
-                          Enter Mindmap Name:
-                        </h2>
-                        <input
-                          type="text"
-                          value={mindmapName}
-                          onChange={(e) => setMindmapName(e.target.value)}
-                          placeholder="My Mindmap"
-                          className="p-2 border-2 w-full border-black rounded-xl"
-                        />
-                        <div className="flex flex-row justify-center items-center mt-5 gap-4">
-                          <button
-                            onClick={handleSaveMindmap}
-                            className="primary-btn"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={() => setShowDialog(false)}
-                            className="primary-btn"
-                          >
-                            Cancel
-                          </button>
+                    <div className="z-50 fixed inset-0 flex justify-center items-center">
+                      <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
+                      <div className="relative my-auto mx-auto flex justify-center items-center border-2 border-black w-1/4 h-1/4 bg-white rounded-xl">
+                        <div className="w-full p-4">
+                          <h2 className="secondary-text mb-2">
+                            Enter Mindmap Name:
+                          </h2>
+                          <input
+                            type="text"
+                            value={mindmapName}
+                            onChange={(e) => setMindmapName(e.target.value)}
+                            placeholder="My Mindmap"
+                            className="p-2 border-2 w-full border-black rounded-xl"
+                          />
+                          <div className="flex flex-row justify-center items-center mt-5 gap-4">
+                            <button
+                              onClick={handleSaveMindmap}
+                              className="primary-btn"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => setShowDialog(false)}
+                              className="primary-btn"
+                            >
+                              Cancel
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -476,7 +479,7 @@ const Dashboard = () => {
                           className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
                         >
                           <Image
-                            src="/images/savedicon.svg"
+                            src="/images/texticon.svg"
                             width={20}
                             height={20}
                             alt="Saved"
@@ -489,7 +492,7 @@ const Dashboard = () => {
                           className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
                         >
                           <Image
-                            src="/images/savedicon.svg"
+                            src="/images/audioicon.svg"
                             width={20}
                             height={20}
                             alt="Saved"
@@ -502,7 +505,7 @@ const Dashboard = () => {
                           className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
                         >
                           <Image
-                            src="/images/savedicon.svg"
+                            src="/images/videoicon.svg"
                             width={20}
                             height={20}
                             alt="Saved"
@@ -515,7 +518,7 @@ const Dashboard = () => {
                           className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
                         >
                           <Image
-                            src="/images/savedicon.svg"
+                            src="/images/imageicon.svg"
                             width={20}
                             height={20}
                             alt="Saved"
