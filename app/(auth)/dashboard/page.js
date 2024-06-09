@@ -18,6 +18,7 @@ const Dashboard = () => {
   const [mindmap, setMindmap] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mindmapName, setMindmapName] = useState("");
+  const [mindmapText, setMindmapText] = useState("")
   const [showDialog, setShowDialog] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -190,6 +191,7 @@ const Dashboard = () => {
       if (response.ok) {
         const { mindmap } = await response.json();
         setMindmap(mindmap);
+        setMindmapText(textResponse)
       } else {
         throw new Error("Failed to render mindmap");
       }
@@ -258,6 +260,7 @@ const Dashboard = () => {
       const formData = new FormData();
       formData.append("mindmap", JSON.stringify(mindmap));
       formData.append("mindmapName", mindmapName);
+      formData.append("mindmapText", mindmapText);
       formData.append("previewImage", previewImageBlob, "mindmap-preview.png");
 
       const response = await fetch("/api/save-mindmap", {

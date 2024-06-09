@@ -30,6 +30,7 @@
     "pdf-parse": "^1.1.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-monaco-editor": "^0.55.0",
     "tesseract.js": "^5.1.0",
     "youtube-caption-extractor": "^1.4.3"
   },
