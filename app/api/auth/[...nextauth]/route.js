@@ -61,8 +61,6 @@ export const authOptions = {
 						email: user.email,
 					});
 
-					console.log(user)
-
 					if (!existingUser) {
 						// If the user doesn't exist, create a new user
 						const newUser = new User({

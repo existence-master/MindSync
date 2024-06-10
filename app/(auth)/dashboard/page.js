@@ -13,6 +13,7 @@ import Link from "next/link";
 const Dashboard = () => {
   const [input, setInput] = useState("");
   const [files, setFiles] = useState([]);
+  const [user, setUser] = useState(null);
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false);
   const [error, setError] = useState(null);
   const [mindmap, setMindmap] = useState(null);
@@ -71,6 +72,24 @@ const Dashboard = () => {
     }
   }, []);
 
+   useEffect(() => {
+		const fetchUserDetails = async () => {
+			try {
+				const response = await fetch("/api/get-user-details");
+				if (response.ok) {
+					const data = await response.json();
+					setUser(data);
+				} else {
+					throw new Error("Failed to fetch user details");
+				}
+			} catch (error) {
+				setError(error.message);
+			}
+		};
+
+		fetchUserDetails();
+   }, []);
+  
   const handleToggleRecording = () => {
     if (isRecording) {
       recognition.stop();
@@ -369,7 +388,7 @@ const Dashboard = () => {
               height={30}
               alt="User"
             />
-            <p>{session.user.name}</p>
+            <Link href="/profile">{user? user.username: "User"}</Link>
           </div>
         </div>
 
