@@ -29,7 +29,7 @@ const Edit = () => {
   });
   const [showVideoDialog, setShowVideoDialog] = useState(false);
   const [error, setError] = useState(null);
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const mindmapRef = useRef(null);
   const monacoEditorRef = useRef(null); // Reference for Monaco Editor
@@ -96,21 +96,21 @@ const Edit = () => {
   }, []);
 
   useEffect(() => {
-		const fetchUserDetails = async () => {
-			try {
-				const response = await fetch("/api/get-user-details");
-				if (response.ok) {
-					const data = await response.json();
-					setUser(data);
-				} else {
-					throw new Error("Failed to fetch user details");
-				}
-			} catch (error) {
-				setError(error.message);
-			}
-		};
+    const fetchUserDetails = async () => {
+      try {
+        const response = await fetch("/api/get-user-details");
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        } else {
+          throw new Error("Failed to fetch user details");
+        }
+      } catch (error) {
+        setError(error.message);
+      }
+    };
 
-		fetchUserDetails();
+    fetchUserDetails();
   }, []);
 
   const handleToggleRecording = () => {
@@ -372,436 +372,394 @@ const Edit = () => {
   // Render edit page if mindmap details are loaded
   if (status === "authenticated" && mindmapDetails) {
     return (
-		<div className="flex h-screen w-screen">
-			<div className="w-1/6 h-screen bg-paleRose flex flex-col justify-between border-double border-r-4 border-tickleMePink">
-				<div className="w-full">
-					<div className="p-4 text-center">
-						<Image
-							src="/images/logofull.svg"
-							width={300}
-							height={100}
-							alt="Logo"
-						/>
-					</div>
-					<div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
-						<button
-							className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto"
-							style={{
-								boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-							}}
-						>
-							<Image
-								src="/images/createicon.svg"
-								width={20}
-								height={20}
-								alt="Create"
-							/>
-							<Link href="/dashboard">Create</Link>
-						</button>
-						<button
-							className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto"
-							style={{
-								boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-							}}
-						>
-							<Image
-								src="/images/savedicon.svg"
-								width={20}
-								height={20}
-								alt="Saved"
-							/>
-							<Link href="/saved">Saved</Link>
-						</button>
-					</div>
-				</div>
-				<div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
-					<Image
-						src="/images/usericon.svg"
-						width={30}
-						height={30}
-						alt="User"
-					/>
-					<Link href="/profile">{user ? user.username : "User"}</Link>
-				</div>
-			</div>
+      <div className="flex h-screen w-screen">
+        <div className="w-1/6 h-screen bg-paleRose flex flex-col justify-between border-double border-r-4 border-tickleMePink">
+          <div className="w-full">
+            <div className="p-4 text-center">
+              <Image
+                src="/images/logofull.svg"
+                width={300}
+                height={100}
+                alt="Logo"
+              />
+            </div>
+            <div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
+              <button
+                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto"
+                style={{
+                  boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                }}
+              >
+                <Image
+                  src="/images/createicon.svg"
+                  width={20}
+                  height={20}
+                  alt="Create"
+                />
+                <Link href="/dashboard">Create</Link>
+              </button>
+              <button
+                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto"
+                style={{
+                  boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                }}
+              >
+                <Image
+                  src="/images/savedicon.svg"
+                  width={20}
+                  height={20}
+                  alt="Saved"
+                />
+                <Link href="/saved">Saved</Link>
+              </button>
+            </div>
+          </div>
+          <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
+            <Image
+              src="/images/usericon.svg"
+              width={30}
+              height={30}
+              alt="User"
+            />
+            <Link href="/profile">{user ? user.username : "User"}</Link>
+          </div>
+        </div>
 
-			{/* Main Content */}
-			<div className="flex w-5/6 flex-col justify-center items-center p-4 relative overflow-y-scroll">
-				<div className="absolute top-5 right-20">
-					<SignoutButton />
-				</div>
-				<div className="flex flex-col justify-center items-center">
-					<div className="flex flex-row gap-2 mt-6">
-						<div className="ml-20 w-1/2 p-4 border-2 border-black rounded-xl mr-4">
-							<div className="mb-4">
-								<label
-									htmlFor="mindmapName"
-									className="block text-lg font-medium text-gray-700"
-								>
-									Mindmap Name
-								</label>
-								<input
-									type="text"
-									id="mindmapName"
-									value={mindmapName}
-									onChange={handleMindmapNameChange}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-								/>
-							</div>
-							<label
-								htmlFor="mindmapCode"
-								className="block text-lg font-medium text-gray-700"
-							>
-								Edit With Code
-							</label>
-							<MonacoEditor
-								id="mindmapCode"
-								height="500px"
-								language="mermaid"
-								value={mindmapCode}
-								onChange={handleMonacoEditorChange}
-								options={{
-									readOnly: false,
-									lineNumbers: "on",
-									fontSize: "14px",
-									theme: "vs-dark",
-									scrollBeyondLastLine: false,
-									renderLineHighlight: "none",
-									renderIndentGuides: true,
-									automaticLayout: true,
-									minimap: {
-										enabled: true,
-									},
-									wordWrap: "on",
-								}}
-								editorDidMount={(editor) => {
-									monacoEditorRef.current = editor;
-								}}
-							/>
-							<span>or</span>
-							<label
-								htmlFor="editMessage"
-								className="block text-lg font-medium text-gray-700"
-							>
-								Edit with Message
-							</label>
-							<div className="relative">
-								{showAttachmentOptions && (
-									<div className="absolute -left-36 -top-16 gap-y-2 flex flex-col justify-center items-center">
-										<button
-											onClick={() =>
-												triggerFileInput(
-													".txt,.doc,.docx,.pdf"
-												)
-											}
-											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
-										>
-											<Image
-												src="/images/savedicon.svg"
-												width={20}
-												height={20}
-												alt="Saved"
-												className="py-1"
-											/>
-											Text
-										</button>
-										<button
-											onClick={() =>
-												triggerFileInput("audio/*")
-											}
-											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
-										>
-											<Image
-												src="/images/savedicon.svg"
-												width={20}
-												height={20}
-												alt="Saved"
-												className="py-1"
-											/>
-											Audio
-										</button>
-										<button
-											onClick={() =>
-												setShowVideoDialog(true)
-											}
-											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
-										>
-											<Image
-												src="/images/savedicon.svg"
-												width={20}
-												height={20}
-												alt="Saved"
-												className="py-1"
-											/>
-											Video
-										</button>
-										<button
-											onClick={() =>
-												triggerFileInput("image/*")
-											}
-											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
-										>
-											<Image
-												src="/images/savedicon.svg"
-												width={20}
-												height={20}
-												alt="Saved"
-												className="py-1"
-											/>
-											Image
-										</button>
-									</div>
-								)}
+        {/* Main Content */}
+        <div className="flex w-5/6 flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
+          <div className="absolute top-5 right-20">
+            <SignoutButton />
+          </div>
+          <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-row gap-2 mt-6">
+              <div className="ml-20 w-1/2 p-4 border-2 border-stilleto rounded-xl mr-4">
+                <div className="mb-4">
+                  <label
+                    htmlFor="mindmapName"
+                    className="block secondary-text text-lg w-full p-1 mb-1 font-semibold"
+                  >
+                    Mindmap Name
+                  </label>
+                  <input
+                    type="text"
+                    id="mindmapName"
+                    value={mindmapName}
+                    onChange={handleMindmapNameChange}
+                    className="input h-[50px] w-full"
+                  />
+                </div>
+                <label
+                  htmlFor="mindmapCode"
+                  className="block secondary-text text-lg w-full font-semibold"
+                >
+                  Edit With Code
+                </label>
+                <MonacoEditor
+                  id="mindmapCode"
+                  height="500px"
+                  language="mermaid"
+                  value={mindmapCode}
+                  onChange={handleMonacoEditorChange}
+                  options={{
+                    readOnly: false,
+                    lineNumbers: "on",
+                    fontSize: "14px",
+                    theme: "vs-dark",
+                    scrollBeyondLastLine: false,
+                    renderLineHighlight: "none",
+                    renderIndentGuides: true,
+                    automaticLayout: true,
+                    minimap: {
+                      enabled: true,
+                    },
+                    wordWrap: "on",
+                  }}
+                  editorDidMount={(editor) => {
+                    monacoEditorRef.current = editor;
+                  }}
+                />
+                <span className="block secondary-text text-sm font-bold text-center mt-2">
+                  or
+                </span>
+                <label
+                  htmlFor="editMessage"
+                  className="block secondary-text text-lg w-full font-semibold"
+                >
+                  Edit with Message
+                </label>
+                <div className="relative">
+                  {showAttachmentOptions && (
+                    <div className="absolute -left-24 -bottom-20 gap-y-2 gap-x-2 grid grid-cols-2">
+                      <button
+                        onClick={() => triggerFileInput(".txt,.doc,.docx,.pdf")}
+                        className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+                      >
+                        <Image
+                          src="/images/texticon.svg"
+                          width={20}
+                          height={20}
+                          alt="Saved"
+                          className="py-1"
+                        />
+                        Text
+                      </button>
+                      <button
+                        onClick={() => triggerFileInput("audio/*")}
+                        className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+                      >
+                        <Image
+                          src="/images/audioicon.svg"
+                          width={20}
+                          height={20}
+                          alt="Saved"
+                          className="py-1"
+                        />
+                        Audio
+                      </button>
+                      <button
+                        onClick={() => setShowVideoDialog(true)}
+                        className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+                      >
+                        <Image
+                          src="/images/videoicon.svg"
+                          width={20}
+                          height={20}
+                          alt="Saved"
+                          className="py-1"
+                        />
+                        Video
+                      </button>
+                      <button
+                        onClick={() => triggerFileInput("image/*")}
+                        className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+                      >
+                        <Image
+                          src="/images/imageicon.svg"
+                          width={20}
+                          height={20}
+                          alt="Saved"
+                          className="py-1"
+                        />
+                        Image
+                      </button>
+                    </div>
+                  )}
 
-								<button
-									onClick={() =>
-										setShowAttachmentOptions(
-											!showAttachmentOptions
-										)
-									}
-								>
-									<Image
-										src="/images/attachicon.svg"
-										width={30}
-										height={30}
-										alt="Attachment"
-										className="absolute left-4 top-[12px]"
-									/>
-								</button>
-								<textarea
-									value={input}
-									onChange={(e) => setInput(e.target.value)}
-									placeholder="Change/remove/add a node..."
-									className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort text-md mind-h-[60px]"
-								/>
-								<button
-									onClick={() => handleToggleRecording()}
-									className={`bg-transparent absolute right-5 top-[10px] ${
-										isRecording ? "animate-pulse" : ""
-									}`}
-								>
-									{isRecording ? (
-										<Image
-											src="/images/micoff.svg"
-											width={27}
-											height={27}
-											alt="Recording"
-										/>
-									) : (
-										<Image
-											src="/images/micicon.svg"
-											width={27}
-											height={27}
-											alt="Recording"
-										/>
-									)}
-								</button>
-							</div>
-							<input
-								id="fileInput"
-								type="file"
-								multiple
-								onChange={handleFileChange}
-								style={{ display: "none" }}
-							/>
-							<div className="mt-2 w-full flex flex-row justify-start items-start gap-2 flex-wrap">
-								{files.map((file, index) => (
-									<FileDisplay
-										key={index}
-										file={file}
-										removeFile={() => removeFile(index)}
-									/>
-								))}
-							</div>
-							<div className="w-full flex justify-center items-center mt-6">
-								<button
-									onClick={handleEdit}
-									className="primary-btn text-xl"
-								>
-									{isSubmitting ? "Processing..." : "Edit"}
-								</button>
-							</div>
-							{/* Video Dialog */}
-							{showVideoDialog && (
-								<div className="absolute inset-0 flex justify-center items-center gap-y-2 border-2 border-black w-1/4 h-1/4 bg-white rounded-xl left-[620px] top-[360px]">
-									<div className="w-full p-4 flex flex-col">
-										<h2 className="secondary-text text-center">
-											Select Video Input
-										</h2>
-										<div>
-											<input
-												type="radio"
-												name="videoLinkInputType"
-												value="link"
-												checked={
-													videoLinkInput.type ===
-													"link"
-												}
-												onChange={() =>
-													setVideoInput({
-														type: "link",
-														name: "",
-													})
-												}
-												className="ml-6"
-											/>
-											<label
-												htmlFor="videoLink"
-												className="ml-2"
-											>
-												YouTube Link
-											</label>
-										</div>
-										<div>
-											<input
-												type="radio"
-												name="videoLinkInputType"
-												value="file"
-												checked={
-													videoLinkInput.type ===
-													"file"
-												}
-												onChange={() =>
-													setVideoInput({
-														type: "file",
-														value: "",
-													})
-												}
-												className="ml-6"
-											/>
-											<label
-												htmlFor="videoFile"
-												className="ml-2"
-											>
-												Video File
-											</label>
-										</div>
-										{videoLinkInput.type === "link" && (
-											<input
-												type="text"
-												value={videoLinkInput.value}
-												onChange={handleVideoLinkInput}
-												placeholder="Enter YouTube Link"
-												className="border-2 border-black rounded-xl p-2 mt-2"
-											/>
-										)}
-										{videoLinkInput.type === "file" && (
-											<input
-												type="file"
-												accept="video/*"
-												onChange={handleFileChange}
-												className="border-2 border-black rounded-xl p-2 mt-2"
-											/>
-										)}
-										<div className="flex flex-row items-center justify-center mt-2 gap-4">
-											<button
-												onClick={() =>
-													setShowVideoDialog(false)
-												}
-												className="primary-btn"
-											>
-												Cancel
-											</button>
-											<button
-												onClick={() => {
-													setShowVideoDialog(false);
-													if (
-														videoLinkInput.value !=
-														""
-													) {
-														setFiles(
-															(prevFiles) => [
-																...prevFiles,
-																videoLinkInput,
-															]
-														);
-													}
-												}}
-												className="primary-btn"
-											>
-												Select
-											</button>
-										</div>
-									</div>
-								</div>
-							)}
-						</div>
-						<div className="mr-20 w-1/2 p-4 flex flex-col justify-between">
-							<div className="border-2 border-black rounded-xl h-[90%]">
-								<h2 className="secondary-text p-2 mb-2 font-semibold">
-									Mindmap Preview
-								</h2>
-								<pre
-									ref={mindmapRef}
-									key={mindmapCode}
-									className="mermaid mindmap"
-								>
-									{mindmapCode}
-								</pre>
-							</div>
-							<div className="flex justify-center gap-2 mt-8">
-								<div className="relative">
-									<button
-										className="text-white border-2 border-white flex justify-center items-center bg-gray-400 rounded-xl p-2 w-[120px]"
-										onClick={() =>
-											setShowExportDropdown(
-												!showExportDropdown
-											)
-										}
-									>
-										Export
-									</button>
-									{showExportDropdown && (
-										<div className="absolute -left-8 flex flex-col justify-center items-center gap-y-2 mt-2">
-											<button
-												onClick={() =>
-													handleExportMindmap("svg")
-												}
-												className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
-											>
-												Export as SVG
-											</button>
-											<button
-												onClick={() =>
-													handleExportMindmap("png")
-												}
-												className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
-											>
-												Export as PNG
-											</button>
-										</div>
-									)}
-								</div>
-								<button
-									onClick={handleSaveMindmap}
-									className="text-white border-2 border-white flex justify-center items-center bg-gray-400 rounded-xl p-2 w-[120px]"
-								>
-									{isSubmitting ? "Saving..." : "Save"}
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				{error && (
-					<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-						<div
-							style={{
-								backgroundColor: "white",
-								padding: "20px",
-								borderRadius: "5px",
-							}}
-						>
-							<h2>Error</h2>
-							<p>{error}</p>
-							<button onClick={() => setError(null)}>
-								Close
-							</button>
-						</div>
-					</div>
-				)}
-			</div>
-		</div>
-	);
+                  <button
+                    onClick={() =>
+                      setShowAttachmentOptions(!showAttachmentOptions)
+                    }
+                  >
+                    <Image
+                      src="/images/attachicon.svg"
+                      width={30}
+                      height={30}
+                      alt="Attachment"
+                      className="absolute left-4 top-[12px]"
+                    />
+                  </button>
+                  <textarea
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Change/remove/add a node..."
+                    className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort text-md mind-h-[60px]"
+                  />
+                  <button
+                    onClick={() => handleToggleRecording()}
+                    className={`bg-transparent absolute right-5 top-[10px] ${
+                      isRecording ? "animate-pulse" : ""
+                    }`}
+                  >
+                    {isRecording ? (
+                      <Image
+                        src="/images/micoff.svg"
+                        width={27}
+                        height={27}
+                        alt="Recording"
+                      />
+                    ) : (
+                      <Image
+                        src="/images/micicon.svg"
+                        width={27}
+                        height={27}
+                        alt="Recording"
+                      />
+                    )}
+                  </button>
+                </div>
+                <input
+                  id="fileInput"
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+                <div className="mt-2 w-full flex flex-row justify-start items-start gap-2 flex-wrap">
+                  {files.map((file, index) => (
+                    <FileDisplay
+                      key={index}
+                      file={file}
+                      removeFile={() => removeFile(index)}
+                    />
+                  ))}
+                </div>
+                <div className="w-full flex justify-center items-center mt-6">
+                  <button onClick={handleEdit} className="primary-btn text-xl">
+                    {isSubmitting ? "Processing..." : "Edit"}
+                  </button>
+                </div>
+                {/* Video Dialog */}
+                {showVideoDialog && (
+                  <div className="absolute inset-0 flex justify-center items-center gap-y-2 border-2 border-black w-1/4 h-1/4 bg-white rounded-xl left-[620px] top-[360px]">
+                    <div className="w-full p-4 flex flex-col">
+                      <h2 className="secondary-text text-center">
+                        Select Video Input
+                      </h2>
+                      <div>
+                        <input
+                          type="radio"
+                          name="videoLinkInputType"
+                          value="link"
+                          checked={videoLinkInput.type === "link"}
+                          onChange={() =>
+                            setVideoInput({
+                              type: "link",
+                              name: "",
+                            })
+                          }
+                          className="ml-6"
+                        />
+                        <label htmlFor="videoLink" className="ml-2">
+                          YouTube Link
+                        </label>
+                      </div>
+                      <div>
+                        <input
+                          type="radio"
+                          name="videoLinkInputType"
+                          value="file"
+                          checked={videoLinkInput.type === "file"}
+                          onChange={() =>
+                            setVideoInput({
+                              type: "file",
+                              value: "",
+                            })
+                          }
+                          className="ml-6"
+                        />
+                        <label htmlFor="videoFile" className="ml-2">
+                          Video File
+                        </label>
+                      </div>
+                      {videoLinkInput.type === "link" && (
+                        <input
+                          type="text"
+                          value={videoLinkInput.value}
+                          onChange={handleVideoLinkInput}
+                          placeholder="Enter YouTube Link"
+                          className="border-2 border-black rounded-xl p-2 mt-2"
+                        />
+                      )}
+                      {videoLinkInput.type === "file" && (
+                        <input
+                          type="file"
+                          accept="video/*"
+                          onChange={handleFileChange}
+                          className="border-2 border-black rounded-xl p-2 mt-2"
+                        />
+                      )}
+                      <div className="flex flex-row items-center justify-center mt-2 gap-4">
+                        <button
+                          onClick={() => setShowVideoDialog(false)}
+                          className="primary-btn"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowVideoDialog(false);
+                            if (videoLinkInput.value != "") {
+                              setFiles((prevFiles) => [
+                                ...prevFiles,
+                                videoLinkInput,
+                              ]);
+                            }
+                          }}
+                          className="primary-btn"
+                        >
+                          Select
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="mr-20 w-1/2 p-4 flex flex-col justify-center items-center">
+                <div className="border-2 border-stilleto rounded-xl min-h-max py-4">
+                  <h2 className="secondary-text text-center w-full p-2 mb-2 font-semibold border-b-2 border-stilleto">
+                    Mindmap Preview
+                  </h2>
+                  <pre
+                    ref={mindmapRef}
+                    key={mindmapCode}
+                    className="mermaid mindmap"
+                  >
+                    {mindmapCode}
+                  </pre>
+                </div>
+                <div className="flex justify-center gap-2 mt-8">
+                  <div className="relative">
+                    <button
+                      className="text-white font-inter border-2 border-white flex justify-center items-center bg-gray-400 rounded-xl p-2 w-[120px]"
+                      onClick={() => setShowExportDropdown(!showExportDropdown)}
+                    >
+                      Export
+                    </button>
+                    {showExportDropdown && (
+                      <div className="absolute -left-8 flex flex-col justify-center items-center gap-y-2 mt-2">
+                        <button
+                          onClick={() => handleExportMindmap("svg")}
+                          className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
+                        >
+                          Export as SVG
+                        </button>
+                        <button
+                          onClick={() => handleExportMindmap("png")}
+                          className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
+                        >
+                          Export as PNG
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleSaveMindmap}
+                    className="text-white border-2 font-inter flex justify-center items-center bg-stilleto rounded-xl p-2 w-[120px]"
+                  >
+                    {isSubmitting ? "Saving..." : "Save"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {error && (
+            <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+              <div
+                style={{
+                  backgroundColor: "white",
+                  padding: "20px",
+                  borderRadius: "5px",
+                }}
+              >
+                <h2>Error</h2>
+                <p>{error}</p>
+                <button onClick={() => setError(null)}>Close</button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   }
 
   // Render default state if mindmap details are not loaded yet
