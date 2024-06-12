@@ -764,9 +764,16 @@ const Edit = () => {
 
   // Render default state if mindmap details are not loaded yet
   return (
-    <div className="p-4">
-      <p>Loading mindmap details...</p>
-    </div>
+		<div className="bg-paleRose flex justify-center items-center h-screen">
+			<div className="bg-paleRose flex justify-center items-center h-screen">
+				<div className="text-center">
+					<h1 className="text-8xl font-bold mb-4 text-green-600">
+						Loading...
+					</h1>
+					<p className="text-lg">Please wait</p>
+				</div>
+			</div>
+		</div>
   );
 };
 

@@ -28,7 +28,6 @@ export const POST = async (request) => {
 		const processedCode = mindmap
 			.replace(/\\n/g, "\n")
 			.replace(/\"/g, "");
-		setMindmapCode(processedCode);
 		const mindmapName = formData.get("mindmapName");
 		const previewImage = formData.get("previewImage");
 
