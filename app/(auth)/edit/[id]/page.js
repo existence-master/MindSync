@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import MonacoEditor from "react-monaco-editor";
+import { useTheme } from "next-themes";
 
 const Edit = () => {
   const { id } = useParams();
@@ -35,6 +36,7 @@ const Edit = () => {
   const monacoEditorRef = useRef(null); // Reference for Monaco Editor
   const router = useRouter();
   const { data: session, status } = useSession();
+  const { resolvedTheme, setTheme } = useTheme();
 
   // Redirect unauthenticated users
   useEffect(() => {
@@ -372,12 +374,17 @@ const Edit = () => {
   // Render edit page if mindmap details are loaded
   if (status === "authenticated" && mindmapDetails) {
     return (
-      <div className="flex h-screen w-screen">
-        <div className="w-1/6 h-screen bg-paleRose flex flex-col justify-between border-double border-r-4 border-tickleMePink">
+      <div className="flex h-screen w-screen bg-paleRose dark:bg-lividBrown">
+        {/* Sidebar */}
+        <div className="w-1/6 h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink">
           <div className="w-full">
             <div className="p-4 text-center">
               <Image
-                src="/images/logofull.svg"
+                src={
+                  resolvedTheme === "light"
+                    ? "/images/logofull.svg"
+                    : "/images/mindsynclogodarkmode.svg"
+                }
                 width={300}
                 height={100}
                 alt="Logo"
@@ -385,30 +392,38 @@ const Edit = () => {
             </div>
             <div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
               <button
-                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto"
+                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
                 style={{
                   boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
                 }}
               >
                 <Image
-                  src="/images/createicon.svg"
+                  src={
+                    resolvedTheme === "light"
+                      ? "/images/createicon.svg"
+                      : "/images/createicondark.svg"
+                  }
                   width={20}
                   height={20}
-                  alt="Create"
+                  alt="Logo"
                 />
                 <Link href="/dashboard">Create</Link>
               </button>
               <button
-                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto"
+                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
                 style={{
                   boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
                 }}
               >
                 <Image
-                  src="/images/savedicon.svg"
+                  src={
+                    resolvedTheme === "light"
+                      ? "/images/savedicon.svg"
+                      : "/images/savedicondark.svg"
+                  }
                   width={20}
                   height={20}
-                  alt="Saved"
+                  alt="Logo"
                 />
                 <Link href="/saved">Saved</Link>
               </button>
@@ -416,12 +431,18 @@ const Edit = () => {
           </div>
           <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
             <Image
-              src="/images/usericon.svg"
+              src={
+                resolvedTheme === "light"
+                  ? "/images/usericon.svg"
+                  : "/images/usericondark.svg"
+              }
               width={30}
               height={30}
-              alt="User"
+              alt="Logo"
             />
-            <Link href="/profile">{user ? user.username : "User"}</Link>
+            <Link href="/profile" className="text-tawnyPort dark:text-paleRose">
+              {user ? user.username : "User"}
+            </Link>
           </div>
         </div>
 
@@ -432,11 +453,11 @@ const Edit = () => {
           </div>
           <div className="flex flex-col justify-center items-center">
             <div className="flex flex-row gap-2 mt-6">
-              <div className="ml-20 w-1/2 p-4 border-2 border-stilleto rounded-xl mr-4">
+              <div className="ml-20 w-1/2 p-4 border-2 border-stilleto dark:border-paleRose rounded-xl mr-4">
                 <div className="mb-4">
                   <label
                     htmlFor="mindmapName"
-                    className="block secondary-text text-lg w-full p-1 mb-1 font-semibold"
+                    className="block secondary-text text-lg w-full p-1 mb-1 font-semibold dark:text-paleRose"
                   >
                     Mindmap Name
                   </label>
@@ -445,12 +466,12 @@ const Edit = () => {
                     id="mindmapName"
                     value={mindmapName}
                     onChange={handleMindmapNameChange}
-                    className="input h-[50px] w-full"
+                    className="input h-[50px] w-full dark:text-paleRose"
                   />
                 </div>
                 <label
                   htmlFor="mindmapCode"
-                  className="block secondary-text text-lg w-full font-semibold"
+                  className="block secondary-text text-lg dark:text-paleRose w-full font-semibold"
                 >
                   Edit With Code
                 </label>
@@ -478,12 +499,12 @@ const Edit = () => {
                     monacoEditorRef.current = editor;
                   }}
                 />
-                <span className="block secondary-text text-sm font-bold text-center mt-2">
+                <span className="block secondary-text dark:text-paleRose text-sm font-bold text-center mt-2">
                   or
                 </span>
                 <label
                   htmlFor="editMessage"
-                  className="block secondary-text text-lg w-full font-semibold"
+                  className="block secondary-text text-lg dark:text-paleRose w-full font-semibold"
                 >
                   Edit with Message
                 </label>
@@ -551,7 +572,11 @@ const Edit = () => {
                     }
                   >
                     <Image
-                      src="/images/attachicon.svg"
+                      src={`/images/${
+                        resolvedTheme === "light"
+                          ? "attachicon"
+                          : "attachicondark"
+                      }.svg`}
                       width={30}
                       height={30}
                       alt="Attachment"
@@ -572,14 +597,18 @@ const Edit = () => {
                   >
                     {isRecording ? (
                       <Image
-                        src="/images/micoff.svg"
+                        src={`/images/${
+                          resolvedTheme === "light" ? "micoff" : "micoffdark"
+                        }.svg`}
                         width={27}
                         height={27}
                         alt="Recording"
                       />
                     ) : (
                       <Image
-                        src="/images/micicon.svg"
+                        src={`/images/${
+                          resolvedTheme === "light" ? "micicon" : "micicondark"
+                        }.svg`}
                         width={27}
                         height={27}
                         alt="Recording"
@@ -604,7 +633,10 @@ const Edit = () => {
                   ))}
                 </div>
                 <div className="w-full flex justify-center items-center mt-6">
-                  <button onClick={handleEdit} className="primary-btn text-xl">
+                  <button
+                    onClick={handleEdit}
+                    className="primary-btn dark:bg-paleRose dark:text-lividBrown text-xl"
+                  >
                     {isSubmitting ? "Processing..." : "Edit"}
                   </button>
                 </div>
@@ -695,8 +727,8 @@ const Edit = () => {
                 )}
               </div>
               <div className="mr-20 w-1/2 p-4 flex flex-col justify-center items-center">
-                <div className="border-2 border-stilleto rounded-xl min-h-max py-4">
-                  <h2 className="secondary-text text-center w-full p-2 mb-2 font-semibold border-b-2 border-stilleto">
+                <div className="border-2 border-stilleto dark:border-paleRose rounded-xl min-h-max py-4">
+                  <h2 className="secondary-text dark:text-paleRose text-center w-full p-2 mb-2 font-semibold border-b-2 border-stilleto dark:border-paleRose">
                     Mindmap Preview
                   </h2>
                   <pre
@@ -764,16 +796,14 @@ const Edit = () => {
 
   // Render default state if mindmap details are not loaded yet
   return (
-		<div className="bg-paleRose flex justify-center items-center h-screen">
-			<div className="bg-paleRose flex justify-center items-center h-screen">
-				<div className="text-center">
-					<h1 className="text-8xl font-bold mb-4 text-green-600">
-						Loading...
-					</h1>
-					<p className="text-lg">Please wait</p>
-				</div>
-			</div>
-		</div>
+    <div className="bg-paleRose flex justify-center items-center h-screen">
+      <div className="bg-paleRose flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h1 className="text-8xl font-bold mb-4 text-green-600">Loading...</h1>
+          <p className="text-lg">Please wait</p>
+        </div>
+      </div>
+    </div>
   );
 };
 

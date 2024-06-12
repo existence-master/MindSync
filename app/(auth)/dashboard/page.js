@@ -9,6 +9,7 @@ import { fabric } from "fabric"; // Import the fabric.js library for canvas mani
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 const Dashboard = () => {
   const [input, setInput] = useState("");
@@ -29,7 +30,7 @@ const Dashboard = () => {
     value: "",
   });
   const [showVideoDialog, setShowVideoDialog] = useState(false);
-
+  const { setTheme, resolvedTheme } = useTheme();
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -72,24 +73,24 @@ const Dashboard = () => {
     }
   }, []);
 
-   useEffect(() => {
-		const fetchUserDetails = async () => {
-			try {
-				const response = await fetch("/api/get-user-details");
-				if (response.ok) {
-					const data = await response.json();
-					setUser(data);
-				} else {
-					throw new Error("Failed to fetch user details");
-				}
-			} catch (error) {
-				setError(error.message);
-			}
-		};
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await fetch("/api/get-user-details");
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        } else {
+          throw new Error("Failed to fetch user details");
+        }
+      } catch (error) {
+        setError(error.message);
+      }
+    };
 
-		fetchUserDetails();
-   }, []);
-  
+    fetchUserDetails();
+  }, []);
+
   const handleToggleRecording = () => {
     if (isRecording) {
       recognition.stop();
@@ -308,28 +309,32 @@ const Dashboard = () => {
   // Return a loading state while the session status is loading
   if (status === "loading") {
     return (
-		<div className="bg-paleRose flex justify-center items-center h-screen">
-			<div className="bg-paleRose flex justify-center items-center h-screen">
-				<div className="text-center">
-					<h1 className="text-8xl font-bold mb-4 text-green-600">
-						Loading...
-					</h1>
-					<p className="text-lg">Please wait</p>
-				</div>
-			</div>
-		</div>
-	);
+      <div className="bg-paleRose flex justify-center items-center h-screen">
+        <div className="bg-paleRose flex justify-center items-center h-screen">
+          <div className="text-center">
+            <h1 className="text-8xl font-bold mb-4 text-green-600">
+              Loading...
+            </h1>
+            <p className="text-lg">Please wait</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (status === "authenticated") {
     return (
-      <div className="flex h-screen w-screen">
+      <div className="flex h-screen w-screen bg-paleRose dark:bg-lividBrown">
         {/* Sidebar */}
-        <div className="w-1/6 h-screen bg-paleRose flex flex-col justify-between border-double border-r-4 border-tickleMePink">
+        <div className="w-1/6 h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink">
           <div className="w-full">
             <div className="p-4 text-center">
               <Image
-                src="/images/logofull.svg"
+                src={
+                  resolvedTheme === "light"
+                    ? "/images/logofull.svg"
+                    : "/images/mindsynclogodarkmode.svg"
+                }
                 width={300}
                 height={100}
                 alt="Logo"
@@ -337,30 +342,38 @@ const Dashboard = () => {
             </div>
             <div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
               <button
-                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto"
+                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
                 style={{
                   boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
                 }}
               >
                 <Image
-                  src="/images/createicon.svg"
+                  src={
+                    resolvedTheme === "light"
+                      ? "/images/createicon.svg"
+                      : "/images/createicondark.svg"
+                  }
                   width={20}
                   height={20}
-                  alt="Create"
+                  alt="Logo"
                 />
                 <Link href="/dashboard">Create</Link>
               </button>
               <button
-                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto"
+                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
                 style={{
                   boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
                 }}
               >
                 <Image
-                  src="/images/savedicon.svg"
+                  src={
+                    resolvedTheme === "light"
+                      ? "/images/savedicon.svg"
+                      : "/images/savedicondark.svg"
+                  }
                   width={20}
                   height={20}
-                  alt="Saved"
+                  alt="Logo"
                 />
                 <Link href="/saved">Saved</Link>
               </button>
@@ -368,12 +381,18 @@ const Dashboard = () => {
           </div>
           <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
             <Image
-              src="/images/usericon.svg"
+              src={
+                resolvedTheme === "light"
+                  ? "/images/usericon.svg"
+                  : "/images/usericondark.svg"
+              }
               width={30}
               height={30}
-              alt="User"
+              alt="Logo"
             />
-            <Link href="/profile">{user? user.username: "User"}</Link>
+            <Link href="/profile" className="text-tawnyPort dark:text-paleRose">
+              {user ? user.username : "User"}
+            </Link>
           </div>
         </div>
 
@@ -383,7 +402,7 @@ const Dashboard = () => {
             <SignoutButton />
           </div>
           <div className="flex flex-col justify-center items-center">
-            <h1 className="primary-text font-lora font-normal">
+            <h1 className="primary-text dark:text-paleRose font-lora font-normal">
               Create Mindmap
             </h1>
             <h2 className="secondary-text mt-5 mb-2 font-semibold">
@@ -392,7 +411,7 @@ const Dashboard = () => {
 
             {mindmap ? (
               <div className="mt-6">
-                <h2 className="secondary-text mt-2 mb-2 font-semibold text-center">
+                <h2 className="secondary-text dark:text-paleRose mt-2 mb-2 font-semibold text-center">
                   Here's your mindmap
                 </h2>
                 <pre ref={mindmapRef} className="mermaid mindmap">
@@ -550,7 +569,7 @@ const Dashboard = () => {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       placeholder="Type or speak your thoughts here..."
-                      className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort text-md mind-h-[60px]"
+                      className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[60px]"
                     />
                     <button
                       onClick={() => handleToggleRecording()}
@@ -595,7 +614,7 @@ const Dashboard = () => {
                 <div className="w-full flex justify-center items-center mt-6">
                   <button
                     onClick={handleCreate}
-                    className="primary-btn text-xl"
+                    className="primary-btn text-xl dark:bg-paleRose dark:text-stilleto"
                   >
                     {isSubmitting ? "Processing..." : "Create"}
                   </button>

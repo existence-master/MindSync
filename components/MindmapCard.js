@@ -1,10 +1,12 @@
 import { useState } from "react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
 
   const handleEdit = () => {
     onEdit(mindmap._id);
@@ -27,7 +29,7 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
   };
 
   return (
-    <div className="relative w-[300px] h-[400px] border rounded-lg p-4 shadow-lg border-stilleto flex flex-col justify-center items-center">
+    <div className="relative w-[300px] h-[400px] border rounded-lg p-4 shadow-lg border-stilleto dark:border-paleRose flex flex-col justify-center items-center">
       <div className="w-full h-5/6 flex justify-center items-center">
         {mindmap.previewImageURL ? (
           <Image
@@ -45,13 +47,17 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
           />
         )}
       </div>
-      <div className="w-[300px] h-fit py-2 pb-2 translate-y-5 rounded-b-lg bg-stilleto px-4">
-        <h3 className="primary-text text-xl mt-3 font-inter font-medium text-white">
+      <div className="w-[300px] h-fit py-2 pb-2 translate-y-5 rounded-b-lg bg-stilleto dark:bg-paleRose px-4">
+        <h3 className="primary-text text-xl mt-3 font-inter font-medium text-white dark:text-lividBrown">
           {mindmap.name}
         </h3>
-        <h3 className="primary-text text-xl mt-3 font-inter font-medium text-white flex flex-row gap-2">
+        <h3 className="primary-text text-xl mt-3 font-inter font-medium text-white dark:text-lividBrown flex flex-row gap-2">
           <Image
-            src="/images/calendaricon.svg" /* Default image if preview is not available */
+            src={
+              resolvedTheme === "light"
+                ? "/images/calendaricon.svg"
+                : "/images/calendaricondark.svg"
+            }
             alt={mindmap.name}
             width={20}
             height={20}
@@ -65,17 +71,21 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
         </h3>
       </div>
       <button
-        className="absolute top-2 right-2 bg-stilleto rounded-lg p-2"
+        className="absolute top-2 right-2 bg-stilleto dark:bg-paleRose rounded-lg p-2"
         onClick={() => {
           setShowDropdown(!showDropdown);
           setShowExportDropdown(false);
         }}
       >
         <Image
-          src="/images/threedotsvertical.svg"
+          src={
+            resolvedTheme === "light"
+              ? "/images/threedotsvertical.svg"
+              : "/images/threedotsverticaldark.svg"
+          }
           width={20}
           height={20}
-          alt="Options"
+          alt="Logo"
         />
       </button>
       {showDropdown && (

@@ -30,7 +30,7 @@ const SignoutButton = () => {
         height={20} // Height of the icon
         alt="Sign out" // Alternative text for accessibility
       />
-      <p className="text-lg font-inter font-bold translate-y-[1px] text-lividBrown">
+      <p className="text-lg font-inter font-bold translate-y-[1px] text-lividBrown dark:text-paleRose">
         Logout
       </p>
     </div>
