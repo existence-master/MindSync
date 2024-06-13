@@ -180,236 +180,481 @@ const Profile = () => {
   if (status === "authenticated") {
     return (
       <div className="flex h-screen w-screen bg-paleRose dark:bg-lividBrown">
-        {/* Sidebar */}
-        <div className="w-1/6 h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink">
-          <div className="w-full">
-            <div className="p-4 text-center">
+        {/* Desktop Content */}
+        <div className="xs:hidden w-full md:flex">
+          {/* Sidebar */}
+          <div className="w-1/6 h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink">
+            <div className="w-full">
+              <div className="p-4 text-center">
+                <Image
+                  src={
+                    resolvedTheme === "light"
+                      ? "/images/logofull.svg"
+                      : "/images/mindsynclogodarkmode.svg"
+                  }
+                  width={300}
+                  height={100}
+                  alt="Logo"
+                />
+              </div>
+              <div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
+                <button
+                  className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
+                  style={{
+                    boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  <Image
+                    src={
+                      resolvedTheme === "light"
+                        ? "/images/createicon.svg"
+                        : "/images/createicondark.svg"
+                    }
+                    width={20}
+                    height={20}
+                    alt="Logo"
+                  />
+                  <Link href="/dashboard">Create</Link>
+                </button>
+                <button
+                  className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
+                  style={{
+                    boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  <Image
+                    src={
+                      resolvedTheme === "light"
+                        ? "/images/savedicon.svg"
+                        : "/images/savedicondark.svg"
+                    }
+                    width={20}
+                    height={20}
+                    alt="Logo"
+                  />
+                  <Link href="/saved">Saved</Link>
+                </button>
+              </div>
+            </div>
+            <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
               <Image
                 src={
                   resolvedTheme === "light"
-                    ? "/images/logofull.svg"
-                    : "/images/mindsynclogodarkmode.svg"
+                    ? "/images/usericon.svg"
+                    : "/images/usericondark.svg"
                 }
-                width={300}
-                height={100}
+                width={30}
+                height={30}
                 alt="Logo"
               />
-            </div>
-            <div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
-              <button
-                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
-                style={{
-                  boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-                }}
+              <Link
+                href="/profile"
+                className="text-tawnyPort dark:text-paleRose"
               >
-                <Image
-                  src={
-                    resolvedTheme === "light"
-                      ? "/images/createicon.svg"
-                      : "/images/createicondark.svg"
-                  }
-                  width={20}
-                  height={20}
-                  alt="Logo"
-                />
-                <Link href="/dashboard">Create</Link>
-              </button>
-              <button
-                className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
-                style={{
-                  boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-                }}
-              >
-                <Image
-                  src={
-                    resolvedTheme === "light"
-                      ? "/images/savedicon.svg"
-                      : "/images/savedicondark.svg"
-                  }
-                  width={20}
-                  height={20}
-                  alt="Logo"
-                />
-                <Link href="/saved">Saved</Link>
-              </button>
+                {user ? user.username : "User"}
+              </Link>
             </div>
           </div>
-          <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
-            <Image
-              src={
-                resolvedTheme === "light"
-                  ? "/images/usericon.svg"
-                  : "/images/usericondark.svg"
-              }
-              width={30}
-              height={30}
-              alt="Logo"
-            />
-            <Link href="/profile" className="text-tawnyPort dark:text-paleRose">
-              {user ? user.username : "User"}
-            </Link>
-          </div>
-        </div>
-        {/* Main Content */}
-        <div className="flex w-5/6 flex-col justify-center items-center p-4 relative overflow-y-scroll">
-          <div className="absolute top-5 right-20">
-            <SignoutButton />
-          </div>
-          <h1 className="primary-text font-lora font-normal mb-4 text-center dark:text-paleRose">
-            Profile & Settings
-          </h1>
-          <div className="flex justify-center items-center w-full">
-            <div className="grid grid-cols-2 w-2/3">
-              <div className="col-span-4 row-start-1 w-4/5">
-                {/* Change Username */}
-                <h2 className="secondary-text mt-6 mb-2 font-semibold text-left dark:text-paleRose">
-                  Change Username
-                </h2>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={handleUsernameChange}
-                  className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
-                  disabled={isChangingUsername}
-                />
-                {/* Change Password */}
-                <h2 className="secondary-text mt-10 mb-2 font-semibold text-left dark:text-paleRose">
-                  Change Password (Only for non-Google users)
-                </h2>
-                <div className="flex flex-col gap-2">
-                  <input
-                    type="password"
-                    value={currentPassword}
-                    onChange={handleCurrentPasswordChange}
-                    placeholder="Current Password"
-                    className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
-                    disabled={isChangingPassword || user?.googleUser}
-                  />
-                  <input
-                    type="password"
-                    value={newPassword}
-                    onChange={handleNewPasswordChange}
-                    placeholder="New Password"
-                    className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
-                    disabled={isChangingPassword || user?.googleUser}
-                  />
-                </div>
-                {/* Dark Mode Toggle */}
-                <h2 className="secondary-text mt-10 mb-2 font-semibold text-left dark:text-paleRose">
-                  Dark Mode
-                </h2>
-              </div>
-              <div className="col-span-1 row-start-1 flex flex-col justify-center items-end gap-y-2">
-                {/* Change Username */}
-                <button
-                  onClick={handleSaveUsername}
-                  className="primary-btn w-full mb-16 dark:bg-paleRose dark:text-stilleto"
-                  disabled={isChangingUsername}
-                >
-                  {isChangingUsername ? "Changing..." : "Save"}
-                </button>
-                {/* Change Password */}
-                <button
-                  onClick={handleSavePassword}
-                  className="primary-btn w-full dark:bg-paleRose dark:text-stilleto"
-                  disabled={isChangingPassword || user?.googleUser}
-                >
-                  {isChangingPassword ? "Changing..." : "Save"}
-                </button>
-                {/* Dark Mode Toggle */}
-                <label className="switch">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setTheme(resolvedTheme === "dark" ? "light" : "dark")
-                    }
-                    className="primary-btn w-full relative translate-y-12 dark:bg-paleRose dark:text-stilleto"
-                  >
-                    {resolvedTheme === "dark" ? "Disable" : "Enable"}
-                  </button>
-                </label>
-              </div>
+          {/* Main Content */}
+          <div className="flex w-5/6 flex-col justify-center items-center p-4 relative overflow-y-scroll">
+            <div className="absolute top-5 right-20">
+              <SignoutButton />
             </div>
-          </div>
-          {/* Delete Account */}
-          <button
-            onClick={() => setShowDeleteAccountDialog(true)}
-            className="secondary-btn bg-stilleto w-[200px] mt-8 dark:bg-paleRose dark:text-stilleto"
-            disabled={isDeletingAccount}
-          >
-            Delete Account
-          </button>
-          {showDeleteAccountDialog && (
-            <div className="fixed inset-0 flex justify-center items-center">
-              <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
-              <div className="relative my-auto mx-auto flex justify-center items-center border-2 border-black w-1/4 h-1/4 bg-white rounded-xl">
-                <div className="w-full p-4">
-                  <h2 className="secondary-text mb-2">
-                    Enter your username to confirm:
+            <h1 className="primary-text font-lora font-normal mb-4 text-center dark:text-paleRose">
+              Profile & Settings
+            </h1>
+            <div className="flex justify-center items-center w-full">
+              <div className="grid grid-cols-2 w-2/3">
+                <div className="col-span-4 row-start-1 w-4/5">
+                  {/* Change Username */}
+                  <h2 className="secondary-text mt-6 mb-2 font-semibold text-left dark:text-paleRose">
+                    Change Username
                   </h2>
                   <input
                     type="text"
-                    value={deleteUsername}
-                    onChange={handleDeleteUsernameChange}
-                    placeholder="Username"
-                    className="p-2 border-2 w-full border-black rounded-xl"
+                    value={username}
+                    onChange={handleUsernameChange}
+                    className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
+                    disabled={isChangingUsername}
                   />
-                  {deleteUsername && deleteUsername !== user.username && (
-                    <p className="text-red-500">Username does not match.</p>
-                  )}
-                  <div className="flex flex-row justify-center items-center mt-5 gap-4">
+                  {/* Change Password */}
+                  <h2 className="secondary-text mt-10 mb-2 font-semibold text-left dark:text-paleRose">
+                    Change Password (Only for non-Google users)
+                  </h2>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="password"
+                      value={currentPassword}
+                      onChange={handleCurrentPasswordChange}
+                      placeholder="Current Password"
+                      className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
+                      disabled={isChangingPassword || user?.googleUser}
+                    />
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={handleNewPasswordChange}
+                      placeholder="New Password"
+                      className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
+                      disabled={isChangingPassword || user?.googleUser}
+                    />
+                  </div>
+                  {/* Dark Mode Toggle */}
+                  <h2 className="secondary-text mt-10 mb-2 font-semibold text-left dark:text-paleRose">
+                    Dark Mode
+                  </h2>
+                </div>
+                <div className="col-span-1 row-start-1 flex flex-col justify-center items-end gap-y-2">
+                  {/* Change Username */}
+                  <button
+                    onClick={handleSaveUsername}
+                    className="primary-btn w-full mb-16 dark:bg-paleRose dark:text-stilleto"
+                    disabled={isChangingUsername}
+                  >
+                    {isChangingUsername ? "Changing..." : "Save"}
+                  </button>
+                  {/* Change Password */}
+                  <button
+                    onClick={handleSavePassword}
+                    className="primary-btn w-full dark:bg-paleRose dark:text-stilleto"
+                    disabled={isChangingPassword || user?.googleUser}
+                  >
+                    {isChangingPassword ? "Changing..." : "Save"}
+                  </button>
+                  {/* Dark Mode Toggle */}
+                  <label className="switch">
                     <button
-                      onClick={handleDeleteAccount}
-                      className="primary-btn"
-                      disabled={
-                        isDeletingAccount || deleteUsername !== user.username
+                      type="button"
+                      onClick={() =>
+                        setTheme(resolvedTheme === "dark" ? "light" : "dark")
                       }
+                      className="primary-btn w-full relative translate-y-12 dark:bg-paleRose dark:text-stilleto"
                     >
-                      {isDeletingAccount ? "Deleting..." : "Confirm"}
+                      {resolvedTheme === "dark" ? "Disable" : "Enable"}
                     </button>
-                    <button
-                      onClick={handleCloseDialogs}
-                      className="primary-btn"
-                    >
-                      Cancel
-                    </button>
+                  </label>
+                </div>
+              </div>
+            </div>
+            {/* Delete Account */}
+            <button
+              onClick={() => setShowDeleteAccountDialog(true)}
+              className="secondary-btn bg-stilleto w-[200px] mt-8 dark:bg-paleRose dark:text-stilleto"
+              disabled={isDeletingAccount}
+            >
+              Delete Account
+            </button>
+            {showDeleteAccountDialog && (
+              <div className="fixed inset-0 flex justify-center items-center">
+                <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
+                <div className="relative my-auto mx-auto flex justify-center items-center border-2 border-black w-1/4 h-1/4 bg-white rounded-xl">
+                  <div className="w-full p-4">
+                    <h2 className="secondary-text mb-2">
+                      Enter your username to confirm:
+                    </h2>
+                    <input
+                      type="text"
+                      value={deleteUsername}
+                      onChange={handleDeleteUsernameChange}
+                      placeholder="Username"
+                      className="p-2 border-2 w-full border-black rounded-xl"
+                    />
+                    {deleteUsername && deleteUsername !== user.username && (
+                      <p className="text-red-500">Username does not match.</p>
+                    )}
+                    <div className="flex flex-row justify-center items-center mt-5 gap-4">
+                      <button
+                        onClick={handleDeleteAccount}
+                        className="primary-btn"
+                        disabled={
+                          isDeletingAccount || deleteUsername !== user.username
+                        }
+                      >
+                        {isDeletingAccount ? "Deleting..." : "Confirm"}
+                      </button>
+                      <button
+                        onClick={handleCloseDialogs}
+                        className="primary-btn"
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 </div>
+              </div>
+            )}
+          </div>
+          {/* Error and Success Messages */}
+          {error && (
+            <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+              <div
+                style={{
+                  backgroundColor: "white",
+                  padding: "20px",
+                  borderRadius: "5px",
+                }}
+              >
+                <h2>Error</h2>
+                <p>{error}</p>
+                <button onClick={() => setError(null)}>Close</button>
+              </div>
+            </div>
+          )}
+          {successMessage && (
+            <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+              <div
+                style={{
+                  backgroundColor: "white",
+                  padding: "20px",
+                  borderRadius: "5px",
+                }}
+              >
+                <h2>Success</h2>
+                <p>{successMessage}</p>
+                <button onClick={() => setSuccessMessage(null)}>Close</button>
               </div>
             </div>
           )}
         </div>
-        {/* Error and Success Messages */}
-        {error && (
-          <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-            <div
-              style={{
-                backgroundColor: "white",
-                padding: "20px",
-                borderRadius: "5px",
-              }}
-            >
-              <h2>Error</h2>
-              <p>{error}</p>
-              <button onClick={() => setError(null)}>Close</button>
+        {/* Mobile Content */}
+        <div className="xs:flex md:hidden">
+          <div id="container" className="w-screen h-screen px-2">
+            <div className="flex w-full h-full flex-col justify-center items-center relative overflow-y-scroll">
+              <div className="absolute top-5 right-20">
+                <SignoutButton />
+              </div>
+              <div className="flex w-5/6 flex-col justify-center items-center relative overflow-y-scroll">
+                <h1 className="primary-text font-lora font-normal mb-4 text-center dark:text-paleRose">
+                  Profile & Settings
+                </h1>
+                <form className="flex flex-col gap-y-4">
+                  {/* Change Username */}
+                  <div className="flex flex-col gap-y-2">
+                    <label
+                      htmlFor="username"
+                      className="secondary-text mb-1 font-normal text-left dark:text-paleRose"
+                    >
+                      Change Username
+                    </label>
+                    <input
+                      type="text"
+                      id="username"
+                      value={username}
+                      onChange={handleUsernameChange}
+                      className="input w-full mb-1 h-[40px] px-3 py-4 text-tawnyPort dark:text-paleRose text-md min-h-[40px]"
+                      disabled={isChangingUsername}
+                    />
+                    <button
+                      onClick={handleSaveUsername}
+                      className="primary-btn w-1/4 mb-4 dark:bg-paleRose dark:text-stilleto"
+                      disabled={isChangingUsername}
+                    >
+                      {isChangingUsername ? "Changing..." : "Save"}
+                    </button>
+                  </div>
+                  {/* Change Password */}
+                  <div className="flex flex-col gap-y-2">
+                    <label
+                      htmlFor="currentPassword"
+                      className="secondary-text mb-1 font-normal text-left dark:text-paleRose"
+                    >
+                      Change Password (Only for non-Google users)
+                    </label>
+                    <div className="flex flex-col gap-y-2">
+                      <input
+                        type="password"
+                        id="currentPassword"
+                        value={currentPassword}
+                        onChange={handleCurrentPasswordChange}
+                        placeholder="Current Password"
+                        className="input w-full mb-1 h-[40px] px-3 py-4 text-tawnyPort dark:text-paleRose text-md min-h-[40px]"
+                        disabled={isChangingPassword || user?.googleUser}
+                      />
+                      <input
+                        type="password"
+                        id="newPassword"
+                        value={newPassword}
+                        onChange={handleNewPasswordChange}
+                        placeholder="New Password"
+                        className="input w-full mb-1 h-[40px] px-3 py-4 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
+                        disabled={isChangingPassword || user?.googleUser}
+                      />
+                      <button
+                        onClick={handleSavePassword}
+                        className="primary-btn w-1/4 dark:bg-paleRose dark:text-stilleto"
+                        disabled={isChangingPassword || user?.googleUser}
+                      >
+                        {isChangingPassword ? "Changing..." : "Save"}
+                      </button>
+                    </div>
+                  </div>
+                  {/* Theme Toggle */}
+                  <div className="flex justify-between w-full mt-4">
+                    <label className="secondary-text font-normal translate-y-1 text-left dark:text-paleRose">
+                      Dark Mode
+                    </label>
+                    <label className="switch">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setTheme(resolvedTheme === "dark" ? "light" : "dark")
+                        }
+                        className="primary-btn relative dark:bg-paleRose dark:text-stilleto"
+                      >
+                        {resolvedTheme === "dark" ? "Disable" : "Enable"}
+                      </button>
+                    </label>
+                  </div>
+                </form>
+                {/* Delete Account */}
+                <button
+                  onClick={() => setShowDeleteAccountDialog(true)}
+                  className="secondary-btn bg-stilleto w-[200px] mt-8 dark:bg-paleRose dark:text-stilleto"
+                  disabled={isDeletingAccount}
+                >
+                  Delete Account
+                </button>
+                {showDeleteAccountDialog && (
+                  <div className="fixed inset-0 flex justify-center items-center">
+                    <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
+                    <div className="relative my-auto mx-auto flex justify-center items-center border-2 border-black w-1/4 h-1/4 bg-white rounded-xl">
+                      <div className="w-full p-4">
+                        <h2 className="secondary-text mb-2">
+                          Enter your username to confirm:
+                        </h2>
+                        <input
+                          type="text"
+                          value={deleteUsername}
+                          onChange={handleDeleteUsernameChange}
+                          placeholder="Username"
+                          className="p-2 border-2 w-full border-black rounded-xl"
+                        />
+                        {deleteUsername && deleteUsername !== user.username && (
+                          <p className="text-red-500">
+                            Username does not match.
+                          </p>
+                        )}
+                        <div className="flex flex-row justify-center items-center mt-5 gap-4">
+                          <button
+                            onClick={handleDeleteAccount}
+                            className="primary-btn"
+                            disabled={
+                              isDeletingAccount ||
+                              deleteUsername !== user.username
+                            }
+                          >
+                            {isDeletingAccount ? "Deleting..." : "Confirm"}
+                          </button>
+                          <button
+                            onClick={handleCloseDialogs}
+                            className="primary-btn"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              {/* Error and Success Messages */}
+              {error && (
+                <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                      padding: "20px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <h2>Error</h2>
+                    <p>{error}</p>
+                    <button onClick={() => setError(null)}>Close</button>
+                  </div>
+                </div>
+              )}
+              {successMessage && (
+                <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                      padding: "20px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <h2>Success</h2>
+                    <p>{successMessage}</p>
+                    <button onClick={() => setSuccessMessage(null)}>
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">
+              <button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
+                <Image
+                  src={`/images/${
+                    resolvedTheme === "light" ? "homeicon" : "homeicondark"
+                  }.svg`}
+                  width={27}
+                  height={27}
+                  alt="Home"
+                />
+                <span className="text-left text-secondary-text mt-2 block">
+                  Home
+                </span>
+              </button>
+              <Link href="/dashboard">
+                <button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
+                  <Image
+                    src={`/images/${
+                      resolvedTheme === "light"
+                        ? "createicondark"
+                        : "createicon"
+                    }.svg`}
+                    width={27}
+                    height={27}
+                    alt="Create"
+                  />
+                  <span className="text-center text-secondary-text mt-2 block">
+                    Create
+                  </span>
+                </button>
+              </Link>
+              <Link href="/saved">
+                <button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
+                  <Image
+                    src={`/images/${
+                      resolvedTheme === "light" ? "savedicondark" : "savedicon"
+                    }.svg`}
+                    width={25}
+                    height={25}
+                    alt="Saved"
+                  />
+                  <span className="text-center text-secondary-text mt-2 block">
+                    Saved
+                  </span>
+                </button>
+              </Link>
+              <Link href="/profile">
+                <button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
+                  <Image
+                    src={`/images/${
+                      resolvedTheme === "light" ? "usericon" : "usericondark"
+                    }.svg`}
+                    width={27}
+                    height={27}
+                    alt="Profile"
+                  />
+                  <span className="text-center text-secondary-text mt-2 block">
+                    Profile
+                  </span>
+                </button>
+              </Link>
             </div>
           </div>
-        )}
-        {successMessage && (
-          <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-            <div
-              style={{
-                backgroundColor: "white",
-                padding: "20px",
-                borderRadius: "5px",
-              }}
-            >
-              <h2>Success</h2>
-              <p>{successMessage}</p>
-              <button onClick={() => setSuccessMessage(null)}>Close</button>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     );
   }

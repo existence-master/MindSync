@@ -29,7 +29,7 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
   };
 
   return (
-    <div className="relative w-[300px] h-[400px] border rounded-lg p-4 shadow-lg border-stilleto dark:border-paleRose flex flex-col justify-center items-center">
+    <div className="relative xs:w-[200px] xs:h-[300px] md:w-[300px] md:h-[400px] border rounded-lg p-4 shadow-lg border-stilleto dark:border-paleRose flex flex-col justify-center items-center">
       <div className="w-full h-5/6 flex justify-center items-center">
         {mindmap.previewImageURL ? (
           <Image
@@ -47,7 +47,7 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
           />
         )}
       </div>
-      <div className="w-[300px] h-fit py-2 pb-2 translate-y-5 rounded-b-lg bg-stilleto dark:bg-paleRose px-4">
+      <div className="xs:w-[200px] md:w-[300px] h-fit py-2 pb-2 translate-y-5 rounded-b-lg bg-stilleto dark:bg-paleRose px-4">
         <h3 className="primary-text text-xl mt-3 font-inter font-medium text-white dark:text-lividBrown">
           {mindmap.name}
         </h3>
@@ -149,7 +149,7 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
       )}
       {showDialog && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg border-2 border-stilleto shadow-lg">
+          <div className="bg-white md:w-1/4 xs:w-5/6 p-6 rounded-lg border-2 border-stilleto shadow-lg">
             <h2 className="primary-text text-xl font-inter font-medium mb-4">
               Confirm Deletion
             </h2>

@@ -32,6 +32,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-monaco-editor": "^0.55.0",
+    "react-zoom-pan-pinch": "^3.4.4",
     "tesseract.js": "^5.1.0",
     "youtube-caption-extractor": "^1.4.3"
   },

@@ -11,6 +11,11 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import MonacoEditor from "react-monaco-editor";
 import { useTheme } from "next-themes";
+import {
+  TransformWrapper,
+  TransformComponent,
+  useControls,
+} from "react-zoom-pan-pinch";
 
 const Edit = () => {
   const { id } = useParams();
@@ -37,6 +42,47 @@ const Edit = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const { resolvedTheme, setTheme } = useTheme();
+
+  const Controls = () => {
+    const { zoomIn, zoomOut, resetTransform } = useControls();
+
+    return (
+      <div className="tools ml-2 gap-x-2 flex flex-row">
+        <button onClick={() => zoomIn()}>
+          <Image
+            src={`/images/${
+              resolvedTheme === "light" ? "zoomin" : "zoomindark"
+            }.svg`}
+            width={27}
+            height={27}
+            alt="Zoom In"
+          />
+        </button>
+        <button onClick={() => zoomOut()}>
+          <Image
+            src={`/images/${
+              resolvedTheme === "light" ? "zoomout" : "zoomoutdark"
+            }.svg`}
+            width={27}
+            height={27}
+            alt="Zoom Out"
+          />
+        </button>
+        <button onClick={() => resetTransform()}>
+          <Image
+            src={`/images/${
+              resolvedTheme === "light"
+                ? "resetTransform"
+                : "resetTransformdark"
+            }.svg`}
+            width={27}
+            height={27}
+            alt="Reset Transform"
+          />
+        </button>
+      </div>
+    );
+  };
 
   // Redirect unauthenticated users
   useEffect(() => {
@@ -731,13 +777,26 @@ const Edit = () => {
                   <h2 className="secondary-text dark:text-paleRose text-center w-full p-2 mb-2 font-semibold border-b-2 border-stilleto dark:border-paleRose">
                     Mindmap Preview
                   </h2>
-                  <pre
-                    ref={mindmapRef}
-                    key={mindmapCode}
-                    className="mermaid mindmap"
+                  <TransformWrapper
+                    initialScale={1}
+                    initialPositionX={200}
+                    initialPositionY={100}
                   >
-                    {mindmapCode}
-                  </pre>
+                    {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                      <>
+                        <Controls />
+                        <TransformComponent>
+                          <pre
+                            ref={mindmapRef}
+                            key={mindmapCode}
+                            className="mermaid mindmap"
+                          >
+                            {mindmapCode}
+                          </pre>
+                        </TransformComponent>
+                      </>
+                    )}
+                  </TransformWrapper>
                 </div>
                 <div className="flex justify-center gap-2 mt-8">
                   <div className="relative">
