@@ -37,7 +37,7 @@ export const POST = async (request) => {
 
 		// Upload the preview image to Cloudinary
 		const uploadResult = await new Promise((resolve) => {
-			cloudinary.v2.uploader.upload_stream((_, uploadResult) => {
+			cloudinary.uploader.upload_stream((_, uploadResult) => {
 				return resolve(uploadResult);
 			}).end(buffer)
 		});
