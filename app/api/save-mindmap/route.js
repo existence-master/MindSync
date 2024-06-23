@@ -5,7 +5,6 @@ import { authOptions } from "../auth/[...nextauth]/route"; // Import NextAuth op
 import { getServerSession } from "next-auth/next"; // Import NextAuth session handling
 import { NextResponse } from "next/server"; // Import Next.js server response
 import cloudinary from "@utils/cloudinary"; // Import Cloudinary configuration
-import streamifier from "streamifier"
 
 export const POST = async (request) => {
 	const session = await getServerSession(authOptions); // Get the current user session
@@ -32,25 +31,10 @@ export const POST = async (request) => {
 			return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
 		}
 
-		// Read the file as a buffer
-		const arrayBuffer = await previewImage.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
-
-		// Upload the preview image to Cloudinary
-		const uploadResult = await new Promise((resolve) => {
-			const uploadStream = cloudinary.uploader.upload_stream({
-				folder: "mindmap_previews"
-			},
-				(error, uploadResult) => {
-					if (uploadResult)
-						return resolve(uploadResult);
-					else
-						return reject(error);
-			})
-
-			streamifier.createReadStream(buffer).pipe(uploadStream);
+		const uploadResult = await cloudinary.uploader.upload(previewImage, {
+			folder: "mindmap_previews",
 		});
-			
+
 		// Create a new mindmap object
 		const newMindmap = new Mindmap({
 			name: mindmapName,
