@@ -42,7 +42,7 @@ export const POST = async (request) => {
 				folder: "mindmap_previews"
 			},
 				(error, uploadResult) => {
-					if (result)
+					if (uploadResult)
 						return resolve(uploadResult);
 					else
 						return reject(error);
