@@ -33,7 +33,7 @@ export const POST = async (request) => {
 
 		// Read the file as a buffer
 		const arrayBuffer = await previewImage.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
+		const buffer = Buffer.from(arrayBuffer).toString();
 
 		// Upload the preview image to Cloudinary
 		const uploadResult = await cloudinary.uploader.upload(buffer, {
