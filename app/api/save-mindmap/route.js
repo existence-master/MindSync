@@ -36,19 +36,11 @@ export const POST = async (request) => {
 		const buffer = Buffer.from(arrayBuffer);
 
 		// Upload the preview image to Cloudinary
-		const uploadResult = await new Promise((resolve, reject) => {
-			const uploadStream = cloudinary.uploader.upload_stream(
-				{ folder: "mindmap_previews" },
-				(error, result) => {
-					if (error) {
-						return reject(error);
-					}
-					resolve(result);
-				}
-			);
-
-			uploadStream.end(buffer);
-		})
+		const uploadResult = await new Promise((resolve) => {
+			cloudinary.v2.uploader.upload_stream((_, uploadResult) => {
+				return resolve(uploadResult);
+			}).end(buffer)
+		});
 			
 		// Create a new mindmap object
 		const newMindmap = new Mindmap({
