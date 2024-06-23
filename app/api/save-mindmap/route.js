@@ -5,12 +5,7 @@ import { authOptions } from "../auth/[...nextauth]/route"; // Import NextAuth op
 import { getServerSession } from "next-auth/next"; // Import NextAuth session handling
 import { NextResponse } from "next/server"; // Import Next.js server response
 import cloudinary from "@utils/cloudinary"; // Import Cloudinary configuration
-import { promisify } from "util";
 import { v4 as uuidv4 } from "uuid";
-import fs from "fs";
-
-const writeFile = promisify(fs.writeFile);
-const unlink = promisify(fs.unlink);
 
 export const POST = async (request) => {
 	const session = await getServerSession(authOptions); // Get the current user session
@@ -37,25 +32,24 @@ export const POST = async (request) => {
 			return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
 		}
 
-		// Define the directory where you want to store the uploaded file
-		const uploadDir = "/uploads";
+		// Read the file as a buffer
+		const arrayBuffer = await previewImage.arrayBuffer();
+		const buffer = Buffer.from(arrayBuffer);
 
 		// Generate a unique filename
 		const fileName = `${uuidv4()}-${previewImage.name}`;
-		const filePath = `${uploadDir}/${fileName}`;
 
-		// Read the file as a buffer and save it
-		const arrayBuffer = await previewImage.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
-		await writeFile(filePath, buffer);
-
-		// Upload the preview image to Cloudinary
-		const uploadResult = await cloudinary.uploader.upload(filePath, {
-			folder: "mindmap_previews",
+		// Upload the preview image to Cloudinary directly from the buffer
+		const uploadResult = await new Promise((resolve, reject) => {
+			const uploadStream = cloudinary.uploader.upload_stream(
+				{ folder: "mindmap_previews", public_id: fileName },
+				(error, result) => {
+					if (error) reject(error);
+					else resolve(result);
+				}
+			);
+			uploadStream.end(buffer);
 		});
-
-		// Delete the local file after uploading
-		await unlink(filePath);
 
 		// Create a new mindmap object
 		const newMindmap = new Mindmap({
