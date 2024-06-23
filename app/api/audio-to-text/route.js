@@ -12,9 +12,7 @@ export const POST = async (request) => {
 		});
 
 		const formData = await request.formData();
-		console.log(formData);
 		const audioFile = formData.get("audio");
-		console.log(audioFile);
 
 		// Define the directory where you want to store the audio file
 		const uploadDir = "./public/uploads";

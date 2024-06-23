@@ -58,7 +58,11 @@ const Navbar = () => {
 					</div>
 				)}
 			</div>
-			<button className="hidden lg:block primary-btn">Login</button>
+			<button className="hidden lg:block primary-btn">
+				<Link href="/login">
+					Login
+				</Link>
+			</button>
 		</nav>
 	);
 };

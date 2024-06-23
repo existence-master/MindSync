@@ -1,5 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { system_prompt, inputOutputPairs } from "@utils/prompts";
+import {
+	createMindmapSystemPrompt,
+	textMindmapInputOutputPairs,
+} from "@utils/prompts";
 import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
@@ -8,24 +11,25 @@ export const POST = async (request) => {
 		const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
 		// For text-only input, use the gemini-pro model
-        const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-pro-latest",
-            systemInstruction: system_prompt
-        });
-        
-        const chatHistory = inputOutputPairs.map(pair => {
-            return [
-                {
-                    role: "user",
-                    parts: [{ text: pair.input }]
-                },
-                {
-                    role: "model",
-                    parts: [{ text: pair.output }]
-                }
-            ]
-        }).flat()
+		const model = genAI.getGenerativeModel({
+			model: "gemini-1.5-pro-latest",
+			systemInstruction: createMindmapSystemPrompt,
+		});
 
+		const chatHistory = textMindmapInputOutputPairs
+			.map((pair) => {
+				return [
+					{
+						role: "user",
+						parts: [{ text: pair.input }],
+					},
+					{
+						role: "model",
+						parts: [{ text: pair.output }],
+					},
+				];
+			})
+			.flat();
 
 		const chat = model.startChat({
 			history: chatHistory,
@@ -37,24 +41,19 @@ export const POST = async (request) => {
 			},
 		});
 
-        const { text } = await request.json();
+		const { text } = await request.json();
 
 		const result = await chat.sendMessage(text);
 		const response = result.response;
 		const mindmap = response.text();
 
 		// Return a successful response
-        return new NextResponse(
-            JSON.stringify({ mindmap }),
-            { status: 200 }
-        )
+		return new NextResponse(JSON.stringify({ mindmap }), { status: 200 });
 	} catch (error) {
 		// Handle errors
 		console.error("Error:", error);
 
 		// Return an error response
-		return new NextResponse(
-			{ status: 500 }
-		)
+		return new NextResponse({ status: 500 });
 	}
 };
