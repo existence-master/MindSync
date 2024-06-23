@@ -41,6 +41,8 @@ export const POST = async (request) => {
 				return resolve(uploadResult);
 			}).end(buffer)
 		});
+
+		console.log(uploadResult)
 			
 		// Create a new mindmap object
 		const newMindmap = new Mindmap({
