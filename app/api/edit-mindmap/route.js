@@ -24,7 +24,7 @@ export const POST = async (request) => {
 
 	try {
 		// Define the directory where you want to store the uploaded file
-		const uploadDir = "./public/uploads";
+		const uploadDir = "/public/uploads";
 
 		// Generate a unique filename
 		const fileName = `${uuidv4()}-${previewImage.name}`;
@@ -63,4 +63,4 @@ export const POST = async (request) => {
 		console.error("Error updating mindmap:", error);
 		return new NextResponse("Internal server error", { status: 500 });
 	}
-}
+};

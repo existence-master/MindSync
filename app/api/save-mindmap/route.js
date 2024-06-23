@@ -25,9 +25,7 @@ export const POST = async (request) => {
 		// Extract mindmap data and name from the request body
 		const formData = await request.formData();
 		const mindmap = formData.get("mindmap");
-		const processedCode = mindmap
-			.replace(/\\n/g, "\n")
-			.replace(/\"/g, "");
+		const processedCode = mindmap.replace(/\\n/g, "\n").replace(/\"/g, "");
 		const mindmapName = formData.get("mindmapName");
 		const previewImage = formData.get("previewImage");
 
@@ -40,7 +38,7 @@ export const POST = async (request) => {
 		}
 
 		// Define the directory where you want to store the uploaded file
-		const uploadDir = "./public/uploads";
+		const uploadDir = "/public/uploads";
 
 		// Generate a unique filename
 		const fileName = `${uuidv4()}-${previewImage.name}`;
