@@ -15,7 +15,7 @@ export const POST = async (request) => {
 		const audioFile = formData.get("audio");
 
 		// Define the directory where you want to store the audio file
-		const uploadDir = "../../public/uploads";
+		const uploadDir = "/uploads";
 
 		// Generate a unique filename
 		const fileName = `${uuidv4()}.mp3`; // Using UUID for uniqueness

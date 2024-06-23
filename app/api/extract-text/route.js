@@ -23,7 +23,7 @@ export const POST = async (request) => {
 		}
 
 		// Define the directory where you want to store the uploaded file
-		const uploadDir = "../../public/uploads";
+		const uploadDir = "/uploads";
 
 		// Generate a unique filename
 		const fileName = `${uuidv4()}-${textFile.name}`;

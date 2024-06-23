@@ -54,14 +54,17 @@ const Navbar = () => {
 									Contact
 								</Link>
 							</li>
+							<li>
+								<Link href="/login" className="ternary-text">
+									Login
+								</Link>
+							</li>
 						</ul>
 					</div>
 				)}
 			</div>
 			<button className="hidden lg:block primary-btn">
-				<Link href="/login">
-					Login
-				</Link>
+				<Link href="/login">Login</Link>
 			</button>
 		</nav>
 	);
