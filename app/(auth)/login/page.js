@@ -144,7 +144,7 @@ const Login = () => {
         )}
         <Navbar />
         <section className="mt-[35px] lg:mt-[75px] lg:mx-[30px] flex flex-col items-center">
-          <div className="w-4/6">
+          <div className="xs:w-5/6 md:w-4/6">
             <h1 className="text-center primary-text">Login</h1>
             <h2 className="xs:max-lg:mt-[10px] mt-[20px] text-center secondary-text">
               Login to continue to MindSync!
@@ -165,7 +165,7 @@ const Login = () => {
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input mb-10 md:w-4/6 xs:5/6"
+                className="input mb-10 md:w-4/6 xs:w-5/6"
                 required
               />
               <label
@@ -180,7 +180,7 @@ const Login = () => {
                 name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mb-10 input md:w-4/6 xs:5/6"
+                className="mb-10 input md:w-4/6 xs:w-5/6"
                 required
               />
               <button
