@@ -424,18 +424,29 @@ const Edit = () => {
       <div className="flex h-screen w-screen bg-paleRose dark:bg-lividBrown">
         <div className="xs:hidden w-full md:flex relative">
           <button
-            style={{ zIndex: 1000 }}
+            style={{ zIndex: 51 }}
             onClick={() => setIsSidebarVisible(!isSidebarVisible)}
             className="absolute top-0 left-0 m-2"
           >
-            {isSidebarVisible ? "Hide Sidebar" : "Show Sidebar"}
+            <Image
+              src={`/images/${
+                resolvedTheme === "light" ? "hamburger-light" : "hamburger-dark"
+              }.svg`}
+              width={30}
+              height={30}
+              alt="Toggle Sidebar"
+            />
           </button>
           {/* Sidebar */}
           {isSidebarVisible && (
             <>
-              <div className="w-1/6 h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink">
+              <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50"></div>
+              <div
+                className="w-1/6 fixed dark:bg-lividBrown bg-paleRose h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink"
+                style={{ zIndex: 50 }}
+              >
                 <div className="w-full">
-                  <div className="p-4 text-center">
+                  <div className="p-4 text-center mt-10">
                     <Image
                       src={
                         resolvedTheme === "light"
