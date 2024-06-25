@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
 import connect from "@utils/db"; // Import your database connection utility
 import Mindmap from "@models/Mindmap"; // Import the Mindmap model
-import { promisify } from "util";
 import { v4 as uuidv4 } from "uuid";
-import fs from "fs";
 import cloudinary from "@utils/cloudinary"; // Import Cloudinary configuration
-
-const writeFile = promisify(fs.writeFile);
-const unlink = promisify(fs.unlink);
 
 export const POST = async (request) => {
 	const formData = await request.formData();
@@ -23,25 +18,25 @@ export const POST = async (request) => {
 	await connect();
 
 	try {
-		// Define the directory where you want to store the uploaded file
-		const uploadDir = "./public/uploads";
+		// Read the file as a buffer
+		const arrayBuffer = await previewImage.arrayBuffer();
+		const buffer = Buffer.from(arrayBuffer);
 
 		// Generate a unique filename
 		const fileName = `${uuidv4()}-${previewImage.name}`;
-		const filePath = `${uploadDir}/${fileName}`;
 
-		// Read the file as a buffer and save it
-		const arrayBuffer = await previewImage.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
-		await writeFile(filePath, buffer);
-
-		// Upload the preview image to Cloudinary
-		const uploadResult = await cloudinary.uploader.upload(filePath, {
-			folder: "mindmap_previews",
-		});
-
-		// Delete the local file after uploading
-		await unlink(filePath);
+		// Upload the preview image to Cloudinary directly from the buffer
+		const uploadResult = await cloudinary.uploader
+			.upload_stream(
+				{ folder: "mindmap_previews", public_id: fileName },
+				(error, result) => {
+					if (error) {
+						throw new Error("Cloudinary upload failed");
+					}
+					return result;
+				}
+			)
+			.end(buffer);
 
 		// Update the mindmap in the database
 		const updatedMindmap = await Mindmap.findByIdAndUpdate(
@@ -63,4 +58,4 @@ export const POST = async (request) => {
 		console.error("Error updating mindmap:", error);
 		return new NextResponse("Internal server error", { status: 500 });
 	}
-}
+};

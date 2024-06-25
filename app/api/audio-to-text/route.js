@@ -1,55 +1,73 @@
 import { AssemblyAI } from "assemblyai";
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
 
 export const POST = async (request) => {
-	try {
-		// Initialize Speech-to-Text client
-		const client = new AssemblyAI({
-			apiKey: process.env.ASSEMBLYAI_API_KEY,
-		});
+    try {
+        // Initialize Speech-to-Text client
+        const client = new AssemblyAI({
+            apiKey: process.env.ASSEMBLYAI_API_KEY,
+        });
 
-		const formData = await request.formData();
-		const audioFile = formData.get("audio");
+        const formData = await request.formData();
+        const audioFile = formData.get("audio");
 
-		// Define the directory where you want to store the audio file
-		const uploadDir = "./public/uploads";
+        if (!audioFile) {
+            return new NextResponse(
+                JSON.stringify({ error: "No audio file uploaded" }),
+                {
+                    status: 400, // Bad Request
+                }
+            );
+        }
 
-		// Generate a unique filename
-		const fileName = `${uuidv4()}.mp3`; // Using UUID for uniqueness
-		const filePath = path.join(uploadDir, fileName);
+        // Read the audio file as a buffer
+        const audioBuffer = await audioFile.arrayBuffer();
+        const buffer = Buffer.from(audioBuffer);
 
-		// Read the audio file as a buffer
-		const audioBuffer = await audioFile.arrayBuffer();
-		const buffer = Buffer.from(audioBuffer);
+        // Upload the audio buffer to AssemblyAI
+        const uploadResponse = await fetch("https://api.assemblyai.com/v2/upload", {
+            method: "POST",
+            headers: {
+                "authorization": process.env.ASSEMBLYAI_API_KEY,
+                "content-type": "application/octet-stream"
+            },
+            body: buffer
+        });
 
-		// Write the audio file to the local directory
-		await fs.promises.writeFile(filePath, buffer);
+        if (!uploadResponse.ok) {
+            throw new Error("Failed to upload audio file to AssemblyAI");
+        }
 
-		// Get URL of the local file
-		const audioUrl = filePath;
+        const uploadData = await uploadResponse.json();
+        const audioUrl = uploadData.upload_url;
 
-		const params = {
-			audio: audioUrl,
-		};
+        // Request transcription
+        const transcriptResponse = await client.transcripts.create({
+            audio_url: audioUrl
+        });
 
-		const transcript = await client.transcripts.transcribe(params);
-		const text = transcript.text;
+        if (!transcriptResponse || !transcriptResponse.id) {
+            throw new Error("Failed to create transcription");
+        }
 
-		// Delete the file after transcription
-		await fs.promises.unlink(filePath);
+        // Wait for transcription to complete
+        let transcript = null;
+        while (!transcript || transcript.status !== "completed") {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            transcript = await client.transcripts.get(transcriptResponse.id);
+        }
 
-		// Return a successful response
-		return new NextResponse(JSON.stringify({ text }), {
-			status: 200,
-		});
-	} catch (error) {
-		// Handle errors
-		console.error("Error:", error);
+        // Return a successful response with the transcription text
+        return new NextResponse(JSON.stringify({ text: transcript.text }), {
+            status: 200,
+        });
+    } catch (error) {
+        console.error("Error:", error);
 
-		// Return an error response
-		return new NextResponse({ status: 500 });
-	}
+        // Return an error response
+        return new NextResponse(
+            JSON.stringify({ error: "Internal Server Error" }),
+            { status: 500 }
+        );
+    }
 };

@@ -221,45 +221,54 @@ const Dashboard = () => {
   };
 
   const createMindmapDataURL = (format) => {
-    const mindmapSVG = mindmapRef.current.innerHTML;
-    let dataURL = "";
-    fabric.loadSVGFromString(mindmapSVG, (objects, options) => {
-      const svgElement = mindmapRef.current.childNodes[0];
-      const svgWidth = svgElement.width.baseVal.value;
-      const svgHeight = svgElement.height.baseVal.value;
+		const mindmapSVG = mindmapRef.current.innerHTML;
+		console.log(mindmapSVG);
 
-      const canvas = new fabric.Canvas(document.createElement("canvas"), {
-        width: svgWidth,
-        height: svgHeight,
-      });
+		return new Promise((resolve) => {
+			fabric.loadSVGFromString(mindmapSVG, (objects, options) => {
+				const svgElement = mindmapRef.current.childNodes[0];
+				const svgWidth = svgElement.width.baseVal.value;
+				const svgHeight = svgElement.height.baseVal.value;
 
-      const svgGroup = fabric.util.groupSVGElements(objects, options);
+				const canvas = new fabric.Canvas(
+					document.createElement("canvas"),
+					{
+						width: svgWidth,
+						height: svgHeight,
+					}
+				);
 
-      svgGroup.scaleToWidth(svgWidth);
-      svgGroup.scaleToHeight(svgHeight);
-      svgGroup.set({
-        left: 0,
-        top: 0,
-      });
+				console.log(canvas);
 
-      canvas.add(svgGroup);
-      canvas.renderAll();
+				const svgGroup = fabric.util.groupSVGElements(objects, options);
 
-      if (format === "svg") {
-        dataURL = canvas.toSVG();
-      } else if (format === "png") {
-        dataURL = canvas.toDataURL({
-          format: "png",
-          quality: 1,
-        });
-      }
-    });
+				svgGroup.scaleToWidth(svgWidth);
+				svgGroup.scaleToHeight(svgHeight);
+				svgGroup.set({
+					left: 0,
+					top: 0,
+				});
 
-    return dataURL;
+				canvas.add(svgGroup);
+				canvas.renderAll();
+
+				let dataURL = "";
+				if (format === "svg") {
+					dataURL = canvas.toSVG();
+				} else if (format === "png") {
+					dataURL = canvas.toDataURL({
+						format: "png",
+						quality: 1,
+					});
+				}
+
+				resolve(dataURL);
+			});
+		});
   };
 
-  const handleExportMindmap = (format) => {
-    const dataURL = createMindmapDataURL(format);
+  const handleExportMindmap = async (format) => {
+    const dataURL = await createMindmapDataURL(format);
     const downloadLink = document.createElement("a");
     downloadLink.href = dataURL;
     downloadLink.download = `mindmap.${format}`;
@@ -270,15 +279,13 @@ const Dashboard = () => {
 
   const handleSaveMindmap = async () => {
     try {
-      const previewImageDataURL = createMindmapDataURL("png");
-      // Convert the data URL to a Blob
-      const dataURLResponse = await fetch(previewImageDataURL);
-      const previewImageBlob = await dataURLResponse.blob();
+      const previewImageDataURL = await createMindmapDataURL("png");
 
       const formData = new FormData();
       formData.append("mindmap", mindmap);
       formData.append("mindmapName", mindmapName);
-      formData.append("previewImage", previewImageBlob, "mindmap-preview.png");
+      console.log(previewImageDataURL)
+      formData.append("previewImage", previewImageDataURL);
 
       const response = await fetch("/api/save-mindmap", {
         method: "POST",
