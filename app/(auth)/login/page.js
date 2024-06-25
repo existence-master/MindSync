@@ -154,7 +154,7 @@ const Login = () => {
               onSubmit={handleSubmit}
             >
               <label
-                for="email"
+                htmlFor="email"
                 className="md:w-4/6 xs:5/6 text-left text-xl mb-2 font-inter text-tawnyPort"
               >
                 Email
@@ -169,7 +169,7 @@ const Login = () => {
                 required
               />
               <label
-                for="password"
+                htmlFor="password"
                 className="md:w-4/6 xs:5/6 text-left text-xl mb-2 font-inter text-tawnyPort"
               >
                 Password
