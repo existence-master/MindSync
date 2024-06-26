@@ -16,8 +16,10 @@ import {
   TransformComponent,
   useControls,
 } from "react-zoom-pan-pinch";
+import useWindowSize from "@hooks/useWindowSize";
 
 const Edit = () => {
+  const windowSize = useWindowSize()
   const { id } = useParams();
   const [input, setInput] = useState("");
   const [files, setFiles] = useState([]);
@@ -43,6 +45,8 @@ const Edit = () => {
   const { data: session, status } = useSession();
   const { resolvedTheme, setTheme } = useTheme();
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+
+  const isMobile = windowSize.width <= 768;
 
   const Controls = () => {
     const { zoomIn, zoomOut, resetTransform } = useControls();
@@ -824,7 +828,7 @@ const Edit = () => {
                           <Controls />
                           <TransformComponent>
                             <pre
-                              ref={mindmapRef}
+                              ref={!isMobile ? mindmapRef : null}
                               key={mindmapCode}
                               className="mermaid mindmap"
                             >
@@ -931,7 +935,7 @@ const Edit = () => {
                             }}
                           >
                             <pre
-                              ref={mindmapRef}
+                              ref={isMobile ? mindmapRef : null}
                               key={mindmapCode}
                               className="mermaid mindmap w-full h-full"
                             >

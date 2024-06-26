@@ -9,6 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import SignoutButton from "@components/SignoutButton";
 import { useTheme } from "next-themes";
+import mermaid from "mermaid";
 
 const Saved = () => {
   const [mindmaps, setMindmaps] = useState([]);
@@ -89,14 +90,14 @@ const Saved = () => {
     }
   };
 
-  const handleExport = (mindmap, format) => {
-    const mindmapSVG = mindmap.svgContent;
+  const handleExport = async (mindmap, format) => {
+    const { svg: mindmapSVG } = await mermaid.render("temp", mindmap.code)
 
     fabric.loadSVGFromString(mindmapSVG, (objects, options) => {
-      const svgElement = document.createElement("svg");
-      svgElement.innerHTML = mindmapSVG;
-      const svgWidth = svgElement.width.baseVal.value;
-      const svgHeight = svgElement.height.baseVal.value;
+      const svgDocument = new DOMParser().parseFromString(mindmapSVG, "image/svg+xml");
+      const svgElement = svgDocument.childNodes[0]
+      const svgWidth = svgElement.viewBox.baseVal.width;
+      const svgHeight = svgElement.viewBox.baseVal.height;
 
       const canvas = new fabric.Canvas(document.createElement("canvas"), {
         width: svgWidth,
@@ -488,6 +489,7 @@ const Saved = () => {
             </div>
           </div>
         </div>
+        <div id = "temp" className="hidden"/>
       </div>
     );
   }

@@ -357,4 +357,63 @@ root((Education))
 const updateMindmapPrompt = `Instruction: [INSTRUCTION]
 Mindmap Code: [MERMAID_MINDMAP_CODE]`;
 
-export { createMindmapSystemPrompt, textMindmapInputOutputPairs, updateMindmapSystemPrompt, updateMindmapInputOutputPairs, updateMindmapPrompt};
+const cleanTextSystemPrompt = `You are a helpful AI agent who cleans up text and returns only the mindmap code contained in the text. Remove any additional text that is not part of the mindmap code. If there is no additional text before or after the mindmap code, return the input as it is`
+
+const cleanTextInputOutputPairs = [
+	{
+		input: `This is a mindmap explaining the concept of a tree:
+mindmap
+  root((Tree))
+    A(Root Node)
+        B(Child Node)
+        C(Child Node)
+    D(Sibling Node)`,
+		output: `mindmap
+root((Tree))
+    A(Root Node)
+        B(Child Node)
+        C(Child Node)
+    D(Sibling Node)`,
+	},
+	{
+		input: `mindmap
+  root((Programming Languages))
+    A(Procedural)
+      B(C)
+      C(Pascal)
+    D(Object-Oriented)
+      E(Java)
+      F(Python)
+You can learn more about these languages online.`,
+		output: `mindmap
+root((Programming Languages))
+    A(Procedural)
+        B(C)
+        C(Pascal)
+    D(Object-Oriented)
+        E(Java)
+        F(Python)`,
+	},
+	{
+		input: `Let's look at this mindmap of planets:
+mindmap
+    root((Planets))
+        A(Inner Planets)
+            B(Mercury)
+            C(Venus)
+        D(Outer Planets)
+            E(Jupiter)
+            F(Saturn)
+They are so different!`,
+		output: `mindmap
+root((Planets))
+    A(Inner Planets)
+        B(Mercury)
+        C(Venus)
+    D(Outer Planets)
+        E(Jupiter)
+        F(Saturn)`,
+	},
+];
+
+export { createMindmapSystemPrompt, textMindmapInputOutputPairs, updateMindmapSystemPrompt, updateMindmapInputOutputPairs, updateMindmapPrompt, cleanTextSystemPrompt, cleanTextInputOutputPairs };
