@@ -79,10 +79,11 @@ export const POST = async (request) => {
 		let response = result.response;
 		const intermediateMindmap = response.text()
 
-		result = await cleanTextChat.sendMessage(intermediateMindmap);
-		response = result.response;
+		// result = await cleanTextChat.sendMessage(intermediateMindmap);
+		// response = result.response;
+		// const mindmap = response.text();
 
-		const mindmap = response.text();
+		const mindmap = intermediateMindmap.match(/mindmap\s*([\s\S]*?)(?=\n\n|$)/)[0];
 
 		// Return a successful response
 		return new NextResponse(JSON.stringify({ mindmap }), { status: 200 });
