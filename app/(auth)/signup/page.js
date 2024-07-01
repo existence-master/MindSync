@@ -81,7 +81,7 @@ const Signup = () => {
       <main className="mt-5 mb-10 mx-5">
         <Navbar />
         <section className="mt-[35px] lg:mt-[75px] lg:mx-[30px] flex flex-col items-center">
-          <div className="w-4/6">
+          <div className="xs:w-5/6 md:w-4/6">
             <h1 className="text-center primary-text mb-10 font-lora font-medium">
               Sign Up
             </h1>
@@ -103,7 +103,7 @@ const Signup = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="mb-8 input md:w-4/6 xs:5/6 h-12"
+                className="mb-8 input md:w-4/6 xs:w-5/6 md:h-12"
                 required
               />
               <label
@@ -117,7 +117,7 @@ const Signup = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mb-8 input md:w-4/6 xs:5/6 h-12"
+                className="mb-8 input md:w-4/6 xs:w-5/6 md:h-12"
                 required
               />
               <label
@@ -131,10 +131,13 @@ const Signup = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mb-8 input md:w-4/6 xs:5/6 h-12"
+                className="mb-8 input md:w-4/6 xs:w-5/6 md:h-12"
                 required
               />
-              <button type="submit" className="primary-btn md:w-2/6 xs:w-3/4">
+              <button
+                type="submit"
+                className="primary-btn md:w-2/6 xs:w-3/4 xs:h-10 md:h-14"
+              >
                 Signup
               </button>
             </form>
@@ -148,7 +151,7 @@ const Signup = () => {
             {/* Separator text */}
             <div className="flex flex-col items-center justify-center">
               <button
-                className="primary-btn md:w-2/6 xs:w-3/4 flex flex-row justify-center items-center" // Styling for Google login button
+                className="primary-btn md:w-2/6 xs:w-3/4 flex flex-row justify-center items-center xs:h-10" // Styling for Google login button
                 onClick={() => signIn("google")} // Sign in with Google on click
               >
                 <NextImage

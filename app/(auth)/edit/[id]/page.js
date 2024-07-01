@@ -16,8 +16,10 @@ import {
   TransformComponent,
   useControls,
 } from "react-zoom-pan-pinch";
+import useWindowSize from "@hooks/useWindowSize";
 
 const Edit = () => {
+  const windowSize = useWindowSize()
   const { id } = useParams();
   const [input, setInput] = useState("");
   const [files, setFiles] = useState([]);
@@ -42,6 +44,9 @@ const Edit = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const { resolvedTheme, setTheme } = useTheme();
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+
+  const isMobile = windowSize.width <= 768;
 
   const Controls = () => {
     const { zoomIn, zoomOut, resetTransform } = useControls();
@@ -421,83 +426,105 @@ const Edit = () => {
   if (status === "authenticated" && mindmapDetails) {
     return (
       <div className="flex h-screen w-screen bg-paleRose dark:bg-lividBrown">
-        <div className="xs:hidden w-full md:flex">
+        <div className="xs:hidden w-full md:flex relative">
+          <button
+            style={{ zIndex: 51 }}
+            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+            className="absolute top-0 left-0 m-2"
+          >
+            <Image
+              src={`/images/${
+                resolvedTheme === "light" ? "hamburger-light" : "hamburger-dark"
+              }.svg`}
+              width={30}
+              height={30}
+              alt="Toggle Sidebar"
+            />
+          </button>
           {/* Sidebar */}
-          <div className="w-1/6 h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink">
-            <div className="w-full">
-              <div className="p-4 text-center">
-                <Image
-                  src={
-                    resolvedTheme === "light"
-                      ? "/images/logofull.svg"
-                      : "/images/mindsynclogodarkmode.svg"
-                  }
-                  width={300}
-                  height={100}
-                  alt="Logo"
-                />
-              </div>
-              <div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
-                <button
-                  className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
-                  style={{
-                    boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-                  }}
-                >
-                  <Image
-                    src={
-                      resolvedTheme === "light"
-                        ? "/images/createicon.svg"
-                        : "/images/createicondark.svg"
-                    }
-                    width={20}
-                    height={20}
-                    alt="Logo"
-                  />
-                  <Link href="/dashboard">Create</Link>
-                </button>
-                <button
-                  className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
-                  style={{
-                    boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-                  }}
-                >
-                  <Image
-                    src={
-                      resolvedTheme === "light"
-                        ? "/images/savedicon.svg"
-                        : "/images/savedicondark.svg"
-                    }
-                    width={20}
-                    height={20}
-                    alt="Logo"
-                  />
-                  <Link href="/saved">Saved</Link>
-                </button>
-              </div>
-            </div>
-            <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
-              <Image
-                src={
-                  resolvedTheme === "light"
-                    ? "/images/usericon.svg"
-                    : "/images/usericondark.svg"
-                }
-                width={30}
-                height={30}
-                alt="Logo"
-              />
-              <Link
-                href="/profile"
-                className="text-tawnyPort dark:text-paleRose"
+          {isSidebarVisible && (
+            <>
+              <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50"></div>
+              <div
+                className="w-1/6 fixed dark:bg-lividBrown bg-paleRose h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink"
+                style={{ zIndex: 50 }}
               >
-                {user ? user.username : "User"}
-              </Link>
-            </div>
-          </div>
+                <div className="w-full">
+                  <div className="p-4 text-center mt-10">
+                    <Image
+                      src={
+                        resolvedTheme === "light"
+                          ? "/images/logofull.svg"
+                          : "/images/mindsynclogodarkmode.svg"
+                      }
+                      width={300}
+                      height={100}
+                      alt="Logo"
+                    />
+                  </div>
+                  <div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
+                    <button
+                      className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
+                      style={{
+                        boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                      }}
+                    >
+                      <Image
+                        src={
+                          resolvedTheme === "light"
+                            ? "/images/createicon.svg"
+                            : "/images/createicondark.svg"
+                        }
+                        width={20}
+                        height={20}
+                        alt="Logo"
+                      />
+                      <Link href="/dashboard">Create</Link>
+                    </button>
+                    <button
+                      className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
+                      style={{
+                        boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                      }}
+                    >
+                      <Image
+                        src={
+                          resolvedTheme === "light"
+                            ? "/images/savedicon.svg"
+                            : "/images/savedicondark.svg"
+                        }
+                        width={20}
+                        height={20}
+                        alt="Logo"
+                      />
+                      <Link href="/saved">Saved</Link>
+                    </button>
+                  </div>
+                </div>
+                <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
+                  <Image
+                    src={
+                      resolvedTheme === "light"
+                        ? "/images/usericon.svg"
+                        : "/images/usericondark.svg"
+                    }
+                    width={30}
+                    height={30}
+                    alt="Logo"
+                  />
+                  <Link
+                    href="/profile"
+                    className="text-tawnyPort dark:text-paleRose"
+                  >
+                    {user ? user.username : "User"}
+                  </Link>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Main Content */}
-          <div className="flex w-5/6 flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
+          <div className="w-full flex flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
             <div className="absolute top-5 right-20">
               <SignoutButton />
             </div>
@@ -696,12 +723,12 @@ const Edit = () => {
                   </div>
                   {/* Video Dialog */}
                   {showVideoDialog && (
-                    <div className="absolute inset-0 flex justify-center items-center gap-y-2 border-2 border-black w-1/4 h-1/4 bg-white rounded-xl left-[620px] top-[360px]">
-                      <div className="w-full p-4 flex flex-col">
-                        <h2 className="secondary-text text-center">
+                    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+                      <div className="dark:bg-lividBrown bg-paleRose md:w-1/4 xs:w-5/6 p-6 rounded-lg border-2 border-paleRose dark:border-stilleto shadow-lg">
+                        <h2 className="secondary-text text-center dark:text-paleRose font-normal text-2xl mb-2">
                           Select Video Input
                         </h2>
-                        <div>
+                        <div className="mb-2">
                           <input
                             type="radio"
                             name="videoLinkInputType"
@@ -715,11 +742,14 @@ const Edit = () => {
                             }
                             className="ml-6"
                           />
-                          <label htmlFor="videoLink" className="ml-2">
+                          <label
+                            htmlFor="videoLink"
+                            className="ml-2 secondary-text text-md dark:text-paleRose text-tawnyPort"
+                          >
                             YouTube Link
                           </label>
                         </div>
-                        <div>
+                        <div className="mb-2">
                           <input
                             type="radio"
                             name="videoLinkInputType"
@@ -733,7 +763,10 @@ const Edit = () => {
                             }
                             className="ml-6"
                           />
-                          <label htmlFor="videoFile" className="ml-2">
+                          <label
+                            htmlFor="videoFile"
+                            className="ml-2 secondary-text text-md dark:text-paleRose text-tawnyPort"
+                          >
                             Video File
                           </label>
                         </div>
@@ -743,7 +776,7 @@ const Edit = () => {
                             value={videoLinkInput.value}
                             onChange={handleVideoLinkInput}
                             placeholder="Enter YouTube Link"
-                            className="border-2 border-black rounded-xl p-2 mt-2"
+                            className="rounded-xl dark:bg-tawnyPort border-2 dark:border-paleRose dark:text-paleRose p-2 mt-2 w-full"
                           />
                         )}
                         {videoLinkInput.type === "file" && (
@@ -751,10 +784,10 @@ const Edit = () => {
                             type="file"
                             accept="video/*"
                             onChange={handleFileChange}
-                            className="border-2 border-black rounded-xl p-2 mt-2"
+                            className="dark:bg-tawnyPort w-full dark:text-paleRose border-2 dark:border-paleRose rounded-xl p-2 mt-2"
                           />
                         )}
-                        <div className="flex flex-row items-center justify-center mt-2 gap-4">
+                        <div className="flex flex-row items-center justify-center mt-4 gap-4">
                           <button
                             onClick={() => setShowVideoDialog(false)}
                             className="primary-btn"
@@ -795,7 +828,7 @@ const Edit = () => {
                           <Controls />
                           <TransformComponent>
                             <pre
-                              ref={mindmapRef}
+                              ref={!isMobile ? mindmapRef : null}
                               key={mindmapCode}
                               className="mermaid mindmap"
                             >
@@ -902,7 +935,7 @@ const Edit = () => {
                             }}
                           >
                             <pre
-                              ref={mindmapRef}
+                              ref={isMobile ? mindmapRef : null}
                               key={mindmapCode}
                               className="mermaid mindmap w-full h-full"
                             >

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import Image from "next/image";
+import mermaid from "mermaid";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 
 const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -23,7 +24,7 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
     setShowExportDropdown(!showExportDropdown);
   };
 
-  const handleExport = (format) => {
+  const handleExport = async (format) => {
     setShowExportDropdown(false);
     onExport(mindmap, format);
   };
