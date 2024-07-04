@@ -10,6 +10,7 @@ import { getServerSession } from "next-auth/next"; // Import NextAuth session ha
 export const GET = async (request) => {
 	const { searchParams } = new URL(request.url);
 	const mindmapId = searchParams.get("id");
+	const sample = searchParams.get("sample");
 
 	if (!mindmapId) {
 		return new NextResponse("Missing mindmap ID", { status: 400 });
@@ -18,7 +19,7 @@ export const GET = async (request) => {
 	await connect();
 	const session = await getServerSession(authOptions);
 
-	if (!session || !session.user?.email) {
+	if ((!session || !session.user?.email) & (sample !== "true")) {
 		return new NextResponse("Unauthorized", { status: 401 });
 	}
 
@@ -30,23 +31,26 @@ export const GET = async (request) => {
 			return new NextResponse("Mindmap not found", { status: 404 });
 		}
 
-		// Check if the mindmap belongs to the authenticated user
-		const user = await User.findOne({ email: session.user.email }).populate(
-			"mindmaps"
-		);
+		if (sample !== "true") {
 
-		if (!user) {
-			return new NextResponse("User not found", { status: 404 });
-		}
+			// Check if the mindmap belongs to the authenticated user
+			const user = await User.findOne({ email: session.user.email }).populate(
+				"mindmaps"
+			);
 
-		// Check if the mindmap is in the user's mindmaps array
-		if (
-			!user.mindmaps.some(
-				(mindmapId) =>
-					mindmapId._id.toString() === mindmap._id.toString()
-			)
-		) {
-			return new NextResponse("Unauthorized", { status: 401 });
+			if (!user) {
+				return new NextResponse("User not found", { status: 404 });
+			}
+
+			// Check if the mindmap is in the user's mindmaps array
+			if (
+				!user.mindmaps.some(
+					(mindmapId) =>
+						mindmapId._id.toString() === mindmap._id.toString()
+				)
+			) {
+				return new NextResponse("Unauthorized", { status: 401 });
+			}
 		}
 
 		return NextResponse.json({

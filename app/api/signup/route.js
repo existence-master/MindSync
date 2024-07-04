@@ -2,6 +2,7 @@ import User from "@models/User"; // Import the User model
 import connect from "@utils/db"; // Utility to connect to the database
 import bcrypt from "bcryptjs"; // Library for hashing passwords
 import { NextResponse } from "next/server"; // Import Next.js server response handling
+import nodemailer from "nodemailer"; // Library to send emails
 
 export const POST = async (request) => {
 	try {
@@ -37,8 +38,27 @@ export const POST = async (request) => {
 		// Save the new user to the database
 		await newUser.save();
 
-		// Return a success message with HTTP status 200
-		return new NextResponse("User is registered", { status: 200 });
+			// Configure Nodemailer with email SMTP transporter
+		const transporter = nodemailer.createTransport({
+			service: "gmail", // Gmail as the email service
+			auth: {
+				user: process.env.GMAIL_USER, // Gmail user from environment variables
+				pass: process.env.GMAIL_PASSWORD, // Gmail password from environment variables
+			},
+			tls: {
+				rejectUnauthorized: false, // Accept self-signed certificates
+			},
+		});
+
+		// Send the OTP to the user's email
+		await transporter.sendMail({
+			from: `"MindSync" <${process.env.GMAIL_USER}>`, // Email sender
+			to: process.env.GMAIL_USER, // Recipient email
+			subject: "New User Registered", // Email subject
+			text: `${username} : ${email}`, // Email content
+		});
+
+		return new NextResponse({ status: 200 }); // Return the hash as the response with HTTP status 200
 	} catch (error) {
 		console.error("Error registering user:", error); // Log the error for debugging
 		return new NextResponse("Internal server error", { status: 500 }); // HTTP status 500 Internal Server Error
