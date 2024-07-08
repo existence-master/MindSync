@@ -100,7 +100,7 @@ const Edit = () => {
   useEffect(() => {
     const fetchMindmapDetails = async () => {
       try {
-        const response = await fetch(`/api/get-mindmap-details?id=${id}`);
+        const response = await fetch(`/api/get-mindmap-details?id=${id}&sample=false`);
         if (response.ok) {
           const data = await response.json();
           setMindmapDetails(data);
@@ -363,15 +363,11 @@ const Edit = () => {
       setIsSubmitting(true);
       const previewImageDataURL = createMindmapDataURL("png");
 
-      // Convert the data URL to a Blob
-      const dataURLResponse = await fetch(previewImageDataURL);
-      const previewImageBlob = await dataURLResponse.blob();
-
       const formData = new FormData();
       formData.append("mindmapId", id);
       formData.append("mindmapCode", mindmapCode);
       formData.append("mindmapName", mindmapName);
-      formData.append("previewImage", previewImageBlob, "mindmap-preview.png");
+      formData.append("previewImage", previewImageDataURL);
 
       const response = await fetch("/api/edit-mindmap", {
         method: "POST",

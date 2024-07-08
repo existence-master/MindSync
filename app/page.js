@@ -1,450 +1,535 @@
 "use client"; // Render on client side
 
 import ErrorDisplay from "@components/ErrorDisplay"; // Custom error component
-import Navbar from "@components/Navbar"; // Navbar component
 import { useState, useEffect, useRef } from "react";
-import mermaid from "mermaid"; // Mermaid.js
 import NextImage from "next/image";
-import { fabric } from "fabric"; // Import the fabric.js library for canvas manipulation
+import { useTheme } from "next-themes";
+import Link from "next/link";
+import MindmapCard from "@components/MindmapCard";
+import { EvervaultCard, Icon } from "@components/EvervaultCard";
+import { SAMPLE_IDS } from "@utils/constants.js";
+import { useRouter } from "next/navigation";
+import { InfiniteMovingCards } from "@components/InfiniteMovingCards";
 
 const Home = () => {
-	// State to store the mode and input value
-	const [formData, setFormData] = useState({
-		mode: "Text",
-		input: "",
-	});
+  const { setTheme, resolvedTheme } = useTheme();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [navbarStyle, setNavbarStyle] = useState("bg-transparent");
+  const [sampleMindmaps, setSampleMindmaps] = useState([]);
+  const [error, setError] = useState(null);
+  const [mindmapCount, setMindmapCount] = useState(0);
 
-	// State to store error
-	const [error, setError] = useState(null);
+  const handleEdit = (id) => {
+    router.push(`/sample/${id}`);
+  };
 
-	// State to store mindmap
-	const [mindmap, setMindmap] = useState(null);
+  useEffect(() => {
+    const fetchMindmapCount = async () => {
+      try {
+        const response = await fetch("/api/mindmap-count");
+        if (!response.ok) {
+          throw new Error("Failed to fetch mindmap count");
+        }
+        const count = await response.json();
+        setMindmapCount(count);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
 
-	// State to store form submission status
-	const [isSubmitting, setIsSubmitting] = useState(false);
+    fetchMindmapCount();
+  }, []);
 
-	// State to store SpeechRecognition instance
-	const [recognition, setRecognition] = useState(null);
+  useEffect(() => {
+    const handleScroll = () => {
+      const isUserScrolled = window.scrollY > 0;
+      setIsScrolled(isUserScrolled);
+      setNavbarStyle(isUserScrolled ? "bg-white" : "bg-transparent");
+    };
 
-	// State to distinguish between audio file and live recording
-	const [liveRecording, setLiveRecording] = useState(false);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-	// State to trigger the button animation
-	const [isRecording, setIsRecording] = useState(false);
+  useEffect(() => {
+    const fetchSampleMindmaps = async (sampleIds) => {
+      const sampleMindmapDetails = [];
 
-	// Create a reference for the mindmap element
-	const mindmapRef = useRef(null);
+      for (const id of sampleIds) {
+        try {
+          const response = await fetch(
+            `/api/get-mindmap-details?id=${id}&sample=true`
+          );
+          if (!response.ok) {
+            throw new Error(
+              `Error fetching mindmap with ID ${id}: ${response.statusText}`
+            );
+          }
+          const data = await response.json();
+          sampleMindmapDetails.push(data);
+        } catch (error) {
+          setError(error.message);
+        }
+      }
 
-	// Custom function to handle mermaid syntax errors
-	mermaid.parseError = (err, hash) => {
-		setError("Couldn't convert to mindmap. Please try a different context");
-	};
+      setSampleMindmaps(sampleMindmapDetails);
+    };
 
-	// Utility function to detect mobile devices
-	const isMobileDevice = () => {
-		return /Mobi|Android/i.test(window?.navigator.userAgent);
-	};
+    fetchSampleMindmaps(SAMPLE_IDS);
+  }, []);
 
-	// Load mermaid dynamically
-	useEffect(() => {
-		mermaid.initialize({ startOnLoad: true });
-	}, []);
+  const testimonials = [
+    {
+      quote:
+        "bro this app is awesome. mindmapping during class has never been easier.",
+      name: "Sarthak Karandikar",
+      title: "billionaire, playboy, philanthropist",
+    },
+    {
+      quote:
+        "saved me from failing all my classes. i owe my life to mindsync. :D",
+      name: "kabeer ahmed merchant",
+      title: "an average student",
+    },
+    {
+      quote: "makes my daily work so much easier. now all i gotta do is record my lectures and i have a mindmap of the whole thing!",
+      name: "Abhijeet Suryawanshi",
+      title: "Your friendly neighbourhood data scientist",
+    },
+    {
+      quote:
+        "bro i designed the whole damn frontend, of course i will enjoy using it. mindsync is the best.",
+      name: "Ojaswini Prabhune",
+      title: "UI/UX Designer",
+    },
+    {
+      quote:
+        "i am so happy that i found mindsync. mindsync has saved my life in so many ways.",
+      name: "Varad Deshpande",
+      title: "casually became a trillionaire - thanks to mindsync",
+    },
+  ];
 
-	useEffect(() => {
-		mermaid.run();
-	}, [mindmap]);
+  return (
+    <>
+      <nav class={`${navbarStyle} fixed w-full z-20 top-0 start-0`}>
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <NextImage
+              src="/images/logofull.svg"
+              width={200}
+              height={50}
+              alt="MindSync Logo"
+            />
+          </a>
+          <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+            <Link href={"/login"}>
+              <button
+                type="button"
+                class="dark:text-lividBrown text-paleRose bg-stilleto hover:bg-lividBrown focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-stilleto"
+              >
+                Login
+              </button>
+            </Link>
+            <button
+              data-collapse-toggle="navbar-sticky"
+              type="button"
+              class={`inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 ${
+                isOpen ? "hidden" : ""
+              }`}
+              aria-controls="navbar-sticky"
+              aria-expanded="false"
+              onClick={() => setIsOpen(true)}
+            >
+              <span class="sr-only">Open main menu</span>
+              <svg
+                class="w-5 h-5"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 17 14"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M1 1h15M1 7h15M1 13h15"
+                />
+              </svg>
+            </button>
+          </div>
+          <div
+            class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+            id="navbar-sticky"
+          >
+            <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-transparent md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
+              <li>
+                <a
+                  href="#"
+                  class="block py-2 px-3 text-tickleMePink rounded text-xl"
+                  aria-current="page"
+                >
+                  Home
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl"
+                >
+                  About
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl"
+                >
+                  Contact Us
+                </a>
+              </li>
+            </ul>
+          </div>
+          {isOpen && (
+            <div class="fixed inset-0 flex z-50">
+              <div class="fixed inset-0 bg-black opacity-50"></div>
+              <div class="absolute inset-y-0 right-0 flex flex-col w-full max-w-sm">
+                <button
+                  data-collapse-toggle="navbar-sticky"
+                  type="button"
+                  class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                  aria-controls="navbar-sticky"
+                  aria-expanded="false"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+                <div class="w-full dark:bg-lividBrown bg-paleRose rounded-lg">
+                  <ul class="py-4 px-2 space-y-2">
+                    <li>
+                      <a
+                        href="#"
+                        class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
+                      >
+                        Home
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
+                      >
+                        About
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
+                      >
+                        Contact Us
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+      <main className="w-full h-full bg-paleRose dark:bg-lividBrown">
+        <button
+          onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
+          className="fixed bottom-5 right-5 px-4 py-3 rounded-lg bg-stilleto dark:bg-paleRose text-white dark:text-lividBrown shadow-md transition-all duration-500"
+          style={{ zIndex: 100 }}
+        >
+          {resolvedTheme === "light" ? (
+            <>
+              <span className="text-sm">Dark Mode</span>
+            </>
+          ) : (
+            <>
+              <span className="text-sm">Light Mode</span>
+            </>
+          )}
+        </button>
+        <section id="hero" className="flex flex-col items-center h-screen">
+          <h1 className="mt-40 mb-4 text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+            Mindmap your way to success
+          </h1>
+          <p className="text-2xl text-center dark:text-paleRose text-lividBrown font-inter">
+            Organize your mind and{" "}
+            <span className="font-bold">unleash your creativity</span> in one
+            click.
+          </p>
+          <div className="flex flex-row gap-4 mt-8 mb-8">
+            <Link
+              href="#"
+              className="bg-paleRose text-lividBrown p-2 rounded-lg text-xl px-4 hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter"
+            >
+              Take a Tour
+            </Link>
+            <Link
+              href="/signup"
+              className="bg-stilleto text-white dark:bg-paleRose dark:text-lividBrown p-2 rounded-lg text-xl px-4 hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter"
+            >
+              Get Started
+            </Link>
+          </div>
+          <div>
+            {" "}
+            <div className="hidden md:block">
+              <iframe
+                width="800"
+                height="515"
+                src="https://www.youtube.com/embed/kHwuCagHWWg?si=si_k-Nimlmpu5qth"
+                title="MindSync Demo Video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              />
+            </div>
+            <div className="md:hidden">
+              <iframe
+                width="300"
+                height="300"
+                src="https://www.youtube.com/embed/kHwuCagHWWg?si=si_k-Nimlmpu5qth"
+                title="MindSync Demo Video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              />
+            </div>
+          </div>
+        </section>
+        <section
+          id="samples"
+          className="flex flex-col items-center bg-paleRose dark:bg-lividBrown md:h-screen xs:min-h-fit"
+        >
+          <h1 className="xs:mt-8 md:mt-40 mb-4 xs:text-3xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+            Check out some sample Mindmaps here!
+          </h1>
+          <div className="flex flex-wrap justify-center items-center gap-4 my-10">
+            {sampleMindmaps.length > 0 ? (
+              sampleMindmaps.map((mindmap, index) => (
+                <MindmapCard
+                  key={index}
+                  mindmap={mindmap}
+                  sample={true}
+                  onEdit={handleEdit}
+                />
+              ))
+            ) : (
+              <p className="text-center">No sample mindmaps found</p>
+            )}
+          </div>
+        </section>
+        <section
+          id="generated"
+          className="flex flex-col items-center bg-paleRose dark:bg-lividBrown min-h-fit"
+        >
+          <h1 className="mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+            {mindmapCount}
+          </h1>
+          <div className="flex flex-col justify-center items-center xs:text-3xl md:text-4xl font-inter gap-4 my-10 mb-20">
+            Mindmaps Generated!
+          </div>
+        </section>
+        <section
+          id="features"
+          className="flex md:flex-row xs:flex-col items-center justify-center bg-paleRose dark:bg-lividBrown md:h-screen xs:min-h-fit"
+        >
+          <h1 className="xs:block md:hidden mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+            Features
+          </h1>
+          <div className="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
+            <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
 
-	useEffect(() => {
-		if (formData.mode === "Audio") {
-			const speechRecognition =
-				window?.SpeechRecognition || window?.webkitSpeechRecognition;
-			if (speechRecognition) {
-				// Initialize SpeechRecognition when mode is "Audio"
-				const recognitionInstance = new speechRecognition();
-				recognitionInstance.continuous = !isMobileDevice(); // Continuous recording
-				recognitionInstance.interimResults = !isMobileDevice();
+            <EvervaultCard text="create" />
 
-				// Set the state when recording is done
-				recognitionInstance.onresult = (event) => {
-					const transcript = Array.from(event.results)
-						.map((result) => result[0].transcript)
-						.join("");
-					setFormData({ ...formData, input: transcript });
-				};
-				setRecognition(recognitionInstance);
-			}
-		}
-	}, [formData.mode]);
+            <h2 className="dark:text-white text-black mt-4 text-sm font-light">
+              Attach anything and create a mindmap in seconds.
+            </h2>
+            <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
+              AI-Enabled Creation with Multimodal Support
+            </p>
+          </div>
+          <div className="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
+            <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
 
-	// Function to handle mode change and input change
-	const handleChange = (event) => {
-		const { name, value, files } = event.target;
-		if (name === "mode") {
-			setFormData({ mode: value, input: "" });
-			setLiveRecording(false);
-			setIsRecording(false);
-			if (recognition) {
-				recognition.stop();
-			}
-		} else if (
-			name === "input" &&
-			formData.mode === "Audio" &&
-			liveRecording === false
-		) {
-			// If the input is for audio and mode is "Audio", store the selected file
-			setFormData({ ...formData, input: files[0] });
-		} else {
-			// For other inputs, update the form data as usual
-			setFormData({ ...formData, [name]: value });
-		}
-	};
+            <EvervaultCard text="edit" />
 
-	// Function to handle start/stop recording
-	const handleToggleRecording = () => {
-		if (isRecording) {
-			recognition.stop();
-		} else {
-			recognition.start();
-			setFormData({ ...formData, input: "" });
-			setLiveRecording(true); // Toggle liveRecording state
-		}
+            <h2 className="dark:text-white text-black mt-4 text-sm font-light">
+              Edit your maps manually or simply send a message to edit it. You
+              can also add additional information to existing maps.
+            </h2>
+            <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
+              AI-Enabled Editing with Multimodal Support
+            </p>
+          </div>
+          <div className="md:mt-40 xs:mt-8 xs:mb-4 md:mb-0 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
+            <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
 
-		setIsRecording(!isRecording); // Toggle recording state
-	};
+            <EvervaultCard text="save" />
 
-	// Function to handle form submission
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-		setIsSubmitting(true); // Set submitting state to true
-		let text = null;
-		let response = null;
+            <h2 className="dark:text-white text-black mt-4 text-sm font-light">
+              Save maps to your Mindsync account for future reference or export
+              them in SVG/PNG formats.
+            </h2>
+            <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
+              Easy Save/Export.
+            </p>
+          </div>
+        </section>
+        <section
+          id="Testimonials"
+          className="flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown min-h-fit"
+        >
+          <h1 className="mt-20 mb-4 xs:text-2xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+            Testimonials
+          </h1>
+          <div className="h-[40rem] rounded-md flex flex-col antialiased bg-transparent dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+            <InfiniteMovingCards
+              items={testimonials}
+              direction="right"
+              speed="slow"
+            />
+          </div>
+        </section>
+        <section
+          id="betatest"
+          className="flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown min-h-fit"
+        >
+          <h1 className="mt-20 mb-4 xs:text-2xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+            Become a Beta Tester
+          </h1>
+          <form class="w-1/2 mx-auto mt-20 mb-20">
+            <label
+              for="email"
+              class="block mb-2 text-xl font-inter font-medium text-gray-900 dark:text-white"
+            >
+              Your email
+            </label>
+            <input
+              type="email"
+              id="email"
+              aria-describedby="helper-text-explanation"
+              class="bg-paleRose border border-gray-300 text-paleRose text-xl rounded-lg focus:ring-tickleMePink focus:border-stilleto block w-full p-2.5  dark:bg-paleRose dark:border-tickleMePink dark:placeholder-gray-400 dark:text-lividBrown dark:focus:ring-tickleMePink dark:focus:border-stilleto"
+              placeholder="name@mindsync.com"
+            />
 
-		// Check mode and convert the data accordingly
-		try {
-			if (
-				formData.mode === "Text" ||
-				(formData.mode === "Audio" && liveRecording === true)
-			) {
-				text = formData.input;
-			} else if (formData.mode === "Audio" && liveRecording === false) {
-				const inputData = new FormData();
-				inputData.append("audio", formData.input);
+            <p
+              id="helper-text-explanation"
+              class="mt-2 text-sm text-gray-500 dark:text-gray-400"
+            >
+              We’ll never share your details. Read our{" "}
+              <a
+                href="#"
+                class="font-medium text-tickleMePink hover:underline dark:text-tickleMePink"
+              >
+                Privacy Policy
+              </a>
+              .
+            </p>
+            <div className="w-full flex flex-col items-center justify-center mt-4">
+              <button
+                type="submit"
+                class="bg-tickleMePink text-white font-medium py-2 px-4 rounded-lg hover:bg-stilleto focus:outline-none focus:ring-4 focus:ring-tickleMePink dark:text-lividBrown dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-lividBrown"
+              >
+                Join the Beta Program
+              </button>
+            </div>
+          </form>
+        </section>
 
-				response = await fetch("/api/audio-to-text", {
-					method: "POST",
-					body: inputData,
-				});
-
-				if (response.ok) {
-					const output = await response.json();
-					text = output.text;
-				} else {
-					throw new Error("Failed to transcribe audio");
-				}
-			} else if (formData.mode === "Video") {
-				response = await fetch("/api/video-to-text", {
-					method: "POST",
-					body: JSON.stringify({ url: formData.input }),
-				});
-				if (response.ok) {
-					const output = await response.json();
-					text = output.text;
-				} else {
-					throw new Error("Failed to transcribe audio");
-				}
-			}
-
-			// Send a POST request to /api/text-to-mindmap with formData
-			response = await fetch("/api/text-to-mindmap", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ text }),
-			});
-
-			// Handle response
-			if (response.ok) {
-				let { mindmap } = await response.json();
-				setMindmap(mindmap);
-			} else {
-				throw new Error("Failed to render mindmap");
-			}
-		} catch (error) {
-			console.error("Error:", error.message);
-			setError(error.message);
-		} finally {
-			setIsSubmitting(false); // Reset submitting state to false
-		}
-	};
-
-	// Function to convert the mindmap from svg to png and download it
-	const handleDownloadMindmap = () => {
-		const mindmapSVG = mindmapRef.current.innerHTML; // Get the mindmap SVG content
-
-		// Load the SVG string into fabric.js
-		fabric.loadSVGFromString(mindmapSVG, (objects, options) => {
-			const svgElement = mindmapRef.current.childNodes[0];
-			const svgWidth = svgElement.width.baseVal.value;
-			const svgHeight = svgElement.height.baseVal.value;
-
-			// Create a new fabric.js canvas with correct dimensions
-			const canvas = new fabric.Canvas(document.createElement("canvas"), {
-				width: svgWidth,
-				height: svgHeight,
-			});
-
-			// Create a group from the SVG objects
-			const svgGroup = fabric.util.groupSVGElements(objects, options);
-
-			// Optional: Center and fit the SVG within the canvas
-			svgGroup.scaleToWidth(svgWidth);
-			svgGroup.scaleToHeight(svgHeight);
-			svgGroup.set({
-				left: 0,
-				top: 0,
-			});
-
-			// Add the group to the canvas
-			canvas.add(svgGroup);
-			canvas.renderAll();
-
-			// Convert the canvas content to a PNG data URL
-			const pngUrl = canvas.toDataURL({
-				format: "png", // Specify the output format as PNG
-				quality: 1, // Set the image quality (1 being the highest)
-			});
-
-			// Create a temporary link element for downloading
-			const downloadLink = document.createElement("a");
-
-			// Set the link's URL to the PNG data URL
-			downloadLink.href = pngUrl;
-
-			// Set the download filename as "mindmap.png"
-			downloadLink.download = "mindmap.png";
-
-			// Append the link to the document body
-			document.body.appendChild(downloadLink);
-
-			// Trigger the download by clicking the link
-			downloadLink.click();
-
-			// Remove the temporary link from the document
-			document.body.removeChild(downloadLink);
-		});
-	};
-
-	// Function to handle restarting
-	const handleRestart = () => {
-		setMindmap(null); // Reset mindmap
-		setFormData({
-			mode: "Text",
-			input: "",
-		});
-		setLiveRecording(false);
-	};
-
-	// Handle error function
-	const handleError = () => {
-		setError(null);
-	};
-
-	return (
-		<>
-			<main className="mt-5 mb-10 mx-5">
-				<Navbar />
-				<section className="mt-[35px] lg:mt-[75px] lg:mx-[30px] flex flex-col items-center">
-					<div className="max-w-max">
-						<h1 className="text-center primary-text">MindSync</h1>
-						<h2 className="xs:max-lg:mt-[10px] mt-[20px] text-center secondary-text">
-							Sync your thoughts to mindmaps in seconds
-						</h2>
-						{mindmap ? (
-							<div className="mt-[20px] lg:mt-[50px] w-full gap-5 lg:gap-7 flex flex-col items-center">
-								<h1 className="xs:max-md:text-sm md:max-lg:text-md text-center secondary-text">
-									Here's your mindmap
-								</h1>
-								<pre
-									ref={mindmapRef}
-									className="mermaid mindmap"
-								>
-									{mindmap}
-								</pre>
-								<div className="flex gap-10 items-center w-[50%]">
-									<button
-										onClick={handleDownloadMindmap}
-										className="mx-auto primary-btn" // Center align the button
-									>
-										Download
-									</button>
-									<button
-										onClick={handleRestart}
-										className="mx-auto primary-btn" // Center align the button
-									>
-										Restart
-									</button>
-								</div>
-							</div>
-						) : (
-							<form
-								onSubmit={handleSubmit}
-								className="mt-[20px] lg:mt-[50px] w-full gap-5 lg:gap-7 flex flex-col"
-							>
-								{/* Select for choosing mind mapping mode */}
-								<label
-									htmlFor="mindMappingMode"
-									className="text-tawnyPort ternary-text"
-								>
-									Select a mind mapping mode:
-								</label>
-								<select
-									id="mindMappingMode"
-									name="mode"
-									className="input"
-									value={formData.mode}
-									onChange={handleChange}
-								>
-									<option value="Text">Text</option>
-									<option value="Audio">Audio</option>
-									<option value="Video">Video</option>
-								</select>
-								{/* Label and input based on selected mode */}
-								{formData.mode === "Text" && (
-									<>
-										<label
-											htmlFor="textInput"
-											className="text-tawnyPort ternary-text"
-										>
-											Enter your text:
-										</label>
-										<textarea
-											id="textInput"
-											name="input"
-											className="input"
-											value={formData.input}
-											onChange={handleChange}
-											rows="4"
-											cols="35"
-											placeholder="Enter your text"
-										></textarea>
-									</>
-								)}
-								{formData.mode === "Audio" && (
-									<>
-										<div className="flex justify-center">
-											{" "}
-											{/* Change to center justify */}
-											<button
-												type="button"
-												onClick={handleToggleRecording}
-												className={`primary-btn ${
-													isRecording
-														? "bg-red-500 text-white animate-pulse"
-														: ""
-												}`}
-											>
-												{isRecording
-													? "Stop Recording"
-													: "Start Recording"}{" "}
-												{/* Toggle button text */}
-											</button>
-										</div>
-										<textarea
-											id="textInput"
-											name="input"
-											className="input"
-											value={
-												liveRecording
-													? formData.input
-													: ""
-											}
-											rows="4"
-											cols="35"
-											placeholder="You said..."
-											disabled
-										></textarea>
-										<span className="text-center ternary-text">
-											or
-										</span>{" "}
-										{/* Added "or" option */}
-										<label
-											htmlFor="audioUpload"
-											className="text-tawnyPort ternary-text"
-										>
-											Upload audio file:
-										</label>
-										<input
-											id="audioUpload"
-											name="input"
-											className="input"
-											type="file"
-											accept="audio/*"
-											onChange={handleChange}
-										/>
-									</>
-								)}
-								{formData.mode === "Video" && (
-									<>
-										<label
-											htmlFor="videoLink"
-											className="text-tawnyPort ternary-text"
-										>
-											Paste YouTube link:
-										</label>
-										<input
-											id="videoLink"
-											name="input"
-											type="text"
-											className="input"
-											value={formData.input}
-											onChange={handleChange}
-											placeholder="Paste YouTube link"
-										/>
-									</>
-								)}
-								{/* Submit button */}
-								<button
-									type="submit"
-									className="mx-auto primary-btn" // Center align the button
-								>
-									{isSubmitting ? "Processing" : "Convert"}
-								</button>
-							</form>
-						)}
-					</div>
-				</section>
-
-				{/* Display custom error if any*/}
-				{error && (
-					<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-						<ErrorDisplay
-							errorMessage={error}
-							handleError={handleError}
-						/>
-					</div>
-				)}
-			</main>
-			<div className="xs:max-md:hidden absolute top-[100px] xs:max-md:-right-[225px]  lg:max-lg:-right-[250px] -right-[275px]">
-				<NextImage
-					src="/images/blob-1.svg"
-					width={0}
-					height={0}
-					alt="Blob 1"
-					className="blob"
-				/>
-			</div>
-			<div className="xs:max-md:hidden absolute -bottom-[275px] xs:max-md:-left-[175px] md:max-lg:-left-[200px] -left-[225px]">
-				<NextImage
-					src="/images/blob-2.svg"
-					width={0}
-					height={0}
-					alt="Blob 2"
-					className="blob"
-				/>
-			</div>
-		</>
-	);
+        <footer class="bg-paleRose shadow dark:bg-lividBrown">
+          <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+            <div class="sm:flex sm:items-center sm:justify-between">
+              <a
+                href="https://flowbite.com/"
+                class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
+              >
+                <NextImage
+                  src="/images/logofull.svg"
+                  width={200}
+                  height={50}
+                  alt="MindSync Logo"
+                />
+              </a>
+              <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+                <li>
+                  <a
+                    href="#"
+                    class="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
+                  >
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
+                  >
+                    Licensing
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="hover:underline dark:text-paleRose text-lividBrown"
+                  >
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <hr class="my-6 border-tickleMePink sm:mx-auto lg:my-8" />
+            <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+              2024{" "}
+              <a href="#" class="hover:underline">
+                MindSync
+              </a>
+              . All Rights Reserved.
+            </span>
+          </div>
+        </footer>
+      </main>
+    </>
+  );
 };
 
 export default Home;
