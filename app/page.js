@@ -8,6 +8,7 @@ import Link from "next/link";
 import MindmapCard from "@components/MindmapCard";
 import { EvervaultCard, Icon } from "@components/EvervaultCard";
 import {SAMPLE_IDS} from "@utils/constants.js"
+import { useRouter } from "next/navigation";
 
 const Home = () => {
 	const { setTheme, resolvedTheme } = useTheme();
@@ -16,10 +17,30 @@ const Home = () => {
 	const [navbarStyle, setNavbarStyle] = useState("bg-transparent");
 	const [sampleMindmaps, setSampleMindmaps] = useState([]);
 	const [error, setError] = useState(null);
+  const [mindmapCount, setMindmapCount] = useState(0);
 
 	const handleEdit = (id) => {
 		router.push(`/sample/${id}`);
 	};
+
+
+useEffect(() => {
+  const fetchMindmapCount = async () => {
+    try {
+      const response = await fetch("/api/mindmap-count");
+      if (!response.ok) {
+        throw new Error("Failed to fetch mindmap count");
+      }
+      const count = await response.json();
+      setMindmapCount(count);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+    fetchMindmapCount();
+}, []);
+
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -304,9 +325,9 @@ const Home = () => {
 					id="generated"
 					className="flex flex-col items-center bg-paleRose dark:bg-lividBrown min-h-fit"
 				>
-					<h1 className="mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
-						120,000,000
-					</h1>
+                    <h1 className="mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+                        {mindmapCount}
+                    </h1>
 					<div className="flex flex-col justify-center items-center xs:text-3xl md:text-4xl font-inter gap-4 my-10 mb-20">
 						Mindmaps Generated!
 					</div>
