@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import useWindowSize from "@hooks/useWindowSize";
+import ErrorDisplay from "@components/ErrorDisplay";
 
 const Dashboard = () => {
 	const windowSize = useWindowSize();
@@ -49,6 +50,7 @@ const Dashboard = () => {
 
 	mermaid.parseError = (err) => {
 		setError("Couldn't convert to mindmap. Please try a different context");
+		updateMindmapCount(false);
 	};
 
 	useEffect(() => {
@@ -129,6 +131,30 @@ const Dashboard = () => {
 			value: event.target.value,
 		}));
 	};
+
+	const updateMindmapCount = async (increment) => {
+		try {
+			const response = await fetch("/api/mindmap-count", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ increment }),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to update mindmap count");
+			}
+
+			const { count } = await response.json();
+			if (count) {
+				return
+			}
+		} catch (err) {
+			setError(err.message);
+		}
+	};
+
 
 	const handleCreate = async () => {
 		setIsSubmitting(true);
@@ -214,6 +240,7 @@ const Dashboard = () => {
 			if (response.ok) {
 				const { mindmap } = await response.json();
 				setMindmap(mindmap);
+				updateMindmapCount(true)
 			} else {
 				throw new Error("Failed to render mindmap");
 			}
@@ -818,19 +845,10 @@ const Dashboard = () => {
 							)}
 						</div>
 						{error && (
-							<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-								<div
-									style={{
-										backgroundColor: "white",
-										padding: "20px",
-										borderRadius: "5px",
-									}}
-								>
-									<h2>Error</h2>
-									<p>{error}</p>
-									<button onClick={handleError}>Close</button>
-								</div>
-							</div>
+							<ErrorDisplay
+								errorMessage={error}
+								handleError={handleError}
+							/>
 						)}
 					</div>
 				</div>
@@ -1260,21 +1278,10 @@ const Dashboard = () => {
 								)}
 							</div>
 							{error && (
-								<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-									<div
-										style={{
-											backgroundColor: "white",
-											padding: "20px",
-											borderRadius: "5px",
-										}}
-									>
-										<h2>Error</h2>
-										<p>{error}</p>
-										<button onClick={handleError}>
-											Close
-										</button>
-									</div>
-								</div>
+								<ErrorDisplay
+									errorMessage={error}
+									handleError={handleError}
+								/>
 							)}
 						</div>
 						<div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">

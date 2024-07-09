@@ -3,7 +3,7 @@ import mermaid from "mermaid";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 
-const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
+const MindmapCard = ({ mindmap, onDelete, onExport, onEdit, sample }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -104,7 +104,7 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
             />
             Edit
           </button>
-          <button
+          {!sample && <button
             onClick={() => setShowDialog(true)}
             className="flex w-full text-right p-2 flex-row gap-2 primary-text text-lg font-inter font-medium text-stilleto"
           >
@@ -117,6 +117,7 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit }) => {
             />
             Delete
           </button>
+          }
           <button
             onClick={handleExportClick}
             className="flex w-full text-right p-2 flex-row gap-2 primary-text text-lg font-inter font-medium text-stilleto"

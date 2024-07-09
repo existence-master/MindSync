@@ -54,9 +54,10 @@ export const GET = async (request) => {
 		}
 
 		return NextResponse.json({
+			_id: mindmap._id,
 			name: mindmap.name,
 			code: mindmap.code,
-			text: mindmap.text, // Include the mindmap text
+			text: mindmap.text,
 			previewImageURL: mindmap.previewImageURL,
 		});
 	} catch (error) {
