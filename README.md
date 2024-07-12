@@ -1,4 +1,4 @@
-![MindSync GitHub Banner](.github/assets/banner.png)
+![MindSync GitHub Banner](.github/assets/banner.jpg)
 
 An AI based solution for information compression using mindmaps
 
