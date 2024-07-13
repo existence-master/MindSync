@@ -6,10 +6,22 @@ import NextImage from "next/image";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import MindmapCard from "@components/MindmapCard";
-import { EvervaultCard, Icon } from "@components/EvervaultCard";
+//import { EvervaultCard, Icon } from "@components/EvervaultCard";
 import { SAMPLE_IDS } from "@utils/constants.js";
 import { useRouter } from "next/navigation";
 import { InfiniteMovingCards } from "@components/InfiniteMovingCards";
+import { BentoGrid, BentoGridItem } from "@components/BentoGrid";
+import {
+  IconAbc,
+  IconArrowWaveRightUp,
+  IconBoxAlignRightFilled,
+  IconBoxAlignTopLeft,
+  IconClipboardCopy,
+  IconFileBroken,
+  IconSignature,
+  IconSun,
+  IconTableColumn,
+} from "@tabler/icons-react";
 
 const Home = () => {
   const { setTheme, resolvedTheme } = useTheme();
@@ -20,13 +32,14 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [mindmapCount, setMindmapCount] = useState(0);
   const router = useRouter();
+  const [betaSignedUp, setBetaSignedUp] = useState(false);
 
   const handleEdit = (id) => {
     router.push(`/sample/${id}`);
   };
 
   const handleError = () => {
-		setError(null);
+    setError(null);
   };
 
   useEffect(() => {
@@ -84,7 +97,72 @@ const Home = () => {
     fetchSampleMindmaps(SAMPLE_IDS);
   }, []);
 
-  console.log(sampleMindmaps)
+  console.log(sampleMindmaps);
+
+  const Skeleton = ({ imageUrl }) => {
+    const containerRef = useRef(null);
+    const [imageWidth, setImageWidth] = useState(0);
+    const [imageHeight, setImageHeight] = useState(0);
+
+    useEffect(() => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        setImageWidth(width);
+        setImageHeight(height);
+      }
+    }, []);
+
+    return (
+      <div
+        ref={containerRef}
+        className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl"
+      >
+        {imageUrl && (
+          <NextImage
+            src={imageUrl}
+            alt="Mindmap Skeleton"
+            width={imageWidth}
+            height={imageHeight}
+            className="bg-white rounded-xl py-2"
+          />
+        )}
+      </div>
+    );
+  };
+  const features = [
+    {
+      title: "Multimodal Inputs",
+      description:
+        "Text, image, audio and video to mindmap. Attach everything and create your mindmap.",
+      header: <Skeleton imageUrl="/images/feature1.svg" />,
+      icon: <IconAbc className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "Save Your Mindmap",
+      description: "Save Mindmaps to your MindSync account with ease.",
+      header: <Skeleton imageUrl="/images/feature2.svg" />,
+      icon: <IconClipboardCopy className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "Export Your Mindmap",
+      description: "Export Mindmaps in different formats.",
+      header: <Skeleton imageUrl="/images/feature3.svg" />,
+      icon: <IconFileBroken className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "AI Mindmap Editor",
+      description:
+        "Edit Mindmaps with textual instructions or multimodal inputs.",
+      header: <Skeleton imageUrl="/images/feature4.svg" />,
+      icon: <IconTableColumn className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "Dark and Light Mode",
+      description: "Switch between light and dark mode.",
+      header: <Skeleton imageUrl="/images/feature5.svg" />,
+      icon: <IconSun className="h-4 w-4 text-neutral-100" />,
+    },
+  ];
 
   const testimonials = [
     {
@@ -95,12 +173,13 @@ const Home = () => {
     },
     {
       quote:
-        "saved me from failing all my classNamees. i owe my life to mindsync. :D",
+        "saved me from failing all my classes. i owe my life to mindsync. :D",
       name: "kabeer ahmed merchant",
       title: "an average student",
     },
     {
-      quote: "makes my daily work so much easier. now all i gotta do is record my lectures and i have a mindmap of the whole thing!",
+      quote:
+        "makes my daily work so much easier. now all i gotta do is record my lectures and i have a mindmap of the whole thing!",
       name: "Abhijeet Suryawanshi",
       title: "Your friendly neighbourhood data scientist",
     },
@@ -122,7 +201,10 @@ const Home = () => {
     <>
       <nav className={`${navbarStyle} fixed w-full z-20 top-0 start-0`}>
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
+          <a
+            href="#"
+            className="flex items-center space-x-3 rtl:space-x-reverse"
+          >
             <NextImage
               src="/images/logofull.svg"
               width={200}
@@ -259,48 +341,48 @@ const Home = () => {
           )}
         </div>
       </nav>
-      <main classNameName="w-full h-full bg-paleRose dark:bg-lividBrown">
+      <main className="w-full h-full bg-paleRose dark:bg-lividBrown">
         <button
           onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
-          classNameName="fixed bottom-5 right-5 px-4 py-3 rounded-lg bg-stilleto dark:bg-paleRose text-white dark:text-lividBrown shadow-md transition-all duration-500"
+          className="fixed bottom-5 right-5 px-4 py-3 rounded-lg bg-stilleto dark:bg-paleRose text-white dark:text-lividBrown shadow-md transition-all duration-500"
           style={{ zIndex: 100 }}
         >
           {resolvedTheme === "light" ? (
             <>
-              <span classNameName="text-sm">Dark Mode</span>
+              <span className="text-sm">Dark Mode</span>
             </>
           ) : (
             <>
-              <span classNameName="text-sm">Light Mode</span>
+              <span className="text-sm">Light Mode</span>
             </>
           )}
         </button>
-        <section id="hero" classNameName="flex flex-col items-center h-screen">
-          <h1 classNameName="mt-40 mb-4 text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+        <section id="hero" className="flex flex-col items-center h-screen">
+          <h1 className="mt-40 mb-4 text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Mindmap your way to success
           </h1>
-          <p classNameName="text-2xl text-center dark:text-paleRose text-lividBrown font-inter">
+          <p className="text-2xl text-center dark:text-paleRose text-lividBrown font-inter">
             Organize your mind and{" "}
-            <span classNameName="font-bold">unleash your creativity</span> in one
+            <span className="font-bold">unleash your creativity</span> in one
             click.
           </p>
-          <div classNameName="flex flex-row gap-4 mt-8 mb-8">
+          <div className="flex flex-row gap-4 mt-8 mb-8">
             <Link
               href="#"
-              classNameName="bg-paleRose text-lividBrown p-2 rounded-lg text-xl px-4 hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter"
+              className="bg-paleRose text-lividBrown p-2 rounded-lg text-xl px-4 hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter"
             >
               Take a Tour
             </Link>
             <Link
               href="/signup"
-              classNameName="bg-stilleto text-white dark:bg-paleRose dark:text-lividBrown p-2 rounded-lg text-xl px-4 hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter"
+              className="bg-stilleto text-white dark:bg-paleRose dark:text-lividBrown p-2 rounded-lg text-xl px-4 hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter"
             >
               Get Started
             </Link>
           </div>
           <div>
             {" "}
-            <div classNameName="hidden md:block">
+            <div className="hidden md:block">
               <iframe
                 width="800"
                 height="515"
@@ -312,7 +394,7 @@ const Home = () => {
                 allowfullscreen
               />
             </div>
-            <div classNameName="md:hidden">
+            <div className="md:hidden">
               <iframe
                 width="300"
                 height="300"
@@ -328,15 +410,14 @@ const Home = () => {
         </section>
         <section
           id="samples"
-          classNameName="flex flex-col items-center bg-paleRose dark:bg-lividBrown md:h-screen xs:min-h-fit"
+          className="flex flex-col items-center bg-paleRose dark:bg-lividBrown md:h-screen xs:min-h-fit"
         >
-          <h1 classNameName="xs:mt-8 md:mt-40 mb-4 xs:text-3xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+          <h1 className="xs:mt-8 md:mt-40 mb-4 xs:text-3xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Check out some sample Mindmaps here!
           </h1>
-          <div classNameName="flex flex-wrap justify-center items-center gap-4 my-10">
+          <div className="flex flex-wrap justify-center items-center gap-4 my-10">
             {sampleMindmaps.length > 0 ? (
               sampleMindmaps.map((mindmap, index) => (
-                
                 <MindmapCard
                   key={index}
                   mindmap={mindmap}
@@ -345,84 +426,99 @@ const Home = () => {
                 />
               ))
             ) : (
-              <p classNameName="text-center">Loading sample mindmaps...</p>
+              <p className="text-center">Loading sample mindmaps...</p>
             )}
           </div>
         </section>
         <section
           id="generated"
-          classNameName="flex flex-col items-center bg-paleRose dark:bg-lividBrown min-h-fit"
+          className="flex flex-col items-center bg-paleRose dark:bg-lividBrown min-h-fit"
         >
-          <h1 classNameName="mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+          <h1 className="mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             {mindmapCount}
           </h1>
-          <div classNameName="flex flex-col justify-center items-center xs:text-3xl md:text-4xl font-inter gap-4 my-10 mb-20">
+          <div className="flex flex-col justify-center items-center xs:text-3xl md:text-4xl font-inter gap-4 my-10 mb-20">
             Mindmaps Generated!
           </div>
         </section>
         <section
           id="features"
-          classNameName="flex md:flex-row xs:flex-col items-center justify-center bg-paleRose dark:bg-lividBrown md:h-screen xs:min-h-fit"
+          className="flex md:flex-row xs:flex-col items-center justify-center bg-paleRose dark:bg-lividBrown md:h-screen xs:min-h-fit"
         >
-          <h1 classNameName="xs:block md:hidden mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+          <h1 className="xs:block md:hidden mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Features
           </h1>
-          <div classNameName="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
-            <Icon classNameName="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
-            <Icon classNameName="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
-            <Icon classNameName="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
-            <Icon classNameName="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
+          {/* 
+		  <div className="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
+            <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
 
             <EvervaultCard text="create" />
 
-            <h2 classNameName="dark:text-white text-black mt-4 text-sm font-light">
+            <h2 className="dark:text-white text-black mt-4 text-sm font-light">
               Attach anything and create a mindmap in seconds.
             </h2>
-            <p classNameName="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
+            <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
               AI-Enabled Creation with Multimodal Support
             </p>
           </div>
-          <div classNameName="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
-            <Icon classNameName="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
-            <Icon classNameName="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
-            <Icon classNameName="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
-            <Icon classNameName="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
+          <div className="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
+            <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
 
             <EvervaultCard text="edit" />
 
-            <h2 classNameName="dark:text-white text-black mt-4 text-sm font-light">
+            <h2 className="dark:text-white text-black mt-4 text-sm font-light">
               Edit your maps manually or simply send a message to edit it. You
               can also add additional information to existing maps.
             </h2>
-            <p classNameName="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
+            <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
               AI-Enabled Editing with Multimodal Support
             </p>
           </div>
-          <div classNameName="md:mt-40 xs:mt-8 xs:mb-4 md:mb-0 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
-            <Icon classNameName="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
-            <Icon classNameName="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
-            <Icon classNameName="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
-            <Icon classNameName="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
+          <div className="md:mt-40 xs:mt-8 xs:mb-4 md:mb-0 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
+            <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
 
             <EvervaultCard text="save" />
 
-            <h2 classNameName="dark:text-white text-black mt-4 text-sm font-light">
+            <h2 className="dark:text-white text-black mt-4 text-sm font-light">
               Save maps to your Mindsync account for future reference or export
               them in SVG/PNG formats.
             </h2>
-            <p classNameName="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
+            <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
               Easy Save/Export.
             </p>
-          </div>
+          </div> 
+		  */}
+          <BentoGrid className="max-w-4xl mx-auto px-2">
+            {features.map((item, i) => (
+              <BentoGridItem
+                key={i}
+                title={item.title}
+                description={item.description}
+                header={item.header}
+                icon={item.icon}
+                image={item.image}
+                className={i === 3 || i === 6 ? "md:col-span-2" : ""}
+              />
+            ))}
+          </BentoGrid>
         </section>
         <section
           id="Testimonials"
-          classNameName="flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown min-h-fit"
+          className="flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown min-h-fit"
         >
-          <h1 classNameName="mt-20 mb-4 xs:text-2xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+          <h1 className="mt-20 mb-4 xs:text-2xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Testimonials
           </h1>
-          <div classNameName="h-[40rem] rounded-md flex flex-col antialiased bg-transparent dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+          <div className="h-[40rem] rounded-md flex flex-col antialiased bg-transparent dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
             <InfiniteMovingCards
               items={testimonials}
               direction="right"
@@ -432,12 +528,31 @@ const Home = () => {
         </section>
         <section
           id="betatest"
-          classNameName="flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown min-h-fit"
+          className="flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown min-h-fit"
         >
-          <h1 classNameName="mt-20 mb-4 xs:text-2xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+          <h1 className="mt-20 mb-4 xs:text-2xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Become a Beta Tester
           </h1>
-          <form className="w-1/2 mx-auto mt-20 mb-20">
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const email = e.target.email.value;
+              const response = await fetch("/api/send-beta-signup-mail", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+              });
+              if (response.ok) {
+                console.log("Thank you for signing up!");
+                setBetaSignedUp(true);
+              } else {
+                console.log("Something went wrong. Please try again later.");
+              }
+            }}
+            className="md:w-1/2 xs:w-3/4 mx-auto mt-20 mb-20"
+          >
             <label
               for="email"
               className="block mb-2 text-xl font-inter font-medium text-gray-900 dark:text-white"
@@ -465,18 +580,22 @@ const Home = () => {
               </a>
               .
             </p>
-            <div classNameName="w-full flex flex-col items-center justify-center mt-4">
+            <div className="w-full flex flex-col items-center justify-center mt-4">
               <button
                 type="submit"
                 className="bg-tickleMePink text-white font-medium py-2 px-4 rounded-lg hover:bg-stilleto focus:outline-none focus:ring-4 focus:ring-tickleMePink dark:text-lividBrown dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-lividBrown"
               >
-                Join the Beta Program
+                {betaSignedUp
+                  ? "Thanks for Signing Up!"
+                  : "Join the Beta Program"}
               </button>
             </div>
           </form>
         </section>
 
-        {error && <ErrorDisplay errorMessage={error} handleError={handleError} />}
+        {error && (
+          <ErrorDisplay errorMessage={error} handleError={handleError} />
+        )}
 
         <footer className="bg-paleRose shadow dark:bg-lividBrown">
           <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
@@ -534,6 +653,18 @@ const Home = () => {
                 MindSync
               </a>
               . All Rights Reserved.
+            </span>
+            <span className="w-full flex flex-row md:items-center md:justify-center gap-x-2 mt-4">
+              Powered by{" "}
+              <Link href={"https://existence-master.netlify.app/"}>
+                <NextImage
+                  src="/images/existence.svg"
+                  width={200}
+                  height={50}
+                  alt="Existence Logo"
+                  className="rounded-xl"
+                />
+              </Link>
             </span>
           </div>
         </footer>
