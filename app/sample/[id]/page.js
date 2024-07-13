@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FileDisplay from "@components/FileDisplay";
-import SignoutButton from "@components/SignoutButton";
 import mermaid from "mermaid";
 import { fabric } from "fabric";
 import Image from "next/image";
@@ -141,24 +140,6 @@ const Sample = () => {
 			};
 			setRecognition(newRecognition);
 		}
-	}, []);
-
-	useEffect(() => {
-		const fetchUserDetails = async () => {
-			try {
-				const response = await fetch("/api/get-user-details");
-				if (response.ok) {
-					const data = await response.json();
-					setUser(data);
-				} else {
-					throw new Error("Failed to fetch user details");
-				}
-			} catch (error) {
-				setError(error.message);
-			}
-		};
-
-		fetchUserDetails();
 	}, []);
 
 	const handleToggleRecording = () => {
@@ -387,7 +368,7 @@ const Sample = () => {
 	};
 
 	// Render loading state if data is being fetched
-	if (status === "loading") {
+	if (!mindmapDetails) {
 		return (
 			<div className="bg-paleRose flex justify-center items-center h-screen">
 				<div role="status">
@@ -420,536 +401,71 @@ const Sample = () => {
 	}
 
 	// Render edit page if mindmap details are loaded
-	if (status === "authenticated" && mindmapDetails) {
-		return (
-			<div className="flex h-screen w-screen bg-paleRose dark:bg-lividBrown">
-				<div className="xs:hidden w-full md:flex relative">
-					{/* Main Content */}
-					<div className="w-full flex flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
-						<div className="absolute top-5 right-20">
-							<SignoutButton />
-						</div>
-						<div className="flex flex-col justify-center items-center">
-							<div className="flex flex-row gap-2 mt-6">
-								<div className="ml-20 w-1/2 p-4 border-2 border-stilleto dark:border-paleRose rounded-xl mr-4">
-									<div className="mb-4">
-										<label
-											htmlFor="mindmapName"
-											className="block secondary-text text-lg w-full p-1 mb-1 font-semibold dark:text-paleRose"
-										>
-											Mindmap Name
-										</label>
-										<input
-											type="text"
-											id="mindmapName"
-											value={mindmapName}
-											onChange={handleMindmapNameChange}
-											className="input h-[50px] w-full dark:text-paleRose"
-										/>
-									</div>
+	return (
+		<div className="flex h-screen w-screen bg-paleRose dark:bg-lividBrown">
+			<div className="xs:hidden w-full md:flex relative">
+				{/* Main Content */}
+				<div className="w-full flex flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
+					<div className="flex flex-col justify-center items-center">
+						<div className="flex flex-row gap-2 mt-6">
+							<div className="ml-20 w-1/2 p-4 border-2 border-stilleto dark:border-paleRose rounded-xl mr-4">
+								<div className="mb-4">
 									<label
-										htmlFor="mindmapCode"
-										className="block secondary-text text-lg dark:text-paleRose w-full font-semibold"
+										htmlFor="mindmapName"
+										className="block secondary-text text-lg w-full p-1 mb-1 font-semibold dark:text-paleRose"
 									>
-										Edit With Code
+										Mindmap Name
 									</label>
-									<MonacoEditor
-										id="mindmapCode"
-										height="500px"
-										language="mermaid"
-										value={mindmapCode}
-										onChange={handleMonacoEditorChange}
-										options={{
-											readOnly: availableEdits <= 0,
-											lineNumbers: "on",
-											fontSize: "14px",
-											theme: "vs-dark",
-											scrollBeyondLastLine: false,
-											renderLineHighlight: "none",
-											renderIndentGuides: true,
-											automaticLayout: true,
-											minimap: {
-												enabled: true,
-											},
-											wordWrap: "on",
-										}}
-										editorDidMount={(editor) => {
-											monacoEditorRef.current = editor;
-										}}
-									/>
-									<span className="block secondary-text dark:text-paleRose text-sm font-bold text-center mt-2">
-										or
-									</span>
-									<label
-										htmlFor="editMessage"
-										className="block secondary-text text-lg dark:text-paleRose w-full font-semibold"
-									>
-										Edit with Message
-									</label>
-									<div className="relative">
-										{showAttachmentOptions && (
-											<div className="absolute -left-24 -bottom-20 gap-y-2 gap-x-2 grid grid-cols-2">
-												<button
-													onClick={() =>
-														triggerFileInput(
-															".txt,.doc,.docx,.pdf"
-														)
-													}
-													className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
-												>
-													<Image
-														src="/images/texticon.svg"
-														width={20}
-														height={20}
-														alt="Saved"
-														className="py-1"
-													/>
-													Text
-												</button>
-												<button
-													onClick={() =>
-														triggerFileInput(
-															"audio/*"
-														)
-													}
-													className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
-												>
-													<Image
-														src="/images/audioicon.svg"
-														width={20}
-														height={20}
-														alt="Saved"
-														className="py-1"
-													/>
-													Audio
-												</button>
-												<button
-													onClick={() =>
-														setShowVideoDialog(true)
-													}
-													className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
-												>
-													<Image
-														src="/images/videoicon.svg"
-														width={20}
-														height={20}
-														alt="Saved"
-														className="py-1"
-													/>
-													Video
-												</button>
-												<button
-													onClick={() =>
-														triggerFileInput(
-															"image/*"
-														)
-													}
-													className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
-												>
-													<Image
-														src="/images/imageicon.svg"
-														width={20}
-														height={20}
-														alt="Saved"
-														className="py-1"
-													/>
-													Image
-												</button>
-											</div>
-										)}
-
-										<button
-											onClick={() =>
-												setShowAttachmentOptions(
-													!showAttachmentOptions
-												)
-											}
-										>
-											<Image
-												src={`/images/${
-													resolvedTheme === "light"
-														? "attachicon"
-														: "attachicondark"
-												}.svg`}
-												width={30}
-												height={30}
-												alt="Attachment"
-												className="absolute left-4 top-[12px]"
-											/>
-										</button>
-										<textarea
-											value={input}
-											onChange={(e) =>
-												setInput(e.target.value)
-											}
-											placeholder="Change/remove/add a node..."
-											className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort text-md mind-h-[60px]"
-										/>
-										<button
-											onClick={() =>
-												handleToggleRecording()
-											}
-											className={`bg-transparent absolute right-5 top-[10px] ${
-												isRecording
-													? "animate-pulse"
-													: ""
-											}`}
-										>
-											{isRecording ? (
-												<Image
-													src={`/images/${
-														resolvedTheme ===
-														"light"
-															? "micoff"
-															: "micoffdark"
-													}.svg`}
-													width={27}
-													height={27}
-													alt="Recording"
-												/>
-											) : (
-												<Image
-													src={`/images/${
-														resolvedTheme ===
-														"light"
-															? "micicon"
-															: "micicondark"
-													}.svg`}
-													width={27}
-													height={27}
-													alt="Recording"
-												/>
-											)}
-										</button>
-									</div>
 									<input
-										id="fileInput"
-										type="file"
-										multiple
-										onChange={handleFileChange}
-										style={{ display: "none" }}
+										type="text"
+										id="mindmapName"
+										value={mindmapName}
+										onChange={handleMindmapNameChange}
+										className="input h-[50px] w-full dark:text-paleRose"
 									/>
-									<div className="mt-2 w-full flex flex-row justify-start items-start gap-2 flex-wrap">
-										{files.map((file, index) => (
-											<FileDisplay
-												key={index}
-												file={file}
-												removeFile={() =>
-													removeFile(index)
-												}
-											/>
-										))}
-									</div>
-									<div className="w-full flex justify-center items-center mt-6">
-										<button
-											onClick={handleEdit}
-											disabled={availableEdits <= 0}
-											className="primary-btn dark:bg-paleRose dark:text-lividBrown text-xl"
-										>
-											{isSubmitting
-												? "Processing..."
-												: "Edit"}
-										</button>
-									</div>
-									{/* Video Dialog */}
-									{showVideoDialog && (
-										<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-											<div className="dark:bg-lividBrown bg-paleRose md:w-1/4 xs:w-5/6 p-6 rounded-lg border-2 border-paleRose dark:border-stilleto shadow-lg">
-												<h2 className="secondary-text text-center dark:text-paleRose font-normal text-2xl mb-2">
-													Select Video Input
-												</h2>
-												<div className="mb-2">
-													<input
-														type="radio"
-														name="videoLinkInputType"
-														value="link"
-														checked={
-															videoLinkInput.type ===
-															"link"
-														}
-														onChange={() =>
-															setVideoInput({
-																type: "link",
-																name: "",
-															})
-														}
-														className="ml-6"
-													/>
-													<label
-														htmlFor="videoLink"
-														className="ml-2 secondary-text text-md dark:text-paleRose text-tawnyPort"
-													>
-														YouTube Link
-													</label>
-												</div>
-												<div className="mb-2">
-													<input
-														type="radio"
-														name="videoLinkInputType"
-														value="file"
-														checked={
-															videoLinkInput.type ===
-															"file"
-														}
-														onChange={() =>
-															setVideoInput({
-																type: "file",
-																value: "",
-															})
-														}
-														className="ml-6"
-													/>
-													<label
-														htmlFor="videoFile"
-														className="ml-2 secondary-text text-md dark:text-paleRose text-tawnyPort"
-													>
-														Video File
-													</label>
-												</div>
-												{videoLinkInput.type ===
-													"link" && (
-													<input
-														type="text"
-														value={
-															videoLinkInput.value
-														}
-														onChange={
-															handleVideoLinkInput
-														}
-														placeholder="Enter YouTube Link"
-														className="rounded-xl dark:bg-tawnyPort border-2 dark:border-paleRose dark:text-paleRose p-2 mt-2 w-full"
-													/>
-												)}
-												{videoLinkInput.type ===
-													"file" && (
-													<input
-														type="file"
-														accept="video/*"
-														onChange={
-															handleFileChange
-														}
-														className="dark:bg-tawnyPort w-full dark:text-paleRose border-2 dark:border-paleRose rounded-xl p-2 mt-2"
-													/>
-												)}
-												<div className="flex flex-row items-center justify-center mt-4 gap-4">
-													<button
-														onClick={() =>
-															setShowVideoDialog(
-																false
-															)
-														}
-														className="primary-btn"
-													>
-														Cancel
-													</button>
-													<button
-														onClick={() => {
-															setShowVideoDialog(
-																false
-															);
-															if (
-																videoLinkInput.value !=
-																""
-															) {
-																setFiles(
-																	(
-																		prevFiles
-																	) => [
-																		...prevFiles,
-																		videoLinkInput,
-																	]
-																);
-															}
-														}}
-														className="primary-btn"
-													>
-														Select
-													</button>
-												</div>
-											</div>
-										</div>
-									)}
 								</div>
-								<div className="mr-20 w-1/2 p-4 flex flex-col justify-center items-center">
-									<div className="border-2 border-stilleto dark:border-paleRose rounded-xl min-h-max py-4">
-										<h2 className="secondary-text dark:text-paleRose text-center w-full p-2 mb-2 font-semibold border-b-2 border-stilleto dark:border-paleRose">
-											Mindmap Preview
-										</h2>
-										<TransformWrapper
-											initialScale={1}
-											initialPositionX={200}
-											initialPositionY={100}
-										>
-											{({
-												zoomIn,
-												zoomOut,
-												resetTransform,
-												...rest
-											}) => (
-												<>
-													<Controls />
-													<TransformComponent>
-														<pre
-															ref={
-																!isMobile
-																	? mindmapRef
-																	: null
-															}
-															key={mindmapCode}
-															className="mermaid mindmap"
-														>
-															{mindmapCode}
-														</pre>
-													</TransformComponent>
-												</>
-											)}
-										</TransformWrapper>
-									</div>
-									<div className="flex justify-center gap-2 mt-8">
-										<div className="relative">
-											<button
-												className="text-white font-inter border-2 border-white flex justify-center items-center bg-gray-400 rounded-xl p-2 w-[120px]"
-												onClick={() =>
-													setShowExportDropdown(
-														!showExportDropdown
-													)
-												}
-											>
-												Export
-											</button>
-											{showExportDropdown && (
-												<div className="absolute -left-8 flex flex-col justify-center items-center gap-y-2 mt-2">
-													<button
-														onClick={() =>
-															handleExportMindmap(
-																"svg"
-															)
-														}
-														className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
-													>
-														Export as SVG
-													</button>
-													<button
-														onClick={() =>
-															handleExportMindmap(
-																"png"
-															)
-														}
-														className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
-													>
-														Export as PNG
-													</button>
-												</div>
-											)}
-										</div>
-										<p>
-											Total Available Edits : {availableEdits}
-										</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						{error && (
-							<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-								<div
-									style={{
-										backgroundColor: "white",
-										padding: "20px",
-										borderRadius: "5px",
-									}}
+								<label
+									htmlFor="mindmapCode"
+									className="block secondary-text text-lg dark:text-paleRose w-full font-semibold"
 								>
-									<h2>Error</h2>
-									<p>{error}</p>
-									<button onClick={() => setError(null)}>
-										Close
-									</button>
-								</div>
-							</div>
-						)}
-					</div>
-				</div>
-				{/* Mobile Content */}
-				<div className="xs:flex md:hidden">
-					<div id="container" className="w-screen h-screen px-2">
-						<div className="flex w-full h-full min-h-max mb-8 flex-col justify-center items-center relative overflow-y-scroll">
-							<div className="absolute top-5 right-20">
-								<SignoutButton />
-							</div>
-							<div className="mb-4 w-full">
-								<input
-									type="text"
-									id="mindmapName"
-									value={mindmapName}
-									onChange={handleMindmapNameChange}
-									className="input h-[50px] w-full dark:text-paleRose"
+									Edit With Code
+								</label>
+								<MonacoEditor
+									id="mindmapCode"
+									height="500px"
+									language="mermaid"
+									value={mindmapCode}
+									onChange={handleMonacoEditorChange}
+									options={{
+										readOnly: availableEdits <= 0,
+										lineNumbers: "on",
+										fontSize: "14px",
+										theme: "vs-dark",
+										scrollBeyondLastLine: false,
+										renderLineHighlight: "none",
+										renderIndentGuides: true,
+										automaticLayout: true,
+										minimap: {
+											enabled: true,
+										},
+										wordWrap: "on",
+									}}
+									editorDidMount={(editor) => {
+										monacoEditorRef.current = editor;
+									}}
 								/>
-							</div>
-							<div className="w-full h-2/4 flex flex-col justify-center items-center">
-								<div className="h-full min-h-max w-full py-4">
-									<TransformWrapper
-										initialScale={1}
-										initialPositionX={200}
-										initialPositionY={100}
-										minScale={2}
-										maxScale={8}
-										limitToBounds={false}
-										centerOnInit={true}
-									>
-										{({
-											zoomIn,
-											zoomOut,
-											resetTransform,
-											...rest
-										}) => (
-											<>
-												<Controls />
-												<TransformComponent
-													wrapperStyle={{
-														height: "100%",
-														width: "100%",
-													}}
-													contentStyle={{
-														height: "100%",
-														width: "100%",
-													}}
-												>
-													<div
-														style={{
-															width: "100%",
-															height: "100%",
-															transformOrigin:
-																"center center",
-														}}
-													>
-														<pre
-															ref={
-																isMobile
-																	? mindmapRef
-																	: null
-															}
-															key={mindmapCode}
-															className="mermaid mindmap w-full h-full"
-														>
-															{mindmapCode}
-														</pre>
-													</div>
-												</TransformComponent>
-											</>
-										)}
-									</TransformWrapper>
-								</div>
-							</div>
-							{/* Edit with Message */}
-							<div className="w-full">
+								<span className="block secondary-text dark:text-paleRose text-sm font-bold text-center mt-2">
+									or
+								</span>
 								<label
 									htmlFor="editMessage"
 									className="block secondary-text text-lg dark:text-paleRose w-full font-semibold"
 								>
 									Edit with Message
 								</label>
-								<div className="relative w-full">
+								<div className="relative">
 									{showAttachmentOptions && (
-										<div className="absolute -left-0 -bottom-20 gap-y-2 gap-x-2 grid grid-cols-2">
+										<div className="absolute -left-24 -bottom-20 gap-y-2 gap-x-2 grid grid-cols-2">
 											<button
 												onClick={() =>
 													triggerFileInput(
@@ -969,7 +485,9 @@ const Sample = () => {
 											</button>
 											<button
 												onClick={() =>
-													triggerFileInput("audio/*")
+													triggerFileInput(
+														"audio/*"
+													)
 												}
 												className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 											>
@@ -999,7 +517,9 @@ const Sample = () => {
 											</button>
 											<button
 												onClick={() =>
-													triggerFileInput("image/*")
+													triggerFileInput(
+														"image/*"
+													)
 												}
 												className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 											>
@@ -1040,18 +560,23 @@ const Sample = () => {
 											setInput(e.target.value)
 										}
 										placeholder="Change/remove/add a node..."
-										className="input w-full h-[60px] px-3 py-4 pl-14 dark:text-paleRose text-tawnyPort text-md mind-h-[60px]"
+										className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort text-md mind-h-[60px]"
 									/>
 									<button
-										onClick={() => handleToggleRecording()}
+										onClick={() =>
+											handleToggleRecording()
+										}
 										className={`bg-transparent absolute right-5 top-[10px] ${
-											isRecording ? "animate-pulse" : ""
+											isRecording
+												? "animate-pulse"
+												: ""
 										}`}
 									>
 										{isRecording ? (
 											<Image
 												src={`/images/${
-													resolvedTheme === "light"
+													resolvedTheme ===
+													"light"
 														? "micoff"
 														: "micoffdark"
 												}.svg`}
@@ -1062,7 +587,8 @@ const Sample = () => {
 										) : (
 											<Image
 												src={`/images/${
-													resolvedTheme === "light"
+													resolvedTheme ===
+													"light"
 														? "micicon"
 														: "micicondark"
 												}.svg`}
@@ -1085,11 +611,13 @@ const Sample = () => {
 										<FileDisplay
 											key={index}
 											file={file}
-											removeFile={() => removeFile(index)}
+											removeFile={() =>
+												removeFile(index)
+											}
 										/>
 									))}
 								</div>
-								<div className="w-full flex justify-center items-center mt-3">
+								<div className="w-full flex justify-center items-center mt-6">
 									<button
 										onClick={handleEdit}
 										disabled={availableEdits <= 0}
@@ -1102,12 +630,12 @@ const Sample = () => {
 								</div>
 								{/* Video Dialog */}
 								{showVideoDialog && (
-									<div className="absolute inset-0 flex justify-center items-center gap-y-2 border-2 border-black w-1/4 h-1/4 bg-white rounded-xl left-[620px] top-[360px]">
-										<div className="w-full p-4 flex flex-col">
-											<h2 className="secondary-text text-center">
+									<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+										<div className="dark:bg-lividBrown bg-paleRose md:w-1/4 xs:w-5/6 p-6 rounded-lg border-2 border-paleRose dark:border-stilleto shadow-lg">
+											<h2 className="secondary-text text-center dark:text-paleRose font-normal text-2xl mb-2">
 												Select Video Input
 											</h2>
-											<div>
+											<div className="mb-2">
 												<input
 													type="radio"
 													name="videoLinkInputType"
@@ -1126,12 +654,12 @@ const Sample = () => {
 												/>
 												<label
 													htmlFor="videoLink"
-													className="ml-2"
+													className="ml-2 secondary-text text-md dark:text-paleRose text-tawnyPort"
 												>
 													YouTube Link
 												</label>
 											</div>
-											<div>
+											<div className="mb-2">
 												<input
 													type="radio"
 													name="videoLinkInputType"
@@ -1150,31 +678,37 @@ const Sample = () => {
 												/>
 												<label
 													htmlFor="videoFile"
-													className="ml-2"
+													className="ml-2 secondary-text text-md dark:text-paleRose text-tawnyPort"
 												>
 													Video File
 												</label>
 											</div>
-											{videoLinkInput.type === "link" && (
+											{videoLinkInput.type ===
+												"link" && (
 												<input
 													type="text"
-													value={videoLinkInput.value}
+													value={
+														videoLinkInput.value
+													}
 													onChange={
 														handleVideoLinkInput
 													}
 													placeholder="Enter YouTube Link"
-													className="border-2 border-black rounded-xl p-2 mt-2"
+													className="rounded-xl dark:bg-tawnyPort border-2 dark:border-paleRose dark:text-paleRose p-2 mt-2 w-full"
 												/>
 											)}
-											{videoLinkInput.type === "file" && (
+											{videoLinkInput.type ===
+												"file" && (
 												<input
 													type="file"
 													accept="video/*"
-													onChange={handleFileChange}
-													className="border-2 border-black rounded-xl p-2 mt-2"
+													onChange={
+														handleFileChange
+													}
+													className="dark:bg-tawnyPort w-full dark:text-paleRose border-2 dark:border-paleRose rounded-xl p-2 mt-2"
 												/>
 											)}
-											<div className="flex flex-row items-center justify-center mt-2 gap-4">
+											<div className="flex flex-row items-center justify-center mt-4 gap-4">
 												<button
 													onClick={() =>
 														setShowVideoDialog(
@@ -1195,7 +729,9 @@ const Sample = () => {
 															""
 														) {
 															setFiles(
-																(prevFiles) => [
+																(
+																	prevFiles
+																) => [
 																	...prevFiles,
 																	videoLinkInput,
 																]
@@ -1211,131 +747,554 @@ const Sample = () => {
 									</div>
 								)}
 							</div>
-							<div className="flex justify-center gap-2 mt-2">
-								<div className="relative">
-									<button
-										className="text-white font-inter border-2 border-white flex justify-center items-center bg-gray-400 rounded-xl p-2 w-[120px]"
-										onClick={() =>
-											setShowExportDropdown(
-												!showExportDropdown
-											)
-										}
+							<div className="mr-20 w-1/2 p-4 flex flex-col justify-center items-center">
+								<div className="border-2 border-stilleto dark:border-paleRose rounded-xl min-h-max py-4">
+									<h2 className="secondary-text dark:text-paleRose text-center w-full p-2 mb-2 font-semibold border-b-2 border-stilleto dark:border-paleRose">
+										Mindmap Preview
+									</h2>
+									<TransformWrapper
+										initialScale={1}
+										initialPositionX={200}
+										initialPositionY={100}
 									>
-										Export
-									</button>
-									{showExportDropdown && (
-										<div className="absolute -left-8 flex flex-col justify-center items-center gap-y-2 mt-2">
-											<button
-												onClick={() =>
-													handleExportMindmap("svg")
-												}
-												className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
-											>
-												Export as SVG
-											</button>
-											<button
-												onClick={() =>
-													handleExportMindmap("png")
-												}
-												className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
-											>
-												Export as PNG
-											</button>
-										</div>
-									)}
+										{({
+											zoomIn,
+											zoomOut,
+											resetTransform,
+											...rest
+										}) => (
+											<>
+												<Controls />
+												<TransformComponent>
+													<pre
+														ref={
+															!isMobile
+																? mindmapRef
+																: null
+														}
+														key={mindmapCode}
+														className="mermaid mindmap"
+													>
+														{mindmapCode}
+													</pre>
+												</TransformComponent>
+											</>
+										)}
+									</TransformWrapper>
 								</div>
-								<p>
-									Total Available Edits : {availableEdits}
-								</p>
+								<div className="flex justify-center gap-2 mt-8">
+									<div className="relative">
+										<button
+											className="text-white font-inter border-2 border-white flex justify-center items-center bg-gray-400 rounded-xl p-2 w-[120px]"
+											onClick={() =>
+												setShowExportDropdown(
+													!showExportDropdown
+												)
+											}
+										>
+											Export
+										</button>
+										{showExportDropdown && (
+											<div className="absolute -left-8 flex flex-col justify-center items-center gap-y-2 mt-2">
+												<button
+													onClick={() =>
+														handleExportMindmap(
+															"svg"
+														)
+													}
+													className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
+												>
+													Export as SVG
+												</button>
+												<button
+													onClick={() =>
+														handleExportMindmap(
+															"png"
+														)
+													}
+													className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
+												>
+													Export as PNG
+												</button>
+											</div>
+										)}
+									</div>
+									<p>
+										Total Available Edits : {availableEdits}
+									</p>
+								</div>
 							</div>
 						</div>
-						<div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">
+					</div>
+					{error && (
+						<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+							<div
+								style={{
+									backgroundColor: "white",
+									padding: "20px",
+									borderRadius: "5px",
+								}}
+							>
+								<h2>Error</h2>
+								<p>{error}</p>
+								<button onClick={() => setError(null)}>
+									Close
+								</button>
+							</div>
+						</div>
+					)}
+				</div>
+			</div>
+			{/* Mobile Content */}
+			<div className="xs:flex md:hidden">
+				<div id="container" className="w-screen h-screen px-2">
+					<div className="flex w-full h-full min-h-max mb-8 flex-col justify-center items-center relative overflow-y-scroll">
+						<div className="mb-4 w-full">
+							<input
+								type="text"
+								id="mindmapName"
+								value={mindmapName}
+								onChange={handleMindmapNameChange}
+								className="input h-[50px] w-full dark:text-paleRose"
+							/>
+						</div>
+						<div className="w-full h-2/4 flex flex-col justify-center items-center">
+							<div className="h-full min-h-max w-full py-4">
+								<TransformWrapper
+									initialScale={1}
+									initialPositionX={200}
+									initialPositionY={100}
+									minScale={2}
+									maxScale={8}
+									limitToBounds={false}
+									centerOnInit={true}
+								>
+									{({
+										zoomIn,
+										zoomOut,
+										resetTransform,
+										...rest
+									}) => (
+										<>
+											<Controls />
+											<TransformComponent
+												wrapperStyle={{
+													height: "100%",
+													width: "100%",
+												}}
+												contentStyle={{
+													height: "100%",
+													width: "100%",
+												}}
+											>
+												<div
+													style={{
+														width: "100%",
+														height: "100%",
+														transformOrigin:
+															"center center",
+													}}
+												>
+													<pre
+														ref={
+															isMobile
+																? mindmapRef
+																: null
+														}
+														key={mindmapCode}
+														className="mermaid mindmap w-full h-full"
+													>
+														{mindmapCode}
+													</pre>
+												</div>
+											</TransformComponent>
+										</>
+									)}
+								</TransformWrapper>
+							</div>
+						</div>
+						{/* Edit with Message */}
+						<div className="w-full">
+							<label
+								htmlFor="editMessage"
+								className="block secondary-text text-lg dark:text-paleRose w-full font-semibold"
+							>
+								Edit with Message
+							</label>
+							<div className="relative w-full">
+								{showAttachmentOptions && (
+									<div className="absolute -left-0 -bottom-20 gap-y-2 gap-x-2 grid grid-cols-2">
+										<button
+											onClick={() =>
+												triggerFileInput(
+													".txt,.doc,.docx,.pdf"
+												)
+											}
+											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+										>
+											<Image
+												src="/images/texticon.svg"
+												width={20}
+												height={20}
+												alt="Saved"
+												className="py-1"
+											/>
+											Text
+										</button>
+										<button
+											onClick={() =>
+												triggerFileInput("audio/*")
+											}
+											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+										>
+											<Image
+												src="/images/audioicon.svg"
+												width={20}
+												height={20}
+												alt="Saved"
+												className="py-1"
+											/>
+											Audio
+										</button>
+										<button
+											onClick={() =>
+												setShowVideoDialog(true)
+											}
+											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+										>
+											<Image
+												src="/images/videoicon.svg"
+												width={20}
+												height={20}
+												alt="Saved"
+												className="py-1"
+											/>
+											Video
+										</button>
+										<button
+											onClick={() =>
+												triggerFileInput("image/*")
+											}
+											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
+										>
+											<Image
+												src="/images/imageicon.svg"
+												width={20}
+												height={20}
+												alt="Saved"
+												className="py-1"
+											/>
+											Image
+										</button>
+									</div>
+								)}
+
+								<button
+									onClick={() =>
+										setShowAttachmentOptions(
+											!showAttachmentOptions
+										)
+									}
+								>
+									<Image
+										src={`/images/${
+											resolvedTheme === "light"
+												? "attachicon"
+												: "attachicondark"
+										}.svg`}
+										width={30}
+										height={30}
+										alt="Attachment"
+										className="absolute left-4 top-[12px]"
+									/>
+								</button>
+								<textarea
+									value={input}
+									onChange={(e) =>
+										setInput(e.target.value)
+									}
+									placeholder="Change/remove/add a node..."
+									className="input w-full h-[60px] px-3 py-4 pl-14 dark:text-paleRose text-tawnyPort text-md mind-h-[60px]"
+								/>
+								<button
+									onClick={() => handleToggleRecording()}
+									className={`bg-transparent absolute right-5 top-[10px] ${
+										isRecording ? "animate-pulse" : ""
+									}`}
+								>
+									{isRecording ? (
+										<Image
+											src={`/images/${
+												resolvedTheme === "light"
+													? "micoff"
+													: "micoffdark"
+											}.svg`}
+											width={27}
+											height={27}
+											alt="Recording"
+										/>
+									) : (
+										<Image
+											src={`/images/${
+												resolvedTheme === "light"
+													? "micicon"
+													: "micicondark"
+											}.svg`}
+											width={27}
+											height={27}
+											alt="Recording"
+										/>
+									)}
+								</button>
+							</div>
+							<input
+								id="fileInput"
+								type="file"
+								multiple
+								onChange={handleFileChange}
+								style={{ display: "none" }}
+							/>
+							<div className="mt-2 w-full flex flex-row justify-start items-start gap-2 flex-wrap">
+								{files.map((file, index) => (
+									<FileDisplay
+										key={index}
+										file={file}
+										removeFile={() => removeFile(index)}
+									/>
+								))}
+							</div>
+							<div className="w-full flex justify-center items-center mt-3">
+								<button
+									onClick={handleEdit}
+									disabled={availableEdits <= 0}
+									className="primary-btn dark:bg-paleRose dark:text-lividBrown text-xl"
+								>
+									{isSubmitting
+										? "Processing..."
+										: "Edit"}
+								</button>
+							</div>
+							{/* Video Dialog */}
+							{showVideoDialog && (
+								<div className="absolute inset-0 flex justify-center items-center gap-y-2 border-2 border-black w-1/4 h-1/4 bg-white rounded-xl left-[620px] top-[360px]">
+									<div className="w-full p-4 flex flex-col">
+										<h2 className="secondary-text text-center">
+											Select Video Input
+										</h2>
+										<div>
+											<input
+												type="radio"
+												name="videoLinkInputType"
+												value="link"
+												checked={
+													videoLinkInput.type ===
+													"link"
+												}
+												onChange={() =>
+													setVideoInput({
+														type: "link",
+														name: "",
+													})
+												}
+												className="ml-6"
+											/>
+											<label
+												htmlFor="videoLink"
+												className="ml-2"
+											>
+												YouTube Link
+											</label>
+										</div>
+										<div>
+											<input
+												type="radio"
+												name="videoLinkInputType"
+												value="file"
+												checked={
+													videoLinkInput.type ===
+													"file"
+												}
+												onChange={() =>
+													setVideoInput({
+														type: "file",
+														value: "",
+													})
+												}
+												className="ml-6"
+											/>
+											<label
+												htmlFor="videoFile"
+												className="ml-2"
+											>
+												Video File
+											</label>
+										</div>
+										{videoLinkInput.type === "link" && (
+											<input
+												type="text"
+												value={videoLinkInput.value}
+												onChange={
+													handleVideoLinkInput
+												}
+												placeholder="Enter YouTube Link"
+												className="border-2 border-black rounded-xl p-2 mt-2"
+											/>
+										)}
+										{videoLinkInput.type === "file" && (
+											<input
+												type="file"
+												accept="video/*"
+												onChange={handleFileChange}
+												className="border-2 border-black rounded-xl p-2 mt-2"
+											/>
+										)}
+										<div className="flex flex-row items-center justify-center mt-2 gap-4">
+											<button
+												onClick={() =>
+													setShowVideoDialog(
+														false
+													)
+												}
+												className="primary-btn"
+											>
+												Cancel
+											</button>
+											<button
+												onClick={() => {
+													setShowVideoDialog(
+														false
+													);
+													if (
+														videoLinkInput.value !=
+														""
+													) {
+														setFiles(
+															(prevFiles) => [
+																...prevFiles,
+																videoLinkInput,
+															]
+														);
+													}
+												}}
+												className="primary-btn"
+											>
+												Select
+											</button>
+										</div>
+									</div>
+								</div>
+							)}
+						</div>
+						<div className="flex justify-center gap-2 mt-2">
+							<div className="relative">
+								<button
+									className="text-white font-inter border-2 border-white flex justify-center items-center bg-gray-400 rounded-xl p-2 w-[120px]"
+									onClick={() =>
+										setShowExportDropdown(
+											!showExportDropdown
+										)
+									}
+								>
+									Export
+								</button>
+								{showExportDropdown && (
+									<div className="absolute -left-8 flex flex-col justify-center items-center gap-y-2 mt-2">
+										<button
+											onClick={() =>
+												handleExportMindmap("svg")
+											}
+											className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
+										>
+											Export as SVG
+										</button>
+										<button
+											onClick={() =>
+												handleExportMindmap("png")
+											}
+											className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
+										>
+											Export as PNG
+										</button>
+									</div>
+								)}
+							</div>
+							<p>
+								Total Available Edits : {availableEdits}
+							</p>
+						</div>
+					</div>
+					<div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">
+						<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
+							<Image
+								src={`/images/${
+									resolvedTheme === "light"
+										? "homeicon"
+										: "homeicondark"
+								}.svg`}
+								width={27}
+								height={27}
+								alt="Home"
+							/>
+							<span className="text-left text-secondary-text mt-2 block">
+								Home
+							</span>
+						</button>
+						<Link href="/dashboard">
 							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 								<Image
 									src={`/images/${
 										resolvedTheme === "light"
-											? "homeicon"
-											: "homeicondark"
+											? "createicondark"
+											: "createicon"
 									}.svg`}
 									width={27}
 									height={27}
-									alt="Home"
+									alt="Create"
 								/>
-								<span className="text-left text-secondary-text mt-2 block">
-									Home
+								<span className="text-center text-secondary-text mt-2 block">
+									Create
 								</span>
 							</button>
-							<Link href="/dashboard">
-								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
-									<Image
-										src={`/images/${
-											resolvedTheme === "light"
-												? "createicondark"
-												: "createicon"
-										}.svg`}
-										width={27}
-										height={27}
-										alt="Create"
-									/>
-									<span className="text-center text-secondary-text mt-2 block">
-										Create
-									</span>
-								</button>
-							</Link>
-							<Link href="/saved">
-								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
-									<Image
-										src={`/images/${
-											resolvedTheme === "light"
-												? "savedicondark"
-												: "savedicon"
-										}.svg`}
-										width={25}
-										height={25}
-										alt="Saved"
-									/>
-									<span className="text-center text-secondary-text mt-2 block">
-										Saved
-									</span>
-								</button>
-							</Link>
-							<Link href="/profile">
-								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
-									<Image
-										src={`/images/${
-											resolvedTheme === "light"
-												? "usericon"
-												: "usericondark"
-										}.svg`}
-										width={27}
-										height={27}
-										alt="Profile"
-									/>
-									<span className="text-center text-secondary-text mt-2 block">
-										Profile
-									</span>
-								</button>
-							</Link>
-						</div>
+						</Link>
+						<Link href="/saved">
+							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
+								<Image
+									src={`/images/${
+										resolvedTheme === "light"
+											? "savedicondark"
+											: "savedicon"
+									}.svg`}
+									width={25}
+									height={25}
+									alt="Saved"
+								/>
+								<span className="text-center text-secondary-text mt-2 block">
+									Saved
+								</span>
+							</button>
+						</Link>
+						<Link href="/profile">
+							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
+								<Image
+									src={`/images/${
+										resolvedTheme === "light"
+											? "usericon"
+											: "usericondark"
+									}.svg`}
+									width={27}
+									height={27}
+									alt="Profile"
+								/>
+								<span className="text-center text-secondary-text mt-2 block">
+									Profile
+								</span>
+							</button>
+						</Link>
 					</div>
-				</div>
-			</div>
-		);
-	}
-
-	// Render default state if mindmap details are not loaded yet
-	return (
-		<div className="bg-paleRose flex justify-center items-center h-screen">
-			<div className="bg-paleRose flex justify-center items-center h-screen">
-				<div className="text-center">
-					<h1 className="text-8xl font-bold mb-4 text-green-600">
-						Loading...
-					</h1>
-					<p className="text-lg">Please wait</p>
 				</div>
 			</div>
 		</div>
 	);
-};
+}
 
 export default Sample;

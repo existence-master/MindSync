@@ -6,10 +6,22 @@ import NextImage from "next/image";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import MindmapCard from "@components/MindmapCard";
-import { EvervaultCard, Icon } from "@components/EvervaultCard";
+//import { EvervaultCard, Icon } from "@components/EvervaultCard";
 import { SAMPLE_IDS } from "@utils/constants.js";
 import { useRouter } from "next/navigation";
 import { InfiniteMovingCards } from "@components/InfiniteMovingCards";
+import { BentoGrid, BentoGridItem } from "@components/BentoGrid";
+import {
+  IconAbc,
+  IconArrowWaveRightUp,
+  IconBoxAlignRightFilled,
+  IconBoxAlignTopLeft,
+  IconClipboardCopy,
+  IconFileBroken,
+  IconSignature,
+  IconSun,
+  IconTableColumn,
+} from "@tabler/icons-react";
 
 const Home = () => {
   const { setTheme, resolvedTheme } = useTheme();
@@ -19,9 +31,15 @@ const Home = () => {
   const [sampleMindmaps, setSampleMindmaps] = useState([]);
   const [error, setError] = useState(null);
   const [mindmapCount, setMindmapCount] = useState(0);
+  const router = useRouter();
+  const [betaSignedUp, setBetaSignedUp] = useState(false);
 
   const handleEdit = (id) => {
     router.push(`/sample/${id}`);
+  };
+
+  const handleError = () => {
+    setError(null);
   };
 
   useEffect(() => {
@@ -31,7 +49,7 @@ const Home = () => {
         if (!response.ok) {
           throw new Error("Failed to fetch mindmap count");
         }
-        const count = await response.json();
+        const { count } = await response.json();
         setMindmapCount(count);
       } catch (err) {
         setError(err.message);
@@ -79,6 +97,73 @@ const Home = () => {
     fetchSampleMindmaps(SAMPLE_IDS);
   }, []);
 
+  console.log(sampleMindmaps);
+
+  const Skeleton = ({ imageUrl }) => {
+    const containerRef = useRef(null);
+    const [imageWidth, setImageWidth] = useState(0);
+    const [imageHeight, setImageHeight] = useState(0);
+
+    useEffect(() => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        setImageWidth(width);
+        setImageHeight(height);
+      }
+    }, []);
+
+    return (
+      <div
+        ref={containerRef}
+        className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl"
+      >
+        {imageUrl && (
+          <NextImage
+            src={imageUrl}
+            alt="Mindmap Skeleton"
+            width={imageWidth}
+            height={imageHeight}
+            className="bg-white rounded-xl py-2"
+          />
+        )}
+      </div>
+    );
+  };
+  const features = [
+    {
+      title: "Multimodal Inputs",
+      description:
+        "Text, image, audio and video to mindmap. Attach everything and create your mindmap.",
+      header: <Skeleton imageUrl="/images/feature1.svg" />,
+      icon: <IconAbc className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "Save Your Mindmap",
+      description: "Save Mindmaps to your MindSync account with ease.",
+      header: <Skeleton imageUrl="/images/feature2.svg" />,
+      icon: <IconClipboardCopy className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "Export Your Mindmap",
+      description: "Export Mindmaps in different formats.",
+      header: <Skeleton imageUrl="/images/feature3.svg" />,
+      icon: <IconFileBroken className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "AI Mindmap Editor",
+      description:
+        "Edit Mindmaps with textual instructions or multimodal inputs.",
+      header: <Skeleton imageUrl="/images/feature4.svg" />,
+      icon: <IconTableColumn className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "Dark and Light Mode",
+      description: "Switch between light and dark mode.",
+      header: <Skeleton imageUrl="/images/feature5.svg" />,
+      icon: <IconSun className="h-4 w-4 text-neutral-100" />,
+    },
+  ];
+
   const testimonials = [
     {
       quote:
@@ -93,7 +178,8 @@ const Home = () => {
       title: "an average student",
     },
     {
-      quote: "makes my daily work so much easier. now all i gotta do is record my lectures and i have a mindmap of the whole thing!",
+      quote:
+        "makes my daily work so much easier. now all i gotta do is record my lectures and i have a mindmap of the whole thing!",
       name: "Abhijeet Suryawanshi",
       title: "Your friendly neighbourhood data scientist",
     },
@@ -113,9 +199,12 @@ const Home = () => {
 
   return (
     <>
-      <nav class={`${navbarStyle} fixed w-full z-20 top-0 start-0`}>
-        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+      <nav className={`${navbarStyle} fixed w-full z-20 top-0 start-0`}>
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <a
+            href="#"
+            className="flex items-center space-x-3 rtl:space-x-reverse"
+          >
             <NextImage
               src="/images/logofull.svg"
               width={200}
@@ -123,11 +212,11 @@ const Home = () => {
               alt="MindSync Logo"
             />
           </a>
-          <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             <Link href={"/login"}>
               <button
                 type="button"
-                class="dark:text-lividBrown text-paleRose bg-stilleto hover:bg-lividBrown focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-stilleto"
+                className="dark:text-lividBrown text-paleRose bg-stilleto hover:bg-lividBrown focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-stilleto"
               >
                 Login
               </button>
@@ -135,16 +224,16 @@ const Home = () => {
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
-              class={`inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 ${
+              className={`inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 ${
                 isOpen ? "hidden" : ""
               }`}
               aria-controls="navbar-sticky"
               aria-expanded="false"
               onClick={() => setIsOpen(true)}
             >
-              <span class="sr-only">Open main menu</span>
+              <span className="sr-only">Open main menu</span>
               <svg
-                class="w-5 h-5"
+                className="w-5 h-5"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -161,14 +250,14 @@ const Home = () => {
             </button>
           </div>
           <div
-            class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+            className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
             id="navbar-sticky"
           >
-            <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-transparent md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
+            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-transparent md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
               <li>
                 <a
                   href="#"
-                  class="block py-2 px-3 text-tickleMePink rounded text-xl"
+                  className="block py-2 px-3 text-tickleMePink rounded text-xl"
                   aria-current="page"
                 >
                   Home
@@ -177,7 +266,7 @@ const Home = () => {
               <li>
                 <a
                   href="#"
-                  class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl"
+                  className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl"
                 >
                   About
                 </a>
@@ -185,7 +274,7 @@ const Home = () => {
               <li>
                 <a
                   href="#"
-                  class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl"
+                  className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl"
                 >
                   Contact Us
                 </a>
@@ -193,20 +282,20 @@ const Home = () => {
             </ul>
           </div>
           {isOpen && (
-            <div class="fixed inset-0 flex z-50">
-              <div class="fixed inset-0 bg-black opacity-50"></div>
-              <div class="absolute inset-y-0 right-0 flex flex-col w-full max-w-sm">
+            <div className="fixed inset-0 flex z-50">
+              <div className="fixed inset-0 bg-black opacity-50"></div>
+              <div className="absolute inset-y-0 right-0 flex flex-col w-full max-w-sm">
                 <button
                   data-collapse-toggle="navbar-sticky"
                   type="button"
-                  class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                  className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                   aria-controls="navbar-sticky"
                   aria-expanded="false"
                   onClick={() => setIsOpen(false)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6"
+                    className="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -219,12 +308,12 @@ const Home = () => {
                     />
                   </svg>
                 </button>
-                <div class="w-full dark:bg-lividBrown bg-paleRose rounded-lg">
-                  <ul class="py-4 px-2 space-y-2">
+                <div className="w-full dark:bg-lividBrown bg-paleRose rounded-lg">
+                  <ul className="py-4 px-2 space-y-2">
                     <li>
                       <a
                         href="#"
-                        class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
+                        className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
                       >
                         Home
                       </a>
@@ -232,7 +321,7 @@ const Home = () => {
                     <li>
                       <a
                         href="#"
-                        class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
+                        className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
                       >
                         About
                       </a>
@@ -240,7 +329,7 @@ const Home = () => {
                     <li>
                       <a
                         href="#"
-                        class="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
+                        className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
                       >
                         Contact Us
                       </a>
@@ -337,7 +426,7 @@ const Home = () => {
                 />
               ))
             ) : (
-              <p className="text-center">No sample mindmaps found</p>
+              <p className="text-center">Loading sample mindmaps...</p>
             )}
           </div>
         </section>
@@ -359,7 +448,8 @@ const Home = () => {
           <h1 className="xs:block md:hidden mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Features
           </h1>
-          <div className="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
+          {/* 
+		  <div className="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
             <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
             <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
             <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
@@ -405,7 +495,21 @@ const Home = () => {
             <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
               Easy Save/Export.
             </p>
-          </div>
+          </div> 
+		  */}
+          <BentoGrid className="max-w-4xl mx-auto px-2">
+            {features.map((item, i) => (
+              <BentoGridItem
+                key={i}
+                title={item.title}
+                description={item.description}
+                header={item.header}
+                icon={item.icon}
+                image={item.image}
+                className={i === 3 || i === 6 ? "md:col-span-2" : ""}
+              />
+            ))}
+          </BentoGrid>
         </section>
         <section
           id="Testimonials"
@@ -429,10 +533,29 @@ const Home = () => {
           <h1 className="mt-20 mb-4 xs:text-2xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Become a Beta Tester
           </h1>
-          <form class="w-1/2 mx-auto mt-20 mb-20">
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const email = e.target.email.value;
+              const response = await fetch("/api/send-beta-signup-mail", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+              });
+              if (response.ok) {
+                console.log("Thank you for signing up!");
+                setBetaSignedUp(true);
+              } else {
+                console.log("Something went wrong. Please try again later.");
+              }
+            }}
+            className="md:w-1/2 xs:w-3/4 mx-auto mt-20 mb-20"
+          >
             <label
               for="email"
-              class="block mb-2 text-xl font-inter font-medium text-gray-900 dark:text-white"
+              className="block mb-2 text-xl font-inter font-medium text-gray-900 dark:text-white"
             >
               Your email
             </label>
@@ -440,18 +563,18 @@ const Home = () => {
               type="email"
               id="email"
               aria-describedby="helper-text-explanation"
-              class="bg-paleRose border border-gray-300 text-paleRose text-xl rounded-lg focus:ring-tickleMePink focus:border-stilleto block w-full p-2.5  dark:bg-paleRose dark:border-tickleMePink dark:placeholder-gray-400 dark:text-lividBrown dark:focus:ring-tickleMePink dark:focus:border-stilleto"
+              className="bg-paleRose border border-gray-300 text-paleRose text-xl rounded-lg focus:ring-tickleMePink focus:border-stilleto block w-full p-2.5  dark:bg-paleRose dark:border-tickleMePink dark:placeholder-gray-400 dark:text-lividBrown dark:focus:ring-tickleMePink dark:focus:border-stilleto"
               placeholder="name@mindsync.com"
             />
 
             <p
               id="helper-text-explanation"
-              class="mt-2 text-sm text-gray-500 dark:text-gray-400"
+              className="mt-2 text-sm text-gray-500 dark:text-gray-400"
             >
               We’ll never share your details. Read our{" "}
               <a
                 href="#"
-                class="font-medium text-tickleMePink hover:underline dark:text-tickleMePink"
+                className="font-medium text-tickleMePink hover:underline dark:text-tickleMePink"
               >
                 Privacy Policy
               </a>
@@ -460,20 +583,26 @@ const Home = () => {
             <div className="w-full flex flex-col items-center justify-center mt-4">
               <button
                 type="submit"
-                class="bg-tickleMePink text-white font-medium py-2 px-4 rounded-lg hover:bg-stilleto focus:outline-none focus:ring-4 focus:ring-tickleMePink dark:text-lividBrown dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-lividBrown"
+                className="bg-tickleMePink text-white font-medium py-2 px-4 rounded-lg hover:bg-stilleto focus:outline-none focus:ring-4 focus:ring-tickleMePink dark:text-lividBrown dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-lividBrown"
               >
-                Join the Beta Program
+                {betaSignedUp
+                  ? "Thanks for Signing Up!"
+                  : "Join the Beta Program"}
               </button>
             </div>
           </form>
         </section>
 
-        <footer class="bg-paleRose shadow dark:bg-lividBrown">
-          <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-            <div class="sm:flex sm:items-center sm:justify-between">
+        {error && (
+          <ErrorDisplay errorMessage={error} handleError={handleError} />
+        )}
+
+        <footer className="bg-paleRose shadow dark:bg-lividBrown">
+          <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+            <div className="sm:flex sm:items-center sm:justify-between">
               <a
                 href="https://flowbite.com/"
-                class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
+                className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
               >
                 <NextImage
                   src="/images/logofull.svg"
@@ -482,11 +611,11 @@ const Home = () => {
                   alt="MindSync Logo"
                 />
               </a>
-              <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+              <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
                 <li>
                   <a
                     href="#"
-                    class="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
+                    className="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
                   >
                     About
                   </a>
@@ -494,7 +623,7 @@ const Home = () => {
                 <li>
                   <a
                     href="#"
-                    class="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
+                    className="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
                   >
                     Privacy Policy
                   </a>
@@ -502,7 +631,7 @@ const Home = () => {
                 <li>
                   <a
                     href="#"
-                    class="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
+                    className="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
                   >
                     Licensing
                   </a>
@@ -510,20 +639,32 @@ const Home = () => {
                 <li>
                   <a
                     href="#"
-                    class="hover:underline dark:text-paleRose text-lividBrown"
+                    className="hover:underline dark:text-paleRose text-lividBrown"
                   >
                     Contact
                   </a>
                 </li>
               </ul>
             </div>
-            <hr class="my-6 border-tickleMePink sm:mx-auto lg:my-8" />
-            <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+            <hr className="my-6 border-tickleMePink sm:mx-auto lg:my-8" />
+            <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
               2024{" "}
-              <a href="#" class="hover:underline">
+              <a href="#" className="hover:underline">
                 MindSync
               </a>
               . All Rights Reserved.
+            </span>
+            <span className="w-full flex flex-row md:items-center md:justify-center gap-x-2 mt-4">
+              Powered by{" "}
+              <Link href={"https://existence-master.netlify.app/"}>
+                <NextImage
+                  src="/images/existence.svg"
+                  width={200}
+                  height={50}
+                  alt="Existence Logo"
+                  className="rounded-xl"
+                />
+              </Link>
             </span>
           </div>
         </footer>
