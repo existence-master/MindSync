@@ -337,36 +337,6 @@ const Sample = () => {
 		document.body.removeChild(downloadLink);
 	};
 
-	// Handle save mindmap
-	const handleSaveMindmap = async () => {
-		try {
-			setIsSubmitting(true);
-			const previewImageDataURL = createMindmapDataURL("png");
-
-			const formData = new FormData();
-			formData.append("mindmapId", id);
-			formData.append("mindmapCode", mindmapCode);
-			formData.append("mindmapName", mindmapName);
-			formData.append("previewImage", previewImageDataURL);
-
-			const response = await fetch("/api/edit-mindmap", {
-				method: "POST",
-				body: formData,
-			});
-			if (response.ok) {
-				setIsSubmitting(false);
-				router.push("/saved");
-			} else {
-				throw new Error("Failed to save mindmap");
-			}
-		} catch (error) {
-			console.error("Error:", error);
-			setError(error.message);
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
-
 	// Render loading state if data is being fetched
 	if (!mindmapDetails) {
 		return (

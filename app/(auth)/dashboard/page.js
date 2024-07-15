@@ -97,6 +97,34 @@ const Dashboard = () => {
 		fetchUserDetails();
 	}, []);
 
+	useEffect(() => {
+		const checkFeedback = async () => {
+			try {
+				const response = await fetch("/api/check-feedback", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ columnName }),
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					setFeedback(
+						data.result ? true: false
+					);
+				} else {
+					throw new Error("Error checking feedback")
+			}
+			} catch (error) {
+				setError(error);
+			}
+		};
+
+		checkFeedback()
+
+	}, []);
+
 	const handleToggleRecording = () => {
 		if (isRecording) {
 			recognition.stop();

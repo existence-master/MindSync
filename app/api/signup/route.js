@@ -3,6 +3,7 @@ import connect from "@utils/db"; // Utility to connect to the database
 import bcrypt from "bcryptjs"; // Library for hashing passwords
 import { NextResponse } from "next/server"; // Import Next.js server response handling
 import nodemailer from "nodemailer"; // Library to send emails
+import fetch from "node-fetch"; // Import fetch for making API requests
 
 export const POST = async (request) => {
 	try {
@@ -56,6 +57,25 @@ export const POST = async (request) => {
 			to: process.env.GMAIL_USER, // Recipient email
 			subject: "New User Registered", // Email subject
 			text: `${username} : ${email}`, // Email content
+		});
+
+		await fetch(`${process.env.SHEETDB_API_ENDPOINT}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${process.env.SHEETDB_API_TOKEN}`,
+			},
+			body: JSON.stringify({
+				data: [
+					{
+						"Email": email,
+						"Username": username,
+						"Create": "",
+						"Saved": "",
+						"Edit": ""
+					},
+				],
+			}),
 		});
 
 		return new NextResponse({ status: 200 }); // Return the hash as the response with HTTP status 200
