@@ -46,6 +46,10 @@ const Edit = () => {
   const { data: session, status } = useSession();
   const { resolvedTheme, setTheme } = useTheme();
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [feedbackText, setFeedbackText] = useState("");
+  const [feedback, setFeedback] = useState(false);
+
 
   const isMobile = windowSize.width <= 768;
 
@@ -166,6 +170,31 @@ const Edit = () => {
 
     fetchUserDetails();
   }, []);
+	
+	useEffect(() => {
+		const checkFeedback = async () => {
+			try {
+				const response = await fetch("/api/check-feedback", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ columnName }),
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					setFeedback(data.result ? true : false);
+				} else {
+					throw new Error("Error checking feedback");
+				}
+			} catch (error) {
+				setError(error);
+			}
+		};
+
+		checkFeedback();
+	}, []);
 
   const handleToggleRecording = () => {
     if (isRecording) {
@@ -386,7 +415,39 @@ const Edit = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
+	};
+	
+	const handleFeedbackSubmit = async () => {
+		try {
+			const response = await fetch("/api/update-feedback", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					columnName: "Edit",
+					feedback: feedbackText,
+				}),
+			});
+
+			if (response.ok) {
+				setShowFeedbackForm(false);
+				setFeedback(true);
+				router.push("/saved");
+			} else {
+				throw new Error("Failed to submit feedback");
+			}
+		} catch (error) {
+			setError(error.message);
+		}
+	};
+
+	const handleNavigate = (e) => {
+		if (feedback === false) {
+			e.preventDefault();
+			setShowFeedbackForm(true);
+		}
+	};
 
   // Render loading state if data is being fetched
   if (status === "loading") {
@@ -479,7 +540,12 @@ const Edit = () => {
 											height={20}
 											alt="Logo"
 										/>
-										<Link href="/dashboard">Create</Link>
+										<Link
+											href="/dashboard"
+											onClick={handleNavigate}
+										>
+											Create
+										</Link>
 									</button>
 									<button
 										className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
@@ -498,7 +564,12 @@ const Edit = () => {
 											height={20}
 											alt="Logo"
 										/>
-										<Link href="/saved">Saved</Link>
+										<Link
+											href="/saved"
+											onClick={handleNavigate}
+										>
+											Saved
+										</Link>
 									</button>
 								</div>
 							</div>
@@ -515,6 +586,7 @@ const Edit = () => {
 								/>
 								<Link
 									href="/profile"
+									onClick={handleNavigate}
 									className="text-tawnyPort dark:text-paleRose"
 								>
 									{user ? user.username : "User"}
@@ -1317,24 +1389,60 @@ const Edit = () => {
 								handleError={handleError}
 							/>
 						)}
+
+						{showFeedbackForm && (
+							<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+								<div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-1/3">
+									<h2 className="text-lg font-bold mb-4 text-center">
+										We'd love to hear your feedback!
+									</h2>
+									<textarea
+										className="w-full p-2 border border-gray-300 rounded mb-4 dark:bg-gray-700 dark:text-white"
+										value={feedbackText}
+										onChange={(e) =>
+											setFeedbackText(e.target.value)
+										}
+										placeholder="Your feedback"
+									/>
+									<div className="flex justify-end space-x-4">
+										<button
+											className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+											onClick={handleFeedbackSubmit}
+										>
+											Submit
+										</button>
+										<button
+											className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
+											onClick={() =>
+												setShowFeedbackForm(false)
+											}
+										>
+											Cancel
+										</button>
+									</div>
+								</div>
+							</div>
+						)}
 					</div>
 					<div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">
-						<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
-							<Image
-								src={`/images/${
-									resolvedTheme === "light"
-										? "homeicon"
-										: "homeicondark"
-								}.svg`}
-								width={27}
-								height={27}
-								alt="Home"
-							/>
-							<span className="text-left text-secondary-text mt-2 block">
-								Home
-							</span>
-						</button>
-						<Link href="/dashboard">
+						<Link href="/" onClick={handleNavigate}>
+							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
+								<Image
+									src={`/images/${
+										resolvedTheme === "light"
+											? "homeicon"
+											: "homeicondark"
+									}.svg`}
+									width={27}
+									height={27}
+									alt="Home"
+								/>
+								<span className="text-left text-secondary-text mt-2 block">
+									Home
+								</span>
+							</button>
+						</Link>
+						<Link href="/dashboard" onClick={handleNavigate}>
 							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 								<Image
 									src={`/images/${
@@ -1351,7 +1459,7 @@ const Edit = () => {
 								</span>
 							</button>
 						</Link>
-						<Link href="/saved">
+						<Link href="/saved" onClick={handleNavigate}>
 							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 								<Image
 									src={`/images/${
@@ -1368,7 +1476,7 @@ const Edit = () => {
 								</span>
 							</button>
 						</Link>
-						<Link href="/profile">
+						<Link href="/profile" onClick={handleNavigate}>
 							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 								<Image
 									src={`/images/${

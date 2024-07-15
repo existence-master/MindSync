@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials"; // Credential
 import bcrypt from "bcryptjs"; // Library for hashing and comparing passwords
 import User from "@models/User"; // User model
 import connect from "@utils/db"; // Utility to connect to the database
+import fetch from "node-fetch";
 
 export const authOptions = {
 	// Configuration for authentication providers
@@ -70,6 +71,24 @@ export const authOptions = {
 						});
 
 						await newUser.save(); // Save the new user to the database
+						await fetch(`${process.env.SHEETDB_API_ENDPOINT}`, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+								Authorization: `Bearer ${process.env.SHEETDB_API_TOKEN}`,
+							},
+							body: JSON.stringify({
+								data: [
+									{
+										Email: email,
+										Username: username,
+										Create: "",
+										Saved: "",
+										Edit: "",
+									},
+								],
+							}),
+						});
 
 						// If the user is new, redirect to the /details page
 						return `/dashboard`;

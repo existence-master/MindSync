@@ -20,6 +20,9 @@ const Saved = () => {
   const { data: session, status } = useSession();
   const [loadingMaps, setLoadingMaps] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [feedbackText, setFeedbackText] = useState("");
+  const [feedback, setFeedback] = useState(false);
 
   // Redirect unauthenticated users
   useEffect(() => {
@@ -66,7 +69,36 @@ const Saved = () => {
     fetchUserDetails();
   }, []);
 
+  useEffect(() => {
+		const checkFeedback = async () => {
+			try {
+				const response = await fetch("/api/check-feedback", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ columnName }),
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					setFeedback(data.result ? true : false);
+				} else {
+					throw new Error("Error checking feedback");
+				}
+			} catch (error) {
+				setError(error);
+			}
+		};
+
+		checkFeedback();
+  }, []);
+
   const handleEdit = (id) => {
+    if (feedback === false) {
+      setShowFeedbackForm(true);
+      return;
+    }
     router.push(`/edit/${id}`);
   };
 
@@ -158,6 +190,38 @@ const Saved = () => {
     }
   };
 
+  const handleFeedbackSubmit = async () => {
+		try {
+			const response = await fetch("/api/update-feedback", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					columnName: "Create",
+					feedback: feedbackText,
+				}),
+			});
+
+			if (response.ok) {
+				setShowFeedbackForm(false);
+				setFeedback(true);
+				router.push("/saved");
+			} else {
+				throw new Error("Failed to submit feedback");
+			}
+		} catch (error) {
+			setError(error.message);
+		}
+  };
+
+  const handleNavigate = (e) => {
+		if (feedback === false) {
+			e.preventDefault();
+			setShowFeedbackForm(true);
+		}
+  };
+
   // Return a loading state while the session status is loading
   if (status === "loading") {
     return (
@@ -207,7 +271,7 @@ const Saved = () => {
                     height={20}
                     alt="Logo"
                   />
-                  <Link href="/dashboard">Create</Link>
+                  <Link href="/dashboard" onClick={handleNavigate}>Create</Link>
                 </button>
                 <button
                   className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
@@ -242,6 +306,7 @@ const Saved = () => {
               />
               <Link
                 href="/profile"
+                onClick={handleNavigate}
                 className="text-tawnyPort dark:text-paleRose"
               >
                 {user ? user.username : "User"}
@@ -439,7 +504,7 @@ const Saved = () => {
                   Home
                 </span>
               </button>
-              <Link href="/dashboard">
+              <Link href="/dashboard" onClick={handleNavigate}>
                 <button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
                   <Image
                     src={`/images/${
@@ -471,7 +536,7 @@ const Saved = () => {
                   </span>
                 </button>
               </Link>
-              <Link href="/profile">
+              <Link href="/profile" onClick={handleNavigate}>
                 <button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
                   <Image
                     src={`/images/${
