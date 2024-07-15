@@ -6,20 +6,16 @@ import NextImage from "next/image";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import MindmapCard from "@components/MindmapCard";
-//import { EvervaultCard, Icon } from "@components/EvervaultCard";
 import { SAMPLE_IDS } from "@utils/constants.js";
 import { useRouter } from "next/navigation";
 import { InfiniteMovingCards } from "@components/InfiniteMovingCards";
 import { BentoGrid, BentoGridItem } from "@components/BentoGrid";
 import {
   IconAbc,
-  IconArrowWaveRightUp,
-  IconBoxAlignRightFilled,
-  IconBoxAlignTopLeft,
   IconClipboardCopy,
   IconFileBroken,
-  IconSignature,
   IconSun,
+  IconMoon,
   IconTableColumn,
 } from "@tabler/icons-react";
 
@@ -213,6 +209,23 @@ const Home = () => {
             />
           </a>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+            <button
+              onClick={() =>
+                setTheme(resolvedTheme === "light" ? "dark" : "light")
+              }
+              className="px-4 mr-2 text-lividBrown dark:text-white transition-all duration-500"
+              style={{ zIndex: 100 }}
+            >
+              {resolvedTheme === "light" ? (
+                <>
+                  <IconMoon className="w-6 h-6" />
+                </>
+              ) : (
+                <>
+                  <IconSun className="w-6 h-6" />
+                </>
+              )}
+            </button>
             <Link href={"/login"}>
               <button
                 type="button"
@@ -342,21 +355,6 @@ const Home = () => {
         </div>
       </nav>
       <main className="w-full h-full bg-paleRose dark:bg-lividBrown">
-        <button
-          onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
-          className="fixed bottom-5 right-5 px-4 py-3 rounded-lg bg-stilleto dark:bg-paleRose text-white dark:text-lividBrown shadow-md transition-all duration-500"
-          style={{ zIndex: 100 }}
-        >
-          {resolvedTheme === "light" ? (
-            <>
-              <span className="text-sm">Dark Mode</span>
-            </>
-          ) : (
-            <>
-              <span className="text-sm">Light Mode</span>
-            </>
-          )}
-        </button>
         <section id="hero" className="flex flex-col items-center h-screen">
           <h1 className="mt-40 mb-4 text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Mindmap your way to success
@@ -448,55 +446,6 @@ const Home = () => {
           <h1 className="xs:block md:hidden mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Features
           </h1>
-          {/* 
-		  <div className="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
-            <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
-            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
-            <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
-            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
-
-            <EvervaultCard text="create" />
-
-            <h2 className="dark:text-white text-black mt-4 text-sm font-light">
-              Attach anything and create a mindmap in seconds.
-            </h2>
-            <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
-              AI-Enabled Creation with Multimodal Support
-            </p>
-          </div>
-          <div className="md:mt-40 xs:mt-8 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
-            <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
-            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
-            <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
-            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
-
-            <EvervaultCard text="edit" />
-
-            <h2 className="dark:text-white text-black mt-4 text-sm font-light">
-              Edit your maps manually or simply send a message to edit it. You
-              can also add additional information to existing maps.
-            </h2>
-            <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
-              AI-Enabled Editing with Multimodal Support
-            </p>
-          </div>
-          <div className="md:mt-40 xs:mt-8 xs:mb-4 md:mb-0 border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start xs:w-[20rem] md:w-[24rem] mx-4 p-4 relative md:h-[30rem] xs:h-[20rem]">
-            <Icon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
-            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
-            <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
-            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
-
-            <EvervaultCard text="save" />
-
-            <h2 className="dark:text-white text-black mt-4 text-sm font-light">
-              Save maps to your Mindsync account for future reference or export
-              them in SVG/PNG formats.
-            </h2>
-            <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
-              Easy Save/Export.
-            </p>
-          </div> 
-		  */}
           <BentoGrid className="max-w-4xl mx-auto px-2">
             {features.map((item, i) => (
               <BentoGridItem
@@ -583,7 +532,7 @@ const Home = () => {
             <div className="w-full flex flex-col items-center justify-center mt-4">
               <button
                 type="submit"
-                className="bg-tickleMePink text-white font-medium py-2 px-4 rounded-lg hover:bg-stilleto focus:outline-none focus:ring-4 focus:ring-tickleMePink dark:text-lividBrown dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-lividBrown"
+                className="bg-stilleto text-white font-medium py-2 px-4 rounded-lg hover:bg-tickleMePink focus:outline-none focus:ring-4 focus:ring-tickleMePink dark:text-lividBrown dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-lividBrown"
               >
                 {betaSignedUp
                   ? "Thanks for Signing Up!"
@@ -601,7 +550,7 @@ const Home = () => {
           <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
             <div className="sm:flex sm:items-center sm:justify-between">
               <a
-                href="https://flowbite.com/"
+                href="#"
                 className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
               >
                 <NextImage
@@ -658,9 +607,11 @@ const Home = () => {
               Powered by{" "}
               <Link href={"https://existence-master.netlify.app/"}>
                 <NextImage
-                  src="/images/existence.svg"
-                  width={200}
-                  height={50}
+                  src={`/images/logo-transparent${
+                    resolvedTheme === "dark" ? ".png" : "-light.svg"
+                  }`}
+                  width={100}
+                  height={25}
                   alt="Existence Logo"
                   className="rounded-xl"
                 />
