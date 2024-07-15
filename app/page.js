@@ -203,8 +203,8 @@ const Home = () => {
           >
             <NextImage
               src="/images/logofull.svg"
-              width={200}
-              height={50}
+              width={160}
+              height={40}
               alt="MindSync Logo"
             />
           </a>
@@ -214,7 +214,6 @@ const Home = () => {
                 setTheme(resolvedTheme === "light" ? "dark" : "light")
               }
               className="px-4 mr-2 text-lividBrown dark:text-white transition-all duration-500"
-              style={{ zIndex: 100 }}
             >
               {resolvedTheme === "light" ? (
                 <>
@@ -254,9 +253,9 @@ const Home = () => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M1 1h15M1 7h15M1 13h15"
                 />
               </svg>
@@ -314,9 +313,9 @@ const Home = () => {
                     stroke="currentColor"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
@@ -386,10 +385,10 @@ const Home = () => {
                 height="515"
                 src="https://www.youtube.com/embed/kHwuCagHWWg?si=si_k-Nimlmpu5qth"
                 title="MindSync Demo Video"
-                frameborder="0"
+                frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
               />
             </div>
             <div className="md:hidden">
@@ -398,10 +397,10 @@ const Home = () => {
                 height="300"
                 src="https://www.youtube.com/embed/kHwuCagHWWg?si=si_k-Nimlmpu5qth"
                 title="MindSync Demo Video"
-                frameborder="0"
+                frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
               />
             </div>
           </div>
@@ -512,7 +511,7 @@ const Home = () => {
               type="email"
               id="email"
               aria-describedby="helper-text-explanation"
-              className="bg-paleRose border border-gray-300 text-paleRose text-xl rounded-lg focus:ring-tickleMePink focus:border-stilleto block w-full p-2.5  dark:bg-paleRose dark:border-tickleMePink dark:placeholder-gray-400 dark:text-lividBrown dark:focus:ring-tickleMePink dark:focus:border-stilleto"
+              className="bg-paleRose border border-tickleMePink text-paleRose text-xl rounded-lg focus:ring-tickleMePink focus:border-stilleto block w-full p-2.5  dark:bg-paleRose dark:border-tickleMePink dark:placeholder-gray-400 dark:text-lividBrown dark:focus:ring-tickleMePink dark:focus:border-stilleto"
               placeholder="name@mindsync.com"
             />
 
@@ -551,7 +550,7 @@ const Home = () => {
             <div className="sm:flex sm:items-center sm:justify-between">
               <a
                 href="#"
-                className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
+                className="flex items-center xs:justify-center md:justify-normal mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
               >
                 <NextImage
                   src="/images/logofull.svg"
@@ -560,7 +559,7 @@ const Home = () => {
                   alt="MindSync Logo"
                 />
               </a>
-              <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+              <ul className="flex flex-wrap items-center xs:justify-center md:justify-normal mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
                 <li>
                   <a
                     href="#"
@@ -596,19 +595,19 @@ const Home = () => {
               </ul>
             </div>
             <hr className="my-6 border-tickleMePink sm:mx-auto lg:my-8" />
-            <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+            <span className="block text-sm text-gray-500 xs:text-center dark:text-gray-400">
               2024{" "}
               <a href="#" className="hover:underline">
                 MindSync
               </a>
               . All Rights Reserved.
             </span>
-            <span className="w-full flex flex-row md:items-center md:justify-center gap-x-2 mt-4">
+            <span className="w-full flex flex-row md:items-center xs:justify-center gap-x-2 mt-4">
               Powered by{" "}
               <Link href={"https://existence-master.netlify.app/"}>
                 <NextImage
                   src={`/images/logo-transparent${
-                    resolvedTheme === "dark" ? ".png" : "-light.svg"
+                    resolvedTheme === "dark" ? ".png" : "-light.png"
                   }`}
                   width={100}
                   height={25}
