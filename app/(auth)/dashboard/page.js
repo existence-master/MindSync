@@ -28,8 +28,8 @@ const Dashboard = () => {
 	const [isRecording, setIsRecording] = useState(false);
 	const [recognition, setRecognition] = useState(null);
 	const [showFeedbackForm, setShowFeedbackForm] = useState(false);
-	const [feedbackText, setFeedbackText] = useState("");
 	const [feedback, setFeedback] = useState(false);
+	const [navigate, setNavigate] = useState(null);
 	const [videoLinkInput, setVideoInput] = useState({
 		type: "link", // or "file"
 		name: "",
@@ -108,7 +108,7 @@ const Dashboard = () => {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({ columnName }),
+					body: JSON.stringify({ columnName: "Create" }),
 				});
 
 				if (response.ok) {
@@ -120,7 +120,7 @@ const Dashboard = () => {
 					throw new Error("Error checking feedback")
 			}
 			} catch (error) {
-				setError(error);
+				setError(error.message);
 			}
 		};
 
@@ -181,8 +181,8 @@ const Dashboard = () => {
 			if (count) {
 				return
 			}
-		} catch (err) {
-			setError(err.message);
+		} catch (error) {
+			setError(error.message);
 		}
 	};
 
@@ -352,7 +352,6 @@ const Dashboard = () => {
 				throw new Error("Failed to save mindmap");
 			}
 		} catch (error) {
-			console.error("Error:", error);
 			setError(error.message);
 		}
 	};
@@ -368,7 +367,7 @@ const Dashboard = () => {
 		setError(null);
 	};
 
-	const handleFeedbackSubmit = async () => {
+	const handleFeedbackSubmit = async (feedbackText) => {
 		try {
 			const response = await fetch("/api/update-feedback", {
 				method: "POST",
@@ -381,7 +380,7 @@ const Dashboard = () => {
 			if (response.ok) {
 				setShowFeedbackForm(false);
 				setFeedback(true);
-				router.push("/saved");
+				router.push(navigate);
 			} else {
 				throw new Error("Failed to submit feedback")
 			}
@@ -390,10 +389,15 @@ const Dashboard = () => {
 		}
 	};
 
+	const handleFeedbackCancel = () => {
+		setShowFeedbackForm(false);
+	};
+
 	const handleNavigate = (e) => {
     if (feedback === false) {
       e.preventDefault();
-      setShowFeedbackForm(true);
+		setShowFeedbackForm(true);
+		setNavigate(e.target.href)
 	}
   };
 
@@ -916,6 +920,12 @@ const Dashboard = () => {
 								handleError={handleError}
 							/>
 						)}
+						{showFeedbackForm && (
+							<FeedbackForm
+								handleFeedbackCancel={handleFeedbackCancel}
+								handleFeedbackSubmit={handleFeedbackSubmit}
+							/>
+						)}
 					</div>
 				</div>
 				{/* Mobile Content */}
@@ -1351,37 +1361,10 @@ const Dashboard = () => {
 							)}
 
 							{showFeedbackForm && (
-								<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-									<div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-1/3">
-										<h2 className="text-lg font-bold mb-4 text-center">
-											We'd love to hear your feedback!
-										</h2>
-										<textarea
-											className="w-full p-2 border border-gray-300 rounded mb-4 dark:bg-gray-700 dark:text-white"
-											value={feedbackText}
-											onChange={(e) =>
-												setFeedbackText(e.target.value)
-											}
-											placeholder="Your feedback"
-										/>
-										<div className="flex justify-end space-x-4">
-											<button
-												className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-												onClick={handleFeedbackSubmit}
-											>
-												Submit
-											</button>
-											<button
-												className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-												onClick={() =>
-													setShowFeedbackForm(false)
-												}
-											>
-												Cancel
-											</button>
-										</div>
-									</div>
-								</div>
+								<FeedbackForm
+									handleFeedbackCancel={handleFeedbackCancel}
+									handleFeedbackSubmit={handleFeedbackSubmit}
+								/>
 							)}
 						</div>
 						<div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">
