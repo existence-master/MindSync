@@ -14,19 +14,24 @@ const ErrorDisplay = ({ errorMessage, handleError }) => {
 	return (
 		<>
 			{visible && ( // Display only if visible is true
-				<div className="flex flex-col h-[150px] w-[400px] justify-center items-center bg-paleRose rounded-xl border-2 border-tickleMePink p-2">
-					{" "}
-					{/* Error container */}
-					<p className="text-xl text-stilleto mb-4">
-						{errorMessage}
-					</p>{" "}
-					{/* Display the error message */}
-					<button
-						onClick={handleDismiss} // Call handleDismiss on button click
-						className="primary-btn" // Button styling
+				<div
+					className="fixed w-screen h-screen inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+					style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+				>
+					<div
+						className="mt-2 flex flex-col h-[150px] w-[400px] justify-center items-center bg-paleRose dark:bg-lividBrown rounded-xl border-2 border-tickleMePink p-2"
+						style={{ zIndex: "9999999" }}
 					>
-						Dismiss {/* Button label */}
-					</button>
+						<p className="text-xl text-stilleto mb-4">
+							{errorMessage}
+						</p>
+						<button
+							onClick={handleDismiss}
+							className="primary-btn"
+						>
+							Dismiss
+						</button>
+					</div>
 				</div>
 			)}
 		</>
