@@ -62,11 +62,9 @@ const Login = () => {
       }
 
       if (!res.ok) {
-        throw new Error(data.message || "Something went wrong");
+        throw new Error("Something went wrong");
       }
 
-      // Handle successful login (e.g., redirect to dashboard)
-      console.log("Login successful:", data);
     } catch (err) {
       setError(err.message);
     } finally {

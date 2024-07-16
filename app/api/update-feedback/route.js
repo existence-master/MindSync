@@ -28,13 +28,13 @@ export const POST = async (request) => {
 
 		// Update the SheetsDB API with the new feedback
 		const response = await fetch(
-			`https://sheetdb.io/api/v1/58f61be4dda40/Email/${user.email}`,
+			`${process.env.SHEETDB_API_ENDPOINT}/Email/${user.email}`,
 			{
 				method: "PATCH",
 				headers: {
-					Accept: "application/json",
+					"Accept": "application/json",
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${process.env.SHEETDB_API_TOKEN}`,
+					"Authorization": `Bearer ${process.env.SHEETDB_API_TOKEN}`,
 				},
 				body: JSON.stringify({
 					data: {

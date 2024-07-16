@@ -28,7 +28,7 @@ export const POST = async (request) => {
 
 		// Call the SheetsDB API using the username and email
 		const response = await fetch(
-			`https://sheetdb.io/api/v1/58f61be4dda40/search?Username=${user.username}&Email=${user.email}`,
+			`${process.env.SHEETDB_API_ENDPOINT}/search?Email=${user.email}`,
 			{
 				method: "GET",
 				headers: {
