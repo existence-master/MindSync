@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import useWindowSize from "@hooks/useWindowSize";
 import ErrorDisplay from "@components/ErrorDisplay";
+import FeedbackForm from "@components/FeedbackForm";
 
 const Dashboard = () => {
 	const windowSize = useWindowSize();
