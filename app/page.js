@@ -18,12 +18,12 @@ import {
   IconMoon,
   IconTableColumn,
 } from "@tabler/icons-react";
+import { BackgroundGradient } from "@components/BackgroundGradient";
 
 const Home = () => {
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme("dark");
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [navbarStyle, setNavbarStyle] = useState("bg-transparent");
   const [sampleMindmaps, setSampleMindmaps] = useState([]);
   const [error, setError] = useState(null);
   const [mindmapCount, setMindmapCount] = useState(0);
@@ -119,7 +119,7 @@ const Home = () => {
             alt="Mindmap Skeleton"
             width={imageWidth}
             height={imageHeight}
-            className="bg-white rounded-xl py-2"
+            className="bg-paleRose rounded-xl py-2"
           />
         )}
       </div>
@@ -195,7 +195,10 @@ const Home = () => {
 
   return (
     <>
-      <nav className={`${navbarStyle} fixed w-full z-20 top-0 start-0`}>
+      <nav
+        className="dark:bg-lividBrown bg-paleRose border-b-2 rounded-b-lg border-tickleMePink fixed w-full z-20 top-0 start-0"
+        style={{ zIndex: 200 }}
+      >
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <a
             href="#"
@@ -228,7 +231,7 @@ const Home = () => {
             <Link href={"/login"}>
               <button
                 type="button"
-                className="dark:text-lividBrown text-paleRose bg-stilleto hover:bg-lividBrown focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-stilleto"
+                className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-tickleMePink bg-[linear-gradient(110deg,#8A2846,45%,#B9375E,55%,#522E38)] bg-[length:200%_100%] px-6 font-medium text-paleRose transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
               >
                 Login
               </button>
@@ -269,7 +272,7 @@ const Home = () => {
               <li>
                 <a
                   href="#"
-                  className="block py-2 px-3 text-tickleMePink rounded text-xl"
+                  className="block py-2 px-3 text-tickleMePink rounded text-xl hover:drop-shadow-glow"
                   aria-current="page"
                 >
                   Home
@@ -278,7 +281,7 @@ const Home = () => {
               <li>
                 <a
                   href="#"
-                  className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl"
+                  className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl hover:drop-shadow-glow"
                 >
                   About
                 </a>
@@ -286,7 +289,7 @@ const Home = () => {
               <li>
                 <a
                   href="#"
-                  className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl"
+                  className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl hover:drop-shadow-glow"
                 >
                   Contact Us
                 </a>
@@ -296,7 +299,7 @@ const Home = () => {
           {isOpen && (
             <div className="fixed inset-0 flex z-50">
               <div className="fixed inset-0 bg-black opacity-50"></div>
-              <div className="absolute inset-y-0 right-0 flex flex-col w-full max-w-sm">
+              <div className="absolute inset-y-0 right-0 flex flex-col w-full max-w-lg">
                 <button
                   data-collapse-toggle="navbar-sticky"
                   type="button"
@@ -354,9 +357,39 @@ const Home = () => {
         </div>
       </nav>
       <main className="w-full h-full bg-paleRose dark:bg-lividBrown">
-        <section id="hero" className="flex flex-col items-center h-screen">
-          <h1 className="mt-40 mb-4 text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
-            Mindmap your way to success
+        <section
+          id="hero"
+          className="flex flex-col items-center xs:h-screen md:h-[800px] bg-paleRose dark:bg-lividBrown"
+        >
+          <a href="#betatest">
+            <button className="xs:mt-32 md:mt-28 bg-stilleto no-underline group cursor-pointer relative shadow-2xl shadow-lividBrown rounded-full p-px text-xs font-semibold leading-6  text-paleRose inline-block">
+              <span className="absolute inset-0 overflow-hidden rounded-full">
+                <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+              </span>
+              <div className="relative flex space-x-2 items-center z-10 rounded-full bg-stilleto py-0.5 px-4 ring-1 ring-white/10 ">
+                <span>{`Join our Beta Waitlist now!`}</span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M10.75 8.75L14.25 12L10.75 15.25"
+                  ></path>
+                </svg>
+              </div>
+              <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-emerald-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover:opacity-40"></span>
+            </button>
+          </a>
+          <h1 className="mt-8 mb-4 text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
+            Mindmap your way to{" "}
+            <span className="underline font-normal">success.</span>
           </h1>
           <p className="text-2xl text-center dark:text-paleRose text-lividBrown font-inter">
             Organize your mind and{" "}
@@ -365,16 +398,18 @@ const Home = () => {
           </p>
           <div className="flex flex-row gap-4 mt-8 mb-8">
             <Link
-              href="#"
+              href="https://youtu.be/kHwuCagHWWg"
               className="bg-paleRose text-lividBrown p-2 rounded-lg text-xl px-4 hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter"
             >
               Take a Tour
             </Link>
-            <Link
-              href="/signup"
-              className="bg-stilleto text-white dark:bg-paleRose dark:text-lividBrown p-2 rounded-lg text-xl px-4 hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter"
-            >
-              Get Started
+            <Link href="/signup">
+              <button className="relative inline-flex overflow-hidden rounded-lg h-12 p-[2px] hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#8A2846_0%,#FFE0E9_50%,#FF7AA2_100%)]" />
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-lg bg-stilleto px-3 py-1 text-xl font-medium text-paleRose backdrop-blur-3xl">
+                  Get Started
+                </span>
+              </button>
             </Link>
           </div>
           <div>
@@ -412,7 +447,7 @@ const Home = () => {
           <h1 className="xs:mt-8 md:mt-40 mb-4 xs:text-3xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Check out some sample Mindmaps here!
           </h1>
-          <div className="flex flex-wrap justify-center items-center gap-4 my-10">
+          <div className="flex flex-wrap justify-center items-center md:gap-4 xs:gap-2 xs:gap-y-2 my-10">
             {sampleMindmaps.length > 0 ? (
               sampleMindmaps.map((mindmap, index) => (
                 <MindmapCard
@@ -429,12 +464,44 @@ const Home = () => {
         </section>
         <section
           id="generated"
-          className="flex flex-col items-center bg-paleRose dark:bg-lividBrown min-h-fit"
+          className="relative flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown xs:min-h-fit md:h-[300px]"
         >
-          <h1 className="mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
-            {mindmapCount}
+          <NextImage
+            src="/images/featuresection-shape1.svg"
+            alt="Feature Section Shapes"
+            width={200}
+            height={200}
+            className="xs:hidden md:block absolute -top-20 left-0"
+            style={{ zIndex: 100 }}
+          />
+          <NextImage
+            src="/images/featuresection-shape2.svg"
+            alt="Feature Section Shapes"
+            width={200}
+            height={200}
+            className="xs:hidden md:block absolute -bottom-20 left-40"
+            style={{ zIndex: 100 }}
+          />
+          <NextImage
+            src="/images/featuresection-shape3.svg"
+            alt="Feature Section Shapes"
+            width={200}
+            height={200}
+            className="xs:hidden md:block absolute bottom-10 right-20"
+            style={{ zIndex: 100 }}
+          />
+          <NextImage
+            src="/images/featuresection-shape4.svg"
+            alt="Feature Section Shapes"
+            width={150}
+            height={150}
+            className="xs:hidden md:block absolute -bottom-20 right-60"
+            style={{ zIndex: 100 }}
+          />
+          <h1 className="xs:mt-4 mb-4 xs:text-6xl md:text-8xl font-lora font-normal text-center text-transparent bg-gradient-to-r from-hibiscus to-tawnyPort dark:from-[#B9375E] dark:to-[#FFD7E0] bg-clip-text">
+            {mindmapCount}+
           </h1>
-          <div className="flex flex-col justify-center items-center xs:text-3xl md:text-4xl font-inter gap-4 my-10 mb-20">
+          <div className="flex flex-col justify-center items-center xs:text-3xl md:text-4xl font-inter gap-4 my-10 mb-20 text-transparent bg-gradient-to-r from-hibiscus to-tawnyPort dark:from-[#B9375E] dark:to-[#FFD7E0] bg-clip-text">
             Mindmaps Generated!
           </div>
         </section>
@@ -505,16 +572,17 @@ const Home = () => {
               for="email"
               className="block mb-2 text-xl font-inter font-medium text-gray-900 dark:text-white"
             >
-              Your email
+              Enter your email
             </label>
-            <input
-              type="email"
-              id="email"
-              aria-describedby="helper-text-explanation"
-              className="bg-paleRose border border-tickleMePink text-paleRose text-xl rounded-lg focus:ring-tickleMePink focus:border-stilleto block w-full p-2.5  dark:bg-paleRose dark:border-tickleMePink dark:placeholder-gray-400 dark:text-lividBrown dark:focus:ring-tickleMePink dark:focus:border-stilleto"
-              placeholder="name@mindsync.com"
-            />
-
+            <BackgroundGradient className="rounded-lg w-full p-[2px]">
+              <input
+                type="email"
+                id="email"
+                aria-describedby="helper-text-explanation"
+                className="bg-paleRose border border-tickleMePink text-xl rounded-2xl focus:ring-tickleMePink focus:border-stilleto block w-full p-[2px] py-2.5 px-2 dark:bg-paleRose dark:border-tickleMePink dark:placeholder-gray-400 text-lividBrown dark:focus:ring-tickleMePink dark:focus:border-stilleto"
+                placeholder="name@mindsync.com"
+              />
+            </BackgroundGradient>
             <p
               id="helper-text-explanation"
               className="mt-2 text-sm text-gray-500 dark:text-gray-400"
@@ -531,11 +599,14 @@ const Home = () => {
             <div className="w-full flex flex-col items-center justify-center mt-4">
               <button
                 type="submit"
-                className="bg-stilleto text-white font-medium py-2 px-4 rounded-lg hover:bg-tickleMePink focus:outline-none focus:ring-4 focus:ring-tickleMePink dark:text-lividBrown dark:bg-paleRose dark:hover:bg-tickleMePink dark:focus:ring-lividBrown"
+                className="relative inline-flex overflow-hidden rounded-lg h-12 p-[2px] hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
               >
-                {betaSignedUp
-                  ? "Thanks for Signing Up!"
-                  : "Join the Beta Program"}
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#8A2846_0%,#FFE0E9_50%,#FF7AA2_100%)]" />
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-lg bg-stilleto px-3 py-1 text-xl font-medium text-paleRose backdrop-blur-3xl">
+                  {betaSignedUp
+                    ? "Thanks for Signing Up!"
+                    : "Join the Beta Program"}
+                </span>
               </button>
             </div>
           </form>
