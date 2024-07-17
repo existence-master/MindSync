@@ -19,6 +19,7 @@ import {
   IconTableColumn,
 } from "@tabler/icons-react";
 import { BackgroundGradient } from "@components/BackgroundGradient";
+import { FlipWords } from "@components/FlipWords";
 
 const Home = () => {
   const { setTheme, resolvedTheme } = useTheme("dark");
@@ -125,6 +126,16 @@ const Home = () => {
       </div>
     );
   };
+
+  const words = [
+    "success.",
+    "clarity.",
+    "focus.",
+    "creativity.",
+    "productivity.",
+    "growth.",
+  ];
+
   const features = [
     {
       title: "Multimodal Inputs",
@@ -388,8 +399,10 @@ const Home = () => {
             </button>
           </a>
           <h1 className="mt-8 mb-4 text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
-            Mindmap your way to{" "}
-            <span className="underline font-normal">success.</span>
+            Mindmap your way to
+            <span className="underline font-normal text-paleRose">
+              <FlipWords words={words} />
+            </span>
           </h1>
           <p className="text-2xl text-center dark:text-paleRose text-lividBrown font-inter">
             Organize your mind and{" "}

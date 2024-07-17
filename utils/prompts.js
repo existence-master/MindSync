@@ -1,23 +1,25 @@
 const createMindmapSystemPrompt = `The following is the syntax for creating mermaid mindmap notation:
 
-1. It should start with the word mindmap, and the first node has to be the "root" node followed by two barkets like:
+1. It should not contain any text other than the mindmap code.
+
+2. It should start with the word mindmap, and the first node has to be the "root" node followed by two barkets like:
 
 root((main idea))
 
-2. ideas then  are grouped under each other, where each sub-idea needs right indented under it's parents. 
+3. ideas then  are grouped under each other, where each sub-idea needs right indented under it's parents. 
 
-3. Except for the root node, Ideas and sub-ideas shouldn't include any types of brackets, like curly brackets, brackets, or square brackets
+4. Except for the root node, Ideas and sub-ideas shouldn't include any types of brackets, like curly brackets, brackets, or square brackets
 
-4. Also, you can use ::icon(fa fa-icon-name) from https://fontawesome.com/ to illustrate a node with relevance in a seperate line under the node or subnode for illustation
+5. Also, you can use ::icon(fa fa-icon-name) from https://fontawesome.com/ to illustrate a node with relevance in a seperate line under the node or subnode for illustation
 
-5. Limit the node to 3 words maximum and the sub-nodes and downwards to 2 words maximum. 
+6. Limit the node to 3 words maximum and the sub-nodes and downwards to 2 words maximum. 
 
 I will send you an optional instruction and some text and as per the mermaid mindmap notation above, please summarize the text into a mermaid mindmap notation according to the instruction if present. If only instruction and no text is given, you have to make the mindmap according to the instruction. Return only MERMAID MINDMAP CODE. DO NOT RETURN TEXT. DO NOT RETURN TEXT DESCRIPTIONS, UNDERSTANDINGS, OR ANYTHING ELSE.`;
 
 const textMindmapInputOutputPairs = [
-	{
-		input: `Technology has greatly influenced modern society. It encompasses various aspects of human life, from communication to transportation. Innovation drives technological advancements, leading to new products and services that enhance our daily lives. Automation, a significant outcome of technological progress, streamlines processes and improves efficiency. Artificial Intelligence (AI) represents the cutting edge of technology, enabling machines to perform tasks that typically require human intelligence.`,
-		output: `mindmap
+  {
+    input: `Technology has greatly influenced modern society. It encompasses various aspects of human life, from communication to transportation. Innovation drives technological advancements, leading to new products and services that enhance our daily lives. Automation, a significant outcome of technological progress, streamlines processes and improves efficiency. Artificial Intelligence (AI) represents the cutting edge of technology, enabling machines to perform tasks that typically require human intelligence.`,
+    output: `mindmap
 root((Technology))
     Influence
         Communication
@@ -33,10 +35,10 @@ root((Technology))
             Artificial Intelligence
             ::icon(fa fa-cogs)
 `,
-	},
-	{
-		input: `Travel broadens one's horizons and exposes individuals to diverse cultures and experiences. Exploration fuels the desire to discover new places and uncover hidden treasures. Adventure seekers often embark on thrilling journeys, seeking adrenaline-pumping activities and unique encounters. Backpacking offers a sense of freedom and allows travelers to immerse themselves in nature while Safari adventures provide opportunities to observe wildlife in their natural habitats.`,
-		output: `mindmap
+  },
+  {
+    input: `Travel broadens one's horizons and exposes individuals to diverse cultures and experiences. Exploration fuels the desire to discover new places and uncover hidden treasures. Adventure seekers often embark on thrilling journeys, seeking adrenaline-pumping activities and unique encounters. Backpacking offers a sense of freedom and allows travelers to immerse themselves in nature while Safari adventures provide opportunities to observe wildlife in their natural habitats.`,
+    output: `mindmap
 root((Travel))
     Broadening Horizons
         Exposure to Cultures
@@ -57,11 +59,11 @@ root((Travel))
             Wildlife Observation
             Natural Habitats
 `,
-	},
-	{
-		input: `Convert the following text into a mindmap
+  },
+  {
+    input: `Convert the following text into a mindmap
 Education plays a crucial role in shaping individuals and societies. Learning is a lifelong process that begins from infancy and continues throughout one's life. Knowledge acquisition empowers individuals with the necessary skills and information to navigate the complexities of the world. Curriculums are designed to facilitate structured learning experiences, providing students with a comprehensive understanding of various subjects. Research drives innovation and fosters intellectual curiosity, pushing the boundaries of human knowledge.`,
-		output: `mindmap
+    output: `mindmap
 root((Education))
     Shaping Individuals and Societies
         Crucial Role
@@ -84,10 +86,10 @@ root((Education))
             Pushing Boundaries
                 Human Knowledge
 `,
-	},
-	{
-		input: `Create a mindmap about biology`,
-		output: `mindmap
+  },
+  {
+    input: `Create a mindmap about biology`,
+    output: `mindmap
 root((Biology))
     Study
         Life Forms
@@ -125,7 +127,7 @@ root((Biology))
             ::icon(fa fa-leaf) Ecosystems
             ::icon(fa fa-globe) Conservation Biology
 `,
-	},
+  },
 ];
 
 const updateMindmapSystemPrompt = `The following is the syntax for creating mermaid mindmap notation:
@@ -145,8 +147,8 @@ root((main idea))
 I will send you a pair of Mermaid mindmap code and an instruction. Modify the mindmap code according to the instruction provided complying with the notations provided above. Return only MERMAID MINDMAP CODE. DO NOT RETURN TEXT. DO NOT RETURN TEXT DESCRIPTIONS, UNDERSTANDINGS, OR ANYTHING ELSE.`;
 
 const updateMindmapInputOutputPairs = [
-	{
-		input: `Instruction: Add a new sub-node "Creativity" under the "Innovation" node in the mindmap.
+  {
+    input: `Instruction: Add a new sub-node "Creativity" under the "Innovation" node in the mindmap.
 Mindmap Code: mindmap
 root((Technology))
     Influence
@@ -161,7 +163,7 @@ root((Technology))
         Cutting Edge
             Artificial Intelligence
             ::icon(fa fa-cogs)`,
-		output: `mindmap
+    output: `mindmap
 root((Technology))
     Influence
         Communication
@@ -177,9 +179,9 @@ root((Technology))
             Artificial Intelligence
             ::icon(fa fa-cogs)
 `,
-	},
-	{
-		input: `Instruction: Change "Sense of Freedom" to "Feeling of Liberation" under the "Backpacking" node in the mindmap.
+  },
+  {
+    input: `Instruction: Change "Sense of Freedom" to "Feeling of Liberation" under the "Backpacking" node in the mindmap.
 Mindmap Code: mindmap
 root((Travel))
     Broadening Horizons
@@ -199,7 +201,7 @@ root((Travel))
             Wildlife Observation
             Natural Habitats
 `,
-		output: `mindmap
+    output: `mindmap
 root((Travel))
     Broadening Horizons
         Exposure to Cultures
@@ -218,9 +220,9 @@ root((Travel))
             Wildlife Observation
             Natural Habitats
 `,
-	},
-	{
-		input: `Instruction: Remove the "Empowerment" node from the mindmap.
+  },
+  {
+    input: `Instruction: Remove the "Empowerment" node from the mindmap.
 Mindmap Code: mindmap
 root((Education))
     Shaping Individuals and Societies
@@ -243,7 +245,7 @@ root((Education))
         Intellectual Curiosity
             Pushing Boundaries
                 Human Knowledge`,
-		output: `mindmap
+    output: `mindmap
 root((Education))
     Shaping Individuals and Societies
         Crucial Role
@@ -265,9 +267,9 @@ root((Education))
             Pushing Boundaries
                 Human Knowledge
 `,
-	},
-	{
-		input: `Instruction: Change the icon of "Innovation" node to fa-lightbulb-o in the mindmap.
+  },
+  {
+    input: `Instruction: Change the icon of "Innovation" node to fa-lightbulb-o in the mindmap.
 Mindmap Code: mindmap
 root((Technology))
     Influence
@@ -282,7 +284,7 @@ root((Technology))
         Cutting Edge
             Artificial Intelligence
             ::icon(fa fa-cogs)`,
-		output: `mindmap
+    output: `mindmap
 root((Technology))
     Influence
         Communication
@@ -298,9 +300,9 @@ root((Technology))
             Artificial Intelligence
             ::icon(fa fa-cogs)
 `,
-	},
-	{
-		input: `Instruction: Add a new sub-node "Coding Skills" under "Skills Acquisition" in the mindmap.
+  },
+  {
+    input: `Instruction: Add a new sub-node "Coding Skills" under "Skills Acquisition" in the mindmap.
 Mindmap Code: mindmap
 root((Education))
     Shaping Individuals and Societies
@@ -325,7 +327,7 @@ root((Education))
         Intellectual Curiosity
             Pushing Boundaries
                 Human Knowledge`,
-		output: `mindmap
+    output: `mindmap
 root((Education))
     Shaping Individuals and Societies
         Crucial Role
@@ -351,32 +353,32 @@ root((Education))
             Pushing Boundaries
                 Human Knowledge
 `,
-	},
+  },
 ];
 
 const updateMindmapPrompt = `Instruction: [INSTRUCTION]
 Mindmap Code: [MERMAID_MINDMAP_CODE]`;
 
-const cleanTextSystemPrompt = `You are a helpful AI agent who cleans up text and returns only the mindmap code contained in the text. Remove any additional text that is not part of the mindmap code. If there is no additional text before or after the mindmap code, return the input as it is`
+const cleanTextSystemPrompt = `You are a helpful AI agent who cleans up text and returns only the mindmap code contained in the text. Remove any additional text that is not part of the mindmap code. If there is no additional text before or after the mindmap code, return the input as it is`;
 
 const cleanTextInputOutputPairs = [
-	{
-		input: `This is a mindmap explaining the concept of a tree:
+  {
+    input: `This is a mindmap explaining the concept of a tree:
 mindmap
   root((Tree))
     A(Root Node)
         B(Child Node)
         C(Child Node)
     D(Sibling Node)`,
-		output: `mindmap
+    output: `mindmap
 root((Tree))
     A(Root Node)
         B(Child Node)
         C(Child Node)
     D(Sibling Node)`,
-	},
-	{
-		input: `mindmap
+  },
+  {
+    input: `mindmap
   root((Programming Languages))
     A(Procedural)
       B(C)
@@ -385,7 +387,7 @@ root((Tree))
       E(Java)
       F(Python)
 You can learn more about these languages online.`,
-		output: `mindmap
+    output: `mindmap
 root((Programming Languages))
     A(Procedural)
         B(C)
@@ -393,9 +395,9 @@ root((Programming Languages))
     D(Object-Oriented)
         E(Java)
         F(Python)`,
-	},
-	{
-		input: `Let's look at this mindmap of planets:
+  },
+  {
+    input: `Let's look at this mindmap of planets:
 mindmap
     root((Planets))
         A(Inner Planets)
@@ -405,7 +407,7 @@ mindmap
             E(Jupiter)
             F(Saturn)
 They are so different!`,
-		output: `mindmap
+    output: `mindmap
 root((Planets))
     A(Inner Planets)
         B(Mercury)
@@ -413,7 +415,15 @@ root((Planets))
     D(Outer Planets)
         E(Jupiter)
         F(Saturn)`,
-	},
+  },
 ];
 
-export { createMindmapSystemPrompt, textMindmapInputOutputPairs, updateMindmapSystemPrompt, updateMindmapInputOutputPairs, updateMindmapPrompt, cleanTextSystemPrompt, cleanTextInputOutputPairs };
+export {
+  createMindmapSystemPrompt,
+  textMindmapInputOutputPairs,
+  updateMindmapSystemPrompt,
+  updateMindmapInputOutputPairs,
+  updateMindmapPrompt,
+  cleanTextSystemPrompt,
+  cleanTextInputOutputPairs,
+};
