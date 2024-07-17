@@ -1,5 +1,5 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
- 
+
 const colors = require("tailwindcss/colors");
 const {
   default: flattenColorPalette,
@@ -10,15 +10,13 @@ const addVariablesForColors = ({ addBase, theme }) => {
   let newVars = Object.fromEntries(
     Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
   );
- 
+
   addBase({
     ":root": newVars,
   });
-}
-
+};
 
 /** @type {import('tailwindcss').Config} */
-
 
 module.exports = {
   content: [
@@ -28,14 +26,29 @@ module.exports = {
   ],
   theme: {
     extend: {
+      dropShadow: {
+        glow: [
+          "0 0px 20px rgba(255, 255, 255, 0.35)",
+          "0 0px 65px rgba(255, 255, 255, 0.2)",
+        ],
+      },
       animation: {
         scroll:
           "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
+        shimmer: "shimmer 2s linear infinite",
       },
       keyframes: {
         scroll: {
           to: {
             transform: "translate(calc(-50% - 0.5rem))",
+          },
+        },
+        shimmer: {
+          from: {
+            backgroundPosition: "0 0",
+          },
+          to: {
+            backgroundPosition: "-200% 0",
           },
         },
       },

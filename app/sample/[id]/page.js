@@ -372,13 +372,13 @@ const Sample = () => {
 
 	// Render edit page if mindmap details are loaded
 	return (
-		<div className="flex h-screen w-screen bg-paleRose dark:bg-lividBrown">
-			<div className="xs:hidden w-full md:flex relative">
+		<div className="flex h-full w-full bg-paleRose dark:bg-lividBrown">
+			<div className="xs:hidden w-full md:flex justify-center items-center relative">
 				{/* Main Content */}
 				<div className="w-full flex flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
 					<div className="flex flex-col justify-center items-center">
-						<div className="flex flex-row gap-2 mt-6">
-							<div className="ml-20 w-1/2 p-4 border-2 border-stilleto dark:border-paleRose rounded-xl mr-4">
+						<div className="flex flex-row items-center justify-center md:gap-1 xl:gap-2 mt-6">
+							<div className="ml-20 md:mt-32 2xl:mt-10 w-1/2 p-4 border-2 border-stilleto dark:border-paleRose rounded-xl 2xl:mr-4">
 								<div className="mb-4">
 									<label
 										htmlFor="mindmapName"
@@ -717,7 +717,7 @@ const Sample = () => {
 									</div>
 								)}
 							</div>
-							<div className="mr-20 w-1/2 p-4 flex flex-col justify-center items-center">
+							<div className="2xl:mr-20 md:-translate-x-6 xl:-translate-x-1 w-1/2 p-4 flex flex-col justify-center items-center">
 								<div className="border-2 border-stilleto dark:border-paleRose rounded-xl min-h-max py-4">
 									<h2 className="secondary-text dark:text-paleRose text-center w-full p-2 mb-2 font-semibold border-b-2 border-stilleto dark:border-paleRose">
 										Mindmap Preview
@@ -789,7 +789,7 @@ const Sample = () => {
 											</div>
 										)}
 									</div>
-									<p>
+									<p className="text-2xl font-inter font-normal translate-y-2 hover:underline">
 										Total Available Edits : {availableEdits}
 									</p>
 								</div>

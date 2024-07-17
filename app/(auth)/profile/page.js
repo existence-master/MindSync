@@ -149,7 +149,7 @@ const Profile = () => {
 
   if (status === "loading") {
     return (
-      <div className="bg-paleRose flex justify-center items-center h-screen">
+      <div className="bg-paleRose dark:bg-lividBrown flex justify-center items-center h-screen">
         <div role="status">
           <svg
             aria-hidden="true"

@@ -10,6 +10,8 @@ import Image from "next/image";
 import SignoutButton from "@components/SignoutButton";
 import { useTheme } from "next-themes";
 import mermaid from "mermaid";
+import ErrorDisplay from "@components/ErrorDisplay";
+import FeedbackForm from "@components/FeedbackForm";
 
 const Saved = () => {
   const [mindmaps, setMindmaps] = useState([]);
@@ -20,6 +22,9 @@ const Saved = () => {
   const { data: session, status } = useSession();
   const [loadingMaps, setLoadingMaps] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [feedback, setFeedback] = useState(false);
+  const [navigate, setNavigate] = useState(null);
 
   // Redirect unauthenticated users
   useEffect(() => {
@@ -66,7 +71,36 @@ const Saved = () => {
     fetchUserDetails();
   }, []);
 
+  useEffect(() => {
+    const checkFeedback = async () => {
+      try {
+        const response = await fetch("/api/check-feedback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ columnName: "Saved" }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setFeedback(data.result ? true : false);
+        } else {
+          throw new Error("Error checking feedback");
+        }
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    checkFeedback();
+  }, []);
+
   const handleEdit = (id) => {
+    if (feedback === false) {
+      setShowFeedbackForm(true);
+      return;
+    }
     router.push(`/edit/${id}`);
   };
 
@@ -91,11 +125,14 @@ const Saved = () => {
   };
 
   const handleExport = async (mindmap, format) => {
-    const { svg: mindmapSVG } = await mermaid.render("temp", mindmap.code)
+    const { svg: mindmapSVG } = await mermaid.render("temp", mindmap.code);
 
     fabric.loadSVGFromString(mindmapSVG, (objects, options) => {
-      const svgDocument = new DOMParser().parseFromString(mindmapSVG, "image/svg+xml");
-      const svgElement = svgDocument.childNodes[0]
+      const svgDocument = new DOMParser().parseFromString(
+        mindmapSVG,
+        "image/svg+xml"
+      );
+      const svgElement = svgDocument.childNodes[0];
       const svgWidth = svgElement.viewBox.baseVal.width;
       const svgHeight = svgElement.viewBox.baseVal.height;
 
@@ -153,15 +190,52 @@ const Saved = () => {
         const mindmaps = await response.json();
         setMindmaps(mindmaps);
       }
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const handleFeedbackSubmit = async (feedbackText) => {
+    try {
+      const response = await fetch("/api/update-feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          columnName: "Saved",
+          feedback: feedbackText,
+        }),
+      });
+
+      if (response.ok) {
+        setShowFeedbackForm(false);
+        setFeedback(true);
+        router.push(navigate);
+      } else {
+        throw new Error("Failed to submit feedback");
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const handleFeedbackCancel = () => {
+    setShowFeedbackForm(false);
+  };
+
+  const handleNavigate = (e) => {
+    if (feedback === false) {
+      e.preventDefault();
+      setShowFeedbackForm(true);
+      setNavigate(e.target.href);
     }
   };
 
   // Return a loading state while the session status is loading
   if (status === "loading") {
     return (
-      <div className="bg-paleRose flex justify-center items-center h-screen">
+      <div className="bg-paleRose dark:bg-lividBrown flex justify-center items-center h-screen">
         <div className="text-center">
           <h1 className="text-8xl font-bold mb-4 text-green-600">Loading...</h1>
           <p className="text-lg">Please wait</p>
@@ -207,7 +281,9 @@ const Saved = () => {
                     height={20}
                     alt="Logo"
                   />
-                  <Link href="/dashboard">Create</Link>
+                  <Link href="/dashboard" onClick={handleNavigate}>
+                    Create
+                  </Link>
                 </button>
                 <button
                   className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
@@ -242,6 +318,7 @@ const Saved = () => {
               />
               <Link
                 href="/profile"
+                onClick={handleNavigate}
                 className="text-tawnyPort dark:text-paleRose"
               >
                 {user ? user.username : "User"}
@@ -328,19 +405,13 @@ const Saved = () => {
             )}
           </div>
           {error && (
-            <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-              <div
-                style={{
-                  backgroundColor: "white",
-                  padding: "20px",
-                  borderRadius: "5px",
-                }}
-              >
-                <h2>Error</h2>
-                <p>{error}</p>
-                <button onClick={handleError}>Close</button>
-              </div>
-            </div>
+            <ErrorDisplay errorMessage={error} handleError={handleError} />
+          )}
+          {showFeedbackForm && (
+            <FeedbackForm
+              handleFeedbackCancel={handleFeedbackCancel}
+              handleFeedbackSubmit={handleFeedbackSubmit}
+            />
           )}
         </div>
         {/* Mobile Content */}
@@ -423,6 +494,18 @@ const Saved = () => {
                     )}
                   </div>
                 )}
+                {error && (
+                  <ErrorDisplay
+                    errorMessage={error}
+                    handleError={handleError}
+                  />
+                )}
+                {showFeedbackForm && (
+                  <FeedbackForm
+                    handleFeedbackCancel={handleFeedbackCancel}
+                    handleFeedbackSubmit={handleFeedbackSubmit}
+                  />
+                )}
               </div>
             </div>
             <div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">
@@ -439,7 +522,7 @@ const Saved = () => {
                   Home
                 </span>
               </button>
-              <Link href="/dashboard">
+              <Link href="/dashboard" onClick={handleNavigate}>
                 <button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
                   <Image
                     src={`/images/${
@@ -471,7 +554,7 @@ const Saved = () => {
                   </span>
                 </button>
               </Link>
-              <Link href="/profile">
+              <Link href="/profile" onClick={handleNavigate}>
                 <button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
                   <Image
                     src={`/images/${
@@ -489,7 +572,7 @@ const Saved = () => {
             </div>
           </div>
         </div>
-        <div id = "temp" className="hidden"/>
+        <div id="temp" className="hidden" />
       </div>
     );
   }
