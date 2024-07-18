@@ -75,15 +75,18 @@ export const POST = async (request) => {
 
 		const { text } = await request.json();
 
+
 		let result = await createMindmapChat.sendMessage(text);
 		let response = result.response;
+		let mindmap
 		const intermediateMindmap = response.text()
 
-		// result = await cleanTextChat.sendMessage(intermediateMindmap);
-		// response = result.response;
-		// const mindmap = response.text();
+		result = await cleanTextChat.sendMessage(intermediateMindmap);
+		console.log(result);
+		response = result.response;
+		mindmap = response.text();
 
-		const mindmap = intermediateMindmap.match(/mindmap\s*([\s\S]*?)(?=\n\n|$)/)[0];
+		// mindmap = intermediateMindmap.match(/mindmap\s*([\s\S]*?)(?=\n\n|$)/)[0];
 
 		// Return a successful response
 		return new NextResponse(JSON.stringify({ mindmap }), { status: 200 });
