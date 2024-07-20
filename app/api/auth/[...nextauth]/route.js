@@ -91,7 +91,7 @@ export const authOptions = {
 						});
 					}
 
-					return true; // If the user exists, no need to set the cookie
+					return "/login";
 				} catch (err) {
 					console.error("Error in signIn callback:", err); // Log errors that occur during sign-in
 					return false; // Return false to indicate a failure
