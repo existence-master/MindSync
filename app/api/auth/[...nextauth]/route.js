@@ -90,11 +90,9 @@ export const authOptions = {
 							}),
 						});
 
-						// If the user is new, redirect to the /details page
-						return `/dashboard`;
+						return "/login";
 					}
-
-					return true; // If the user exists, no need to set the cookie
+					return true;
 				} catch (err) {
 					console.error("Error in signIn callback:", err); // Log errors that occur during sign-in
 					return false; // Return false to indicate a failure
