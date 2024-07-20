@@ -89,9 +89,10 @@ export const authOptions = {
 								],
 							}),
 						});
-					}
 
-					return "/login";
+						return "/login";
+					}
+					return true;
 				} catch (err) {
 					console.error("Error in signIn callback:", err); // Log errors that occur during sign-in
 					return false; // Return false to indicate a failure
