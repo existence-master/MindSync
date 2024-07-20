@@ -89,9 +89,6 @@ export const authOptions = {
 								],
 							}),
 						});
-
-						// If the user is new, redirect to the /details page
-						return `/dashboard`;
 					}
 
 					return true; // If the user exists, no need to set the cookie
