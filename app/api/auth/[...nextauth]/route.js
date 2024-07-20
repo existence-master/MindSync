@@ -80,8 +80,8 @@ export const authOptions = {
 							body: JSON.stringify({
 								data: [
 									{
-										Email: email,
-										Username: username,
+										Email: user.email,
+										Username: user.name,
 										Create: "",
 										Saved: "",
 										Edit: "",
