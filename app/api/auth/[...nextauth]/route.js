@@ -89,8 +89,6 @@ export const authOptions = {
 								],
 							}),
 						});
-
-						return "/login";
 					}
 					return true;
 				} catch (err) {
