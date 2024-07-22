@@ -16,13 +16,8 @@ export const POST = async (request) => {
 
 		// Perform OCR on the image buffer using Tesseract.js
 		const { createWorker } = Tesseract;
-		const worker = createWorker({
-			logger: (m) => console.log(m), // Add logger here if you want to see progress
-		});
-
-		await worker.load();
-		await worker.loadLanguage("eng");
-		await worker.initialize("eng");
+		const worker = await createWorker("eng");
+		
 		const {
 			data: { text },
 		} = await worker.recognize(buffer);

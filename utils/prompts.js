@@ -1,6 +1,6 @@
 const createMindmapSystemPrompt = `The following is the syntax for creating mermaid mindmap notation:
 
-1. It should not contain any text other than the mindmap code.
+1. It should not contain any text other than the mindmap code. Please do not use any special characters in mindmap code
 
 2. It should start with the word mindmap, and the first node has to be the "root" node followed by two barkets like:
 
@@ -359,26 +359,26 @@ root((Education))
 const updateMindmapPrompt = `Instruction: [INSTRUCTION]
 Mindmap Code: [MERMAID_MINDMAP_CODE]`;
 
-const cleanTextSystemPrompt = `You are a helpful AI agent who cleans up text and returns only the mindmap code contained in the text. Remove any additional text that is not part of the mindmap code. If there is no additional text before or after the mindmap code, return the input as it is`;
+const cleanTextSystemPrompt = `You are a helpful AI agent who cleans up text and returns only the mindmap code contained in the text. Remove any additional text that is not part of the mindmap code. Also remove any special characters like ()[]{} from the mindmap code. If there is any text following a font awesome icon, please take it on the next line. If there is no additional text before or after the mindmap code, return the input as it is.`;
 
 const cleanTextInputOutputPairs = [
-  {
-    input: `This is a mindmap explaining the concept of a tree:
+	{
+		input: `This is a mindmap explaining the concept of a tree:
 mindmap
   root((Tree))
     A(Root Node)
         B(Child Node)
         C(Child Node)
     D(Sibling Node)`,
-    output: `mindmap
+		output: `mindmap
 root((Tree))
     A(Root Node)
         B(Child Node)
         C(Child Node)
     D(Sibling Node)`,
-  },
-  {
-    input: `mindmap
+	},
+	{
+		input: `mindmap
   root((Programming Languages))
     A(Procedural)
       B(C)
@@ -387,7 +387,7 @@ root((Tree))
       E(Java)
       F(Python)
 You can learn more about these languages online.`,
-    output: `mindmap
+		output: `mindmap
 root((Programming Languages))
     A(Procedural)
         B(C)
@@ -395,9 +395,9 @@ root((Programming Languages))
     D(Object-Oriented)
         E(Java)
         F(Python)`,
-  },
-  {
-    input: `Let's look at this mindmap of planets:
+	},
+	{
+		input: `Let's look at this mindmap of planets:
 mindmap
     root((Planets))
         A(Inner Planets)
@@ -407,7 +407,7 @@ mindmap
             E(Jupiter)
             F(Saturn)
 They are so different!`,
-    output: `mindmap
+		output: `mindmap
 root((Planets))
     A(Inner Planets)
         B(Mercury)
@@ -415,7 +415,108 @@ root((Planets))
     D(Outer Planets)
         E(Jupiter)
         F(Saturn)`,
-  },
+	},
+	{
+		input: `mindmap
+root((Arrays))
+    Definition
+        Collection Similar Data Types
+        Grouped Under One Name
+        Vector Value
+    Accessing Elements
+        Index Values
+        Supported by Languages
+    Declaration and Initialization
+        int A[5];
+        int A[5] = {2,4,6,8,10};
+        int A[5] = {2,4};
+        int A[5] = {0};
+        int A[] = {2,4,6,8,10};
+    Traversal
+        for loop
+            Access Each Element
+            printf("%d", A[i]);
+    Accessing Elements
+        Subsets
+        Pointers
+            A[2]
+            2[A]
+            *(A + 2)
+            ::icon(fa fa-location-arrow)`,
+		output: `mindmap
+root((Arrays))
+    Definition
+        Collection Similar Data Types
+        Grouped Under One Name
+        Vector Value
+    Accessing Elements
+        Index Values
+        Supported by Languages
+    Traversal
+        for loop
+            Access Each Element
+            Print Each Element
+    Accessing Elements
+        Subsets
+        Pointers
+            ::icon(fa fa-location-arrow)`,
+	},
+	{
+		input: `mindmap
+root((Fibonacci))
+    Methods
+        Iterative
+            ::icon(fa fa-redo) Looping
+            Efficient
+        Recursive
+            ::icon(fa fa-code-branch) Function Calls
+            Simple
+            Exponential Complexity
+        Memoization
+            ::icon(fa fa-table) Storing Results
+            Efficient
+            Avoids Redundant Calculations
+    Applications
+        Golden Ratio
+            ::icon(fa fa-infinity) Mathematical Constant
+            Nature
+        Number Theory
+            ::icon(fa fa-calculator) Sequences
+            Patterns
+        Computer Science
+            ::icon(fa fa-code) Algorithms
+            Data Structures`,
+		output: `mindmap
+root((Fibonacci))
+    Methods
+        Iterative
+            ::icon(fa fa-redo) 
+            Looping
+            Efficient
+        Recursive
+            ::icon(fa fa-code-branch) 
+            Function Calls
+            Simple
+            Exponential Complexity
+        Memoization
+            ::icon(fa fa-table) 
+            Storing Results
+            Efficient
+            Avoids Redundant Calculations
+    Applications
+        Golden Ratio
+            ::icon(fa fa-infinity) 
+            Mathematical Constant
+            Nature
+        Number Theory
+            ::icon(fa fa-calculator)
+             Sequences
+            Patterns
+        Computer Science
+            ::icon(fa fa-code) 
+            Algorithms
+            Data Structures`,
+	},
 ];
 
 export {

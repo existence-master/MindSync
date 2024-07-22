@@ -4,7 +4,7 @@ import path from "path"; // For handling file paths
 import { NextResponse } from "next/server"; // Import Next.js server response handling
 
 // Set up Lowdb database file
-const file = path.join(process.cwd(), "app/api/mindmap-count/db.json"); // Path to JSON file
+const file = path.join(process.cwd(), "count.json"); // Path to JSON file
 const adapter = new JSONFile(file);
 const db = new Low(adapter, {});
 
