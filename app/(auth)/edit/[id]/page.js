@@ -40,7 +40,8 @@ const Edit = () => {
   const [showVideoDialog, setShowVideoDialog] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingSave, setIsSubmittingSave] = useState(false);
+  const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
   const mindmapRef = useRef(null);
   const monacoEditorRef = useRef(null); // Reference for Monaco Editor
   const router = useRouter();
@@ -234,7 +235,7 @@ const Edit = () => {
   };
 
   const handleEdit = async () => {
-    setIsSubmitting(true);
+    setIsSubmittingEdit(true);
     let instruction = input;
     try {
       for (let file of files) {
@@ -325,7 +326,7 @@ const Edit = () => {
     } catch (error) {
       setError(error.message);
     } finally {
-      setIsSubmitting(false);
+      setIsSubmittingEdit(false);
     }
   };
 
@@ -392,7 +393,7 @@ const Edit = () => {
   // Handle save mindmap
   const handleSaveMindmap = async () => {
     try {
-      setIsSubmitting(true);
+      setIsSubmittingSave(true);
       const previewImageDataURL = createMindmapDataURL("png");
 
       const formData = new FormData();
@@ -406,7 +407,7 @@ const Edit = () => {
         body: formData,
       });
       if (response.ok) {
-        setIsSubmitting(false);
+        setIsSubmittingSave(false);
         router.push("/saved");
       } else {
         throw new Error("Failed to save mindmap");
@@ -415,7 +416,7 @@ const Edit = () => {
       console.error("Error:", error);
       setError(error.message);
     } finally {
-      setIsSubmitting(false);
+      setIsSubmittingSave(false);
     }
   };
 
@@ -490,7 +491,7 @@ const Edit = () => {
   // Render edit page if mindmap details are loaded
   if (status === "authenticated" && mindmapDetails) {
     return (
-      <div className="flex h-screen w-screen bg-paleRose dark:bg-lividBrown">
+      <div className="flex h-[980px] w-screen bg-paleRose dark:bg-lividBrown">
         <div className="xs:hidden w-full md:flex relative">
           <button
             style={{ zIndex: 51 }}
@@ -594,7 +595,7 @@ const Edit = () => {
           )}
 
           {/* Main Content */}
-          <div className="w-full flex flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
+          <div className="w-full h-full flex flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
             <div className="absolute top-5 right-20">
               <SignoutButton />
             </div>
@@ -788,7 +789,7 @@ const Edit = () => {
                       onClick={handleEdit}
                       className="primary-btn dark:bg-paleRose dark:text-lividBrown text-xl"
                     >
-                      {isSubmitting ? "Processing..." : "Edit"}
+                      {isSubmittingEdit ? "Processing..." : "Edit"}
                     </button>
                   </div>
                   {/* Video Dialog */}
@@ -940,7 +941,7 @@ const Edit = () => {
                       onClick={handleSaveMindmap}
                       className="text-white border-2 font-inter flex justify-center items-center bg-stilleto rounded-xl p-2 w-[120px]"
                     >
-                      {isSubmitting ? "Saving..." : "Save"}
+                      {isSubmittingSave ? "Saving..." : "Save"}
                     </button>
                   </div>
                 </div>
@@ -1155,7 +1156,7 @@ const Edit = () => {
                     onClick={handleEdit}
                     className="primary-btn dark:bg-paleRose dark:text-lividBrown text-xl"
                   >
-                    {isSubmitting ? "Processing..." : "Edit"}
+                    {isSubmittingEdit ? "Processing..." : "Edit"}
                   </button>
                 </div>
                 {/* Video Dialog */}
@@ -1273,7 +1274,7 @@ const Edit = () => {
                   onClick={handleSaveMindmap}
                   className="text-white border-2 font-inter flex justify-center items-center bg-stilleto rounded-xl p-2 w-[120px]"
                 >
-                  {isSubmitting ? "Saving..." : "Save"}
+                  {isSubmittingSave ? "Saving..." : "Save"}
                 </button>
               </div>
               {error && (

@@ -74,9 +74,14 @@ const Navbar = () => {
           </div>
         )}
       </div>
-      <button className="hidden lg:block primary-btn">
-        <Link href="/login">Login</Link>
-      </button>
+      <a href="/login">
+        <button
+          type="button"
+          className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-tickleMePink bg-[linear-gradient(110deg,#8A2846,45%,#B9375E,55%,#522E38)] bg-[length:200%_100%] px-6 font-medium text-paleRose transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+        >
+          Login
+        </button>
+      </a>
     </nav>
   );
 };
