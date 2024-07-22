@@ -67,28 +67,31 @@ export const authOptions = {
 						const newUser = new User({
 							email: user.email, // Set the email for the new user
 							googleUser: true, // Indicate that the user signed up with Google
-							username: user.name // Set the username for the new user
+							username: user.name, // Set the username for the new user
 						});
 
 						await newUser.save(); // Save the new user to the database
-						await fetch(`${process.env.SHEETDB_API_ENDPOINT}`, {
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-								Authorization: `Bearer ${process.env.SHEETDB_API_TOKEN}`,
-							},
-							body: JSON.stringify({
-								data: [
-									{
-										Email: user.email,
-										Username: user.name,
-										Create: "",
-										Saved: "",
-										Edit: "",
-									},
-								],
-							}),
-						});
+						await fetch(
+							`${process.env.SHEETDB_FEEDBACK_API_ENDPOINT}`,
+							{
+								method: "POST",
+								headers: {
+									"Content-Type": "application/json",
+									Authorization: `Bearer ${process.env.SHEETDB_FEEDBACK_API_TOKEN}`,
+								},
+								body: JSON.stringify({
+									data: [
+										{
+											Email: user.email,
+											Username: user.name,
+											Create: "",
+											Saved: "",
+											Edit: "",
+										},
+									],
+								}),
+							}
+						);
 					}
 					return true;
 				} catch (err) {

@@ -28,13 +28,13 @@ export const POST = async (request) => {
 
 		// Call the SheetsDB API using the username and email
 		const response = await fetch(
-			`${process.env.SHEETDB_API_ENDPOINT}/search?Email=${user.email}`,
+			`${process.env.SHEETDB_FEEDBACK_API_ENDPOINT}/search?Email=${user.email}`,
 			{
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": `Bearer ${process.env.SHEETDB_API_TOKEN}`,
-				}
+					Authorization: `Bearer ${process.env.SHEETDB_FEEDBACK_API_TOKEN}`,
+				},
 			}
 		);
 		const rowData = await response.json();
