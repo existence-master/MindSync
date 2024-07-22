@@ -23,7 +23,11 @@ const Navbar = () => {
           ["About", "/about"],
           ["Contact", "/contact"],
         ].map(([title, url]) => (
-          <Link href={url} key={title.toLowerCase()} className="ternary-text">
+          <Link
+            href={url}
+            key={title.toLowerCase()}
+            className="ternary-text dark:text-paleRose"
+          >
             {title}
           </Link>
         ))}
@@ -36,27 +40,33 @@ const Navbar = () => {
           <div className="absolute top-full right-0 bg-white w-40 py-2 px-4 border border-gray-300 shadow-md">
             <ul className="flex flex-col gap-2">
               <li>
-                <Link href="/" className="ternary-text">
+                <Link href="/" className="ternary-text dark:text-paleRose">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="ternary-text">
+                <Link href="/login" className="ternary-text dark:text-paleRose">
                   Login
                 </Link>
               </li>
               <li>
-                <Link href="/signup" className="ternary-text">
+                <Link
+                  href="/signup"
+                  className="ternary-text dark:text-paleRose"
+                >
                   Sign Up
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="ternary-text">
+                <Link href="/about" className="ternary-text dark:text-paleRose">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="ternary-text">
+                <Link
+                  href="/contact"
+                  className="ternary-text dark:text-paleRose"
+                >
                   Contact
                 </Link>
               </li>
