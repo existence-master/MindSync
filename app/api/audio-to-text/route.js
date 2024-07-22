@@ -38,8 +38,12 @@ export const POST = async (request) => {
             throw new Error("Failed to upload audio file to AssemblyAI");
         }
 
+        console.log("Audio file uploaded")
+
         const uploadData = await uploadResponse.json();
         const audioUrl = uploadData.upload_url;
+
+        console.log(audioUrl)
 
         // Request transcription
         const transcriptResponse = await client.transcripts.create({

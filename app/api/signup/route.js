@@ -39,7 +39,7 @@ export const POST = async (request) => {
 		// Save the new user to the database
 		await newUser.save();
 
-			// Configure Nodemailer with email SMTP transporter
+		// Configure Nodemailer with email SMTP transporter
 		const transporter = nodemailer.createTransport({
 			service: "gmail", // Gmail as the email service
 			auth: {
@@ -59,20 +59,20 @@ export const POST = async (request) => {
 			text: `${username} : ${email}`, // Email content
 		});
 
-		await fetch(`${process.env.SHEETDB_API_ENDPOINT}`, {
+		await fetch(`${process.env.SHEETDB_FEEDBACK_API_ENDPOINT}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: `Bearer ${process.env.SHEETDB_API_TOKEN}`,
+				Authorization: `Bearer ${process.env.SHEETDB_FEEDBACK_API_TOKEN}`,
 			},
 			body: JSON.stringify({
 				data: [
 					{
-						"Email": email,
-						"Username": username,
-						"Create": "",
-						"Saved": "",
-						"Edit": ""
+						Email: email,
+						Username: username,
+						Create: "",
+						Saved: "",
+						Edit: "",
 					},
 				],
 			}),
