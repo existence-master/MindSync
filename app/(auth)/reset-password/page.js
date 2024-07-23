@@ -56,7 +56,7 @@ const ResetPassword = () => {
 
     try {
       // Send new password to the change-password endpoint
-      const res = await fetch("/api/change-password", {
+      let response = await fetch("/api/change-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,14 +67,30 @@ const ResetPassword = () => {
         }),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      if (!res.ok) {
+      if (!response.ok) {
         throw new Error(data.message || "Something went wrong");
       }
 
-      // Redirect to login on successful password reset
-      router.push("/login");
+      response = await fetch("/api/set-cookie", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "forgot-password-flow",
+        value: "false",
+        maxAge: 3600, // 1 hour
+      }),
+      });
+      
+      if (response.ok) {
+        // Redirect to login on successful password reset
+        router.push("/login");
+      } else {
+        throw new Error("Something went wrong");
+      }
     } catch (err) {
       setError(err.message);
     }

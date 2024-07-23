@@ -97,8 +97,26 @@ const Verify = () => {
                 });
 
                 if (response.ok) {
+
+                response = await fetch("/api/set-cookie", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  name: "signup-flow",
+                  value: "false",
+                  maxAge: 3600, // 1 hour
+                }),
+                });
+                  
+                if (response.ok) {
                   // Redirect to the login page
                   router.push("/login");
+                } else {
+                  const errorMessage = await response.text();
+                  setError(errorMessage);
+                }
                 } else {
                   const errorMessage = await response.text();
                   setError(errorMessage);
