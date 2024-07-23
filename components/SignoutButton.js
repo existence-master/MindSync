@@ -8,7 +8,7 @@ const SignoutButton = () => {
   // Function to handle the sign-out process
   const handleSignout = async () => {
     try {
-      await signOut({ callbackUrl: "http://localhost:3000/" }); // Sign out and redirect to the specified callback URL
+      await signOut({ callbackUrl: "/" }); // Sign out and redirect to the specified callback URL
     } catch (error) {
       console.error("Error signing out:", error); // Log any errors encountered during sign-out
       // You could add additional error handling here, like displaying a message to the user

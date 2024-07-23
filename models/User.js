@@ -20,8 +20,8 @@ const userSchema = new Schema(
 		},
 		mindmaps: [
 			{
-				type: Schema.Types.ObjectId, // References to the Chat model
-				ref: "Mindmap", // Reference the Chat collection
+				type: Schema.Types.ObjectId, // References to the Mindmap model
+				ref: "Mindmap", // Reference the Mindmap collection
 				required: false, // This field can be optional
 			},
 		],

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import SignoutButton from "@components/SignoutButton";
 import Image from "next/image";
@@ -135,7 +135,7 @@ const Profile = () => {
       });
 
       if (response.ok) {
-        router.push("/");
+        await signOut({ callbackUrl: "/" }); // Sign out with redirect
       } else {
         throw new Error("Failed to delete account");
       }
