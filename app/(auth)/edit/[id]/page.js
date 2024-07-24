@@ -555,7 +555,7 @@ const Edit = () => {
 												alt="Logo"
 											/>
 											<Link
-												href={`${process.env.NEXT_PUBLIC_BASE_PATH}/dashboard`}
+												href={`/dashboard`}
 												onClick={handleNavigate}
 											>
 												Create
@@ -579,7 +579,7 @@ const Edit = () => {
 												alt="Logo"
 											/>
 											<Link
-												href={`${process.env.NEXT_PUBLIC_BASE_PATH}/saved`}
+												href={`/saved`}
 												onClick={handleNavigate}
 											>
 												Saved
@@ -599,7 +599,7 @@ const Edit = () => {
 										alt="Logo"
 									/>
 									<Link
-										href={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile`}
+										href={`/profile`}
 										onClick={handleNavigate}
 										className="text-tawnyPort dark:text-paleRose"
 									>
@@ -1450,7 +1450,7 @@ const Edit = () => {
 							)}
 						</div>
 						<div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">
-							<Link href={`${process.env.NEXT_PUBLIC_BASE_PATH}/`} onClick={handleNavigate}>
+							<Link href={`/`} onClick={handleNavigate}>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${
@@ -1467,10 +1467,7 @@ const Edit = () => {
 									</span>
 								</button>
 							</Link>
-							<Link
-								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/dashboard`}
-								onClick={handleNavigate}
-							>
+							<Link href={`/dashboard`} onClick={handleNavigate}>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${
@@ -1487,10 +1484,7 @@ const Edit = () => {
 									</span>
 								</button>
 							</Link>
-							<Link
-								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/saved`}
-								onClick={handleNavigate}
-							>
+							<Link href={`/saved`} onClick={handleNavigate}>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${
@@ -1507,10 +1501,7 @@ const Edit = () => {
 									</span>
 								</button>
 							</Link>
-							<Link
-								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile`}
-								onClick={handleNavigate}
-							>
+							<Link href={`/profile`} onClick={handleNavigate}>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${

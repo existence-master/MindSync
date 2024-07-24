@@ -27,17 +27,11 @@ const Unauthenticated = () => {
 					{" "}
 					{/* Suggestion to login or signup */}
 					Please{" "}
-					<Link
-						href={`${process.env.NEXT_PUBLIC_BASE_PATH}/login`}
-						className="text-blue-500 underline"
-					>
+					<Link href={`/login`} className="text-blue-500 underline">
 						login
 					</Link>{" "}
 					or{" "}
-					<Link
-						href={`${process.env.NEXT_PUBLIC_BASE_PATH}/signup`}
-						className="text-blue-500 underline"
-					>
+					<Link href={`/signup`} className="text-blue-500 underline">
 						signup
 					</Link>{" "}
 					before trying to access the platform. Thank you.

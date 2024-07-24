@@ -190,10 +190,7 @@ const Login = () => {
 							</button>
 						</form>
 						<div className="mt-4 flex flex-col items-center">
-							<Link
-								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/signup`}
-								className="text-blue-500"
-							>
+							<Link href={`/signup`} className="text-blue-500">
 								<span className="text-gray-500 dark:text-gray-300">
 									Don't have an account?
 								</span>{" "}

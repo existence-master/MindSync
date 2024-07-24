@@ -1176,9 +1176,7 @@ const Sample = () => {
 								Home
 							</span>
 						</button>
-						<Link
-							href={`${process.env.NEXT_PUBLIC_BASE_PATH}/dashboard`}
-						>
+						<Link href={`/dashboard`}>
 							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 								<Image
 									src={`/images/${
@@ -1195,9 +1193,7 @@ const Sample = () => {
 								</span>
 							</button>
 						</Link>
-						<Link
-							href={`${process.env.NEXT_PUBLIC_BASE_PATH}/saved`}
-						>
+						<Link href={`/saved`}>
 							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 								<Image
 									src={`/images/${
@@ -1214,9 +1210,7 @@ const Sample = () => {
 								</span>
 							</button>
 						</Link>
-						<Link
-							href={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile`}
-						>
+						<Link href={`/profile`}>
 							<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 								<Image
 									src={`/images/${
