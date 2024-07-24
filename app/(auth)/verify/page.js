@@ -5,217 +5,246 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getCookie } from "cookies-next";
 import { useSession } from "next-auth/react";
 import NextImage from "next/image";
+import ErrorDisplay from "@components/ErrorDisplay";
 
 const Verify = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [error, setError] = useState(null);
-  const [toEmail, setToEmail] = useState(null);
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
-  const [magicLink, setMagicLink] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false); // State to track authorization status
-  const [resendTimeout, setResendTimeout] = useState(0); // Initial timeout for resending the magic link
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const [error, setError] = useState(null);
+	const [toEmail, setToEmail] = useState(null);
+	const [subject, setSubject] = useState("");
+	const [message, setMessage] = useState("");
+	const [magicLink, setMagicLink] = useState(false);
+	const [isAuthorized, setIsAuthorized] = useState(false); // State to track authorization status
+	const [resendTimeout, setResendTimeout] = useState(0); // Initial timeout for resending the magic link
 
-  const fromEmail = "existence.mindsync@gmail.com";
-  const { status } = useSession(); // Hook to get the current session status
-  const token = searchParams.get("token");
-  const email = searchParams.get("email");
+	const fromEmail = "existence.mindsync@gmail.com";
+	const { status } = useSession(); // Hook to get the current session status
+	const token = searchParams.get("token");
+	const email = searchParams.get("email");
 
-  // If the user is authenticated, redirect to the dashboard
+	// If the user is authenticated, redirect to the dashboard
 
-  if (status === "authenticated") {
-    router.push("/dashboard");
-  }
+	if (status === "authenticated") {
+		router.push("/dashboard");
+	}
 
-  useEffect(() => {
-    // Check the "signup-flow" and "forgot-password-flow" cookies to determine if the user is authorized
-    const signupFlowCookie = getCookie("signup-flow"); // Retrieve the "signup-flow" cookie
-    const forgotPasswordFlowCookie = getCookie("forgot-password-flow"); // Retrieve the "forgot-password-flow" cookie
+	const handleError = () => {
+		setError(null);
+	};
 
-    if (signupFlowCookie === "true" || forgotPasswordFlowCookie === "true") {
-      setIsAuthorized(true); // Mark as authorized if any of the conditions are met
-      setToEmail(email);
-      if (signupFlowCookie === "true") {
-        setSubject("Signup For MindSync");
-        setMessage("Signup For MindSync");
-      } else if (forgotPasswordFlowCookie === "true") {
-        setSubject("Reset Password For MindSync");
-        setMessage("Reset Password For MindSync");
-      }
-    } else {
-      router.push("/login"); // Redirect to the login page if not authorized
-    }
-  }, [router, searchParams]);
+	useEffect(() => {
+		// Check the "signup-flow" and "forgot-password-flow" cookies to determine if the user is authorized
+		const signupFlowCookie = getCookie("signup-flow"); // Retrieve the "signup-flow" cookie
+		const forgotPasswordFlowCookie = getCookie("forgot-password-flow"); // Retrieve the "forgot-password-flow" cookie
 
-  useEffect(() => {
-    if (token) {
-      const verifyToken = async () => {
-        try {
-          let response = await fetch("/api/verify-magic-link", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token }),
-          });
+		if (
+			signupFlowCookie === "true" ||
+			forgotPasswordFlowCookie === "true"
+		) {
+			setIsAuthorized(true); // Mark as authorized if any of the conditions are met
+			setToEmail(email);
+			if (signupFlowCookie === "true") {
+				setSubject("Signup For MindSync");
+				setMessage("Signup For MindSync");
+			} else if (forgotPasswordFlowCookie === "true") {
+				setSubject("Reset Password For MindSync");
+				setMessage("Reset Password For MindSync");
+			}
+		} else {
+			router.push("/login"); // Redirect to the login page if not authorized
+		}
+	}, [router, searchParams]);
 
-          if (response.ok) {
-            // Check which flow the user is in
-            const signupFlow = getCookie("signup-flow");
-            const forgotPasswordFlow = getCookie("forgot-password-flow");
+	useEffect(() => {
+		if (token) {
+			const verifyToken = async () => {
+				try {
+					let response = await fetch("/api/verify-magic-link", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ token }),
+					});
 
-            // Redirect based on the flow
-            if (signupFlow) {
-              // Proceed with the signup flow
-              // Get user session data from the server
-              let response = await fetch("/api/get-session", {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              });
+					if (response.ok) {
+						// Check which flow the user is in
+						const signupFlow = getCookie("signup-flow");
+						const forgotPasswordFlow = getCookie(
+							"forgot-password-flow"
+						);
 
-              if (response.ok) {
-                // If the session data retrieval is successful, proceed to signup
-                const { email, password, username } = await response.json(); // Get user details from the server response
-                response = await fetch("/api/signup", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json", // Content type for JSON data
-                  },
-                  body: JSON.stringify({
-                    email,
-                    password,
-                    username,
-                  }),
-                });
+						// Redirect based on the flow
+						if (signupFlow) {
+							// Proceed with the signup flow
+							// Get user session data from the server
+							let response = await fetch("/api/get-session", {
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+								},
+							});
 
-                if (response.ok) {
-                  // Redirect to the login page
-                  router.push("/login");
-                } else {
-                  const errorMessage = await response.text();
-                  setError(errorMessage);
-                }
-              }
-            } else if (forgotPasswordFlow) {
-              router.push(`/reset-password?email=${email}`);
-            } else {
-              router.push("/login");
-            }
-          } else {
-            throw new Error("Failed to verify magic link");
-          }
-        } catch (error) {
-          console.error("Invalid token", error);
-          setError(
-            "Invalid or expired token. Please request a new magic link."
-          );
-        }
-      };
-      verifyToken();
-    } else if (toEmail && subject && message) {
-      const sendMagicLink = async () => {
-        try {
-          const response = await fetch("/api/send-magic-link", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: toEmail,
-              subject,
-              message,
-            }),
-          });
+							if (response.ok) {
+								// If the session data retrieval is successful, proceed to signup
+								const { email, password, username } =
+									await response.json(); // Get user details from the server response
+								response = await fetch("/api/signup", {
+									method: "POST",
+									headers: {
+										"Content-Type": "application/json", // Content type for JSON data
+									},
+									body: JSON.stringify({
+										email,
+										password,
+										username,
+									}),
+								});
 
-          if (response.ok) {
-            setMagicLink(true);
-            setResendTimeout(60);
-          } else {
-            const errorText = await response.text();
-            throw new Error(errorText);
-          }
-        } catch (error) {
-          console.error(error);
-          setMessage("Failed to send magic link. Please try again.");
-        }
-      };
-      sendMagicLink();
-    }
-  }, [token, router, toEmail]);
+								if (response.ok) {
+									response = await fetch("/api/set-cookie", {
+										method: "POST",
+										headers: {
+											"Content-Type": "application/json",
+										},
+										body: JSON.stringify({
+											name: "signup-flow",
+											value: "false",
+											maxAge: 3600, // 1 hour
+										}),
+									});
 
-  useEffect(() => {
-    // Timer for enabling the resend button
-    if (resendTimeout > 0) {
-      const timer = setTimeout(() => {
-        setResendTimeout(resendTimeout - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [resendTimeout]);
+									if (response.ok) {
+										// Redirect to the login page
+										router.push("/login");
+									} else {
+										const errorMessage =
+											await response.text();
+										setError(errorMessage);
+									}
+								} else {
+									const errorMessage = await response.text();
+									setError(errorMessage);
+								}
+							}
+						} else if (forgotPasswordFlow) {
+							router.push(`/reset-password?email=${email}`);
+						} else {
+							router.push("/login");
+						}
+					} else {
+						throw new Error("Failed to verify magic link");
+					}
+				} catch (error) {
+					console.error("Invalid token", error);
+					setError(
+						"Invalid or expired token. Please request a new magic link."
+					);
+				}
+			};
+			verifyToken();
+		} else if (toEmail && subject && message) {
+			const sendMagicLink = async () => {
+				try {
+					const response = await fetch("/api/send-magic-link", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							email: toEmail,
+							subject,
+							message,
+						}),
+					});
 
-  const resendMagicLink = async () => {
-    setResendTimeout(60); // Reset the timer to 60 seconds
-    try {
-      const response = await fetch("/api/send-magic-link", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: toEmail,
-          subject,
-          message,
-        }),
-      });
+					if (response.ok) {
+						setMagicLink(true);
+						setResendTimeout(60);
+					} else {
+						const errorText = await response.text();
+						throw new Error(errorText);
+					}
+				} catch (error) {
+					console.error(error);
+					setMessage("Failed to send magic link. Please try again.");
+				}
+			};
+			sendMagicLink();
+		}
+	}, [token, router, toEmail]);
 
-      if (response.ok) {
-        setMagicLink(true);
-      } else {
-        const errorText = await response.text();
-        throw new Error(errorText);
-      }
-    } catch (error) {
-      console.error(error);
-      setMessage("Failed to resend magic link. Please try again.");
-    }
-  };
+	useEffect(() => {
+		// Timer for enabling the resend button
+		if (resendTimeout > 0) {
+			const timer = setTimeout(() => {
+				setResendTimeout(resendTimeout - 1);
+			}, 1000);
+			return () => clearTimeout(timer);
+		}
+	}, [resendTimeout]);
 
-  if (!isAuthorized) {
-    return null;
-  }
+	const resendMagicLink = async () => {
+		setResendTimeout(60); // Reset the timer to 60 seconds
+		try {
+			const response = await fetch("/api/send-magic-link", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email: toEmail,
+					subject,
+					message,
+				}),
+			});
 
-  const mailClientButtons = [
-    {
-      name: "Gmail",
-      url: `https://mail.google.com/mail/u/0/#search/${fromEmail}`,
-      image: "/images/gmaillogo.svg",
-    },
-    {
-      name: "Outlook",
-      url: `https://outlook.live.com/mail/0/inbox/search?query=${fromEmail}`,
-      image: "/images/outlooklogo.svg",
-    },
-    {
-      name: "Yahoo",
-      url: `https://mail.yahoo.com/search?p=${fromEmail}`,
-      image: "/images/yahoologo.svg",
-    },
-    {
-      name: "ProtonMail",
-      url: `https://mail.proton.me/u/0/inbox?keyword=${fromEmail}`,
-      image: "/images/protonmaillogo.svg",
-    },
-  ];
+			if (response.ok) {
+				setMagicLink(true);
+			} else {
+				const errorText = await response.text();
+				throw new Error(errorText);
+			}
+		} catch (error) {
+			console.error(error);
+			setMessage("Failed to resend magic link. Please try again.");
+		}
+	};
 
-  return (
+	if (!isAuthorized) {
+		return null;
+	}
+
+	const mailClientButtons = [
+		{
+			name: "Gmail",
+			url: `https://mail.google.com/mail/u/0/#search/${fromEmail}`,
+			image: "/images/gmaillogo.svg",
+		},
+		{
+			name: "Outlook",
+			url: `https://outlook.live.com/mail/0/inbox/search?query=${fromEmail}`,
+			image: "/images/outlooklogo.svg",
+		},
+		{
+			name: "Yahoo",
+			url: `https://mail.yahoo.com/search?p=${fromEmail}`,
+			image: "/images/yahoologo.svg",
+		},
+		{
+			name: "ProtonMail",
+			url: `https://mail.proton.me/u/0/inbox?keyword=${fromEmail}`,
+			image: "/images/protonmaillogo.svg",
+		},
+	];
+
+	return (
 		<>
 			<main className="mt-5 mb-10 mx-5">
 				<section className="mt-[35px] lg:mt-[75px] lg:mx-[30px] flex flex-col items-center">
 					<div className="max-w-max flex flex-col items-center justify-center">
-						<h1 className="text-center primary-text mb-[50px]">
+						<h1 className="text-center primary-text mb-[50px] dark:text-paleRose">
 							Verify
 						</h1>
 						<h2 className="xs:max-lg:mt-[10px] mt-[20px] text-center secondary-text">
@@ -280,37 +309,37 @@ const Verify = () => {
 							)}
 						</h2>
 						{magicLink && (
-							<div className="mt-4 flex flex-col items-center border border-black mb-10 md:w-[500px] md:h-[250px] xs:w-[350px] xs:h-[220px]">
+							<div className="mt-4 flex flex-col items-center border rounded-xl border-black dark:border-paleRose mb-10 md:w-[500px] md:h-[250px] xs:w-[350px] xs:h-[220px]">
 								<div className="mb-4 flex flex-row justify-center mt-8 w-[500px]">
-									<span className="text-tawnyPort secondary-text w-[75px] ml-3">
+									<span className="text-tawnyPort secondary-text w-[75px] ml-3 dark:text-paleRose">
 										From
 									</span>
-									<span className="text-tawnyPort secondary-text ml-2 mr-2">
+									<span className="text-tawnyPort secondary-text ml-2 mr-2 dark:text-paleRose">
 										:
 									</span>
-									<span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
+									<span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm dark:text-gray-300">
 										{fromEmail}
 									</span>
 								</div>
 								<div className="mb-4 flex flex-row justify-center w-[500px]">
-									<span className="text-tawnyPort secondary-text w-[75px]">
+									<span className="text-tawnyPort secondary-text w-[75px] dark:text-paleRose">
 										Subject
 									</span>
-									<span className="text-tawnyPort secondary-text ml-2 mr-2">
+									<span className="text-tawnyPort secondary-text ml-2 mr-2 dark:text-paleRose">
 										:
 									</span>
-									<span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
+									<span className="text-gray-500 dark:text-gray-300 primary-text font-lora font-medium md:text-xl xs:text-sm">
 										{subject}
 									</span>
 								</div>
 								<div className="mb-4 flex flex-row justify-center w-[500px]">
-									<span className="text-tawnyPort secondary-text w-[75px] ml-2">
+									<span className="text-tawnyPort dark:text-paleRose secondary-text w-[75px] ml-2">
 										To
 									</span>
-									<span className="text-tawnyPort secondary-text ml-2 mr-3">
+									<span className="text-tawnyPort dark:text-paleRose secondary-text ml-2 mr-3">
 										:
 									</span>
-									<span className="text-gray-500 primary-text font-lora font-medium md:text-xl xs:text-sm">
+									<span className="text-gray-500 dark:text-gray-300 primary-text font-lora font-medium md:text-xl xs:text-sm">
 										{toEmail}
 									</span>
 								</div>
@@ -353,23 +382,17 @@ const Verify = () => {
 					</div>
 				</section>
 				{/* Display custom error if any*/}
+
 				{error && (
-					<div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-						<div className="bg-white p-4 rounded-md">
-							<p className="text-red-500">{error}</p>
-							<button
-								onClick={() => setError(null)}
-								className="mt-2 p-2 bg-blue-500 text-white rounded-md"
-							>
-								Close
-							</button>
-						</div>
-					</div>
+					<ErrorDisplay
+						errorMessage={error}
+						handleError={handleError}
+					/>
 				)}
 			</main>
 			<div className="xs:max-md:hidden absolute top-[100px] xs:max-md:-right-[225px] lg:max-lg:-right-[250px] -right-[275px]">
 				<NextImage
-					src="/images/blob-1.svg"
+					src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/blob-1.svg`}
 					width={0}
 					height={0}
 					alt="Blob 1"
@@ -378,7 +401,7 @@ const Verify = () => {
 			</div>
 			<div className="xs:max-md:hidden absolute -bottom-[275px] xs:max-md:-left-[175px] md:max-lg:-left-[200px] -left-[225px]">
 				<NextImage
-					src="/images/blob-2.svg"
+					src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/blob-2.svg`}
 					width={0}
 					height={0}
 					alt="Blob 2"
@@ -386,7 +409,7 @@ const Verify = () => {
 				/>
 			</div>
 		</>
-  );
+	);
 };
 
 export default Verify;

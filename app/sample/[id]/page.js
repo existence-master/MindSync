@@ -87,7 +87,6 @@ const Sample = () => {
 		);
 	};
 
-
 	// Fetch mindmap details when component mounts
 	useEffect(() => {
 		const fetchMindmapDetails = async () => {
@@ -372,12 +371,12 @@ const Sample = () => {
 
 	// Render edit page if mindmap details are loaded
 	return (
-		<div className="flex h-full w-full bg-paleRose dark:bg-lividBrown">
+		<div className="flex h-[980px] w-full bg-paleRose dark:bg-lividBrown">
 			<div className="xs:hidden w-full md:flex justify-center items-center relative">
 				{/* Main Content */}
 				<div className="w-full flex flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
 					<div className="flex flex-col justify-center items-center">
-						<div className="flex flex-row items-center justify-center md:gap-1 xl:gap-2 mt-6">
+						<div className="flex flex-row items-center justify-center md:gap-1 xl:gap-2">
 							<div className="ml-20 md:mt-32 2xl:mt-10 w-1/2 p-4 border-2 border-stilleto dark:border-paleRose rounded-xl 2xl:mr-4">
 								<div className="mb-4">
 									<label
@@ -445,7 +444,7 @@ const Sample = () => {
 												className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 											>
 												<Image
-													src="/images/texticon.svg"
+													src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/texticon.svg`}
 													width={20}
 													height={20}
 													alt="Saved"
@@ -455,14 +454,12 @@ const Sample = () => {
 											</button>
 											<button
 												onClick={() =>
-													triggerFileInput(
-														"audio/*"
-													)
+													triggerFileInput("audio/*")
 												}
 												className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 											>
 												<Image
-													src="/images/audioicon.svg"
+													src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/audioicon.svg`}
 													width={20}
 													height={20}
 													alt="Saved"
@@ -477,7 +474,7 @@ const Sample = () => {
 												className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 											>
 												<Image
-													src="/images/videoicon.svg"
+													src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/videoicon.svg`}
 													width={20}
 													height={20}
 													alt="Saved"
@@ -487,14 +484,12 @@ const Sample = () => {
 											</button>
 											<button
 												onClick={() =>
-													triggerFileInput(
-														"image/*"
-													)
+													triggerFileInput("image/*")
 												}
 												className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 											>
 												<Image
-													src="/images/imageicon.svg"
+													src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/imageicon.svg`}
 													width={20}
 													height={20}
 													alt="Saved"
@@ -533,20 +528,15 @@ const Sample = () => {
 										className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort text-md mind-h-[60px]"
 									/>
 									<button
-										onClick={() =>
-											handleToggleRecording()
-										}
+										onClick={() => handleToggleRecording()}
 										className={`bg-transparent absolute right-5 top-[10px] ${
-											isRecording
-												? "animate-pulse"
-												: ""
+											isRecording ? "animate-pulse" : ""
 										}`}
 									>
 										{isRecording ? (
 											<Image
 												src={`/images/${
-													resolvedTheme ===
-													"light"
+													resolvedTheme === "light"
 														? "micoff"
 														: "micoffdark"
 												}.svg`}
@@ -557,8 +547,7 @@ const Sample = () => {
 										) : (
 											<Image
 												src={`/images/${
-													resolvedTheme ===
-													"light"
+													resolvedTheme === "light"
 														? "micicon"
 														: "micicondark"
 												}.svg`}
@@ -581,9 +570,7 @@ const Sample = () => {
 										<FileDisplay
 											key={index}
 											file={file}
-											removeFile={() =>
-												removeFile(index)
-											}
+											removeFile={() => removeFile(index)}
 										/>
 									))}
 								</div>
@@ -653,13 +640,10 @@ const Sample = () => {
 													Video File
 												</label>
 											</div>
-											{videoLinkInput.type ===
-												"link" && (
+											{videoLinkInput.type === "link" && (
 												<input
 													type="text"
-													value={
-														videoLinkInput.value
-													}
+													value={videoLinkInput.value}
 													onChange={
 														handleVideoLinkInput
 													}
@@ -667,14 +651,11 @@ const Sample = () => {
 													className="rounded-xl dark:bg-tawnyPort border-2 dark:border-paleRose dark:text-paleRose p-2 mt-2 w-full"
 												/>
 											)}
-											{videoLinkInput.type ===
-												"file" && (
+											{videoLinkInput.type === "file" && (
 												<input
 													type="file"
 													accept="video/*"
-													onChange={
-														handleFileChange
-													}
+													onChange={handleFileChange}
 													className="dark:bg-tawnyPort w-full dark:text-paleRose border-2 dark:border-paleRose rounded-xl p-2 mt-2"
 												/>
 											)}
@@ -699,9 +680,7 @@ const Sample = () => {
 															""
 														) {
 															setFiles(
-																(
-																	prevFiles
-																) => [
+																(prevFiles) => [
 																	...prevFiles,
 																	videoLinkInput,
 																]
@@ -903,7 +882,7 @@ const Sample = () => {
 											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 										>
 											<Image
-												src="/images/texticon.svg"
+												src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/texticon.svg`}
 												width={20}
 												height={20}
 												alt="Saved"
@@ -918,7 +897,7 @@ const Sample = () => {
 											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 										>
 											<Image
-												src="/images/audioicon.svg"
+												src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/audioicon.svg`}
 												width={20}
 												height={20}
 												alt="Saved"
@@ -933,7 +912,7 @@ const Sample = () => {
 											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 										>
 											<Image
-												src="/images/videoicon.svg"
+												src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/videoicon.svg`}
 												width={20}
 												height={20}
 												alt="Saved"
@@ -948,7 +927,7 @@ const Sample = () => {
 											className="bg-tickleMePink px-6 py-2 rounded-xl text-white font-inter text-xl flex flex-row gap-2 w-[134px]"
 										>
 											<Image
-												src="/images/imageicon.svg"
+												src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/imageicon.svg`}
 												width={20}
 												height={20}
 												alt="Saved"
@@ -980,9 +959,7 @@ const Sample = () => {
 								</button>
 								<textarea
 									value={input}
-									onChange={(e) =>
-										setInput(e.target.value)
-									}
+									onChange={(e) => setInput(e.target.value)}
 									placeholder="Change/remove/add a node..."
 									className="input w-full h-[60px] px-3 py-4 pl-14 dark:text-paleRose text-tawnyPort text-md mind-h-[60px]"
 								/>
@@ -1039,9 +1016,7 @@ const Sample = () => {
 									disabled={availableEdits <= 0}
 									className="primary-btn dark:bg-paleRose dark:text-lividBrown text-xl"
 								>
-									{isSubmitting
-										? "Processing..."
-										: "Edit"}
+									{isSubmitting ? "Processing..." : "Edit"}
 								</button>
 							</div>
 							{/* Video Dialog */}
@@ -1103,9 +1078,7 @@ const Sample = () => {
 											<input
 												type="text"
 												value={videoLinkInput.value}
-												onChange={
-													handleVideoLinkInput
-												}
+												onChange={handleVideoLinkInput}
 												placeholder="Enter YouTube Link"
 												className="border-2 border-black rounded-xl p-2 mt-2"
 											/>
@@ -1121,9 +1094,7 @@ const Sample = () => {
 										<div className="flex flex-row items-center justify-center mt-2 gap-4">
 											<button
 												onClick={() =>
-													setShowVideoDialog(
-														false
-													)
+													setShowVideoDialog(false)
 												}
 												className="primary-btn"
 											>
@@ -1131,9 +1102,7 @@ const Sample = () => {
 											</button>
 											<button
 												onClick={() => {
-													setShowVideoDialog(
-														false
-													);
+													setShowVideoDialog(false);
 													if (
 														videoLinkInput.value !=
 														""
@@ -1188,9 +1157,7 @@ const Sample = () => {
 									</div>
 								)}
 							</div>
-							<p>
-								Total Available Edits : {availableEdits}
-							</p>
+							<p>Total Available Edits : {availableEdits}</p>
 						</div>
 					</div>
 					<div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">
@@ -1265,6 +1232,6 @@ const Sample = () => {
 			</div>
 		</div>
 	);
-}
+};
 
 export default Sample;

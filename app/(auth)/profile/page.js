@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import SignoutButton from "@components/SignoutButton";
 import Image from "next/image";
@@ -91,6 +91,10 @@ const Profile = () => {
     }
   };
 
+  const handleError = () => {
+    setError(null);
+  };
+
   const handleSavePassword = async () => {
     try {
       setIsChangingPassword(true);
@@ -131,7 +135,7 @@ const Profile = () => {
       });
 
       if (response.ok) {
-        router.push("/");
+        await signOut({ callbackUrl: "/" }); // Sign out with redirect
       } else {
         throw new Error("Failed to delete account");
       }
@@ -560,17 +564,10 @@ const Profile = () => {
               {/* Error and Success Messages */}
               {error && (
                 <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-                  <div
-                    style={{
-                      backgroundColor: "white",
-                      padding: "20px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    <h2>Error</h2>
-                    <p>{error}</p>
-                    <button onClick={() => setError(null)}>Close</button>
-                  </div>
+                  <ErrorDisplay
+                    errorMessage={error}
+                    handleError={handleError}
+                  />
                 </div>
               )}
               {successMessage && (
