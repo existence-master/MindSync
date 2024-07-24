@@ -6,8 +6,6 @@ const withImages = require("next-images");
 const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig = {
-	basePath: isProd ? "/mindsync" : "/",
-	assetPrefix: isProd ? "/mindsync/" : "/",
 	env: {
 		NEXT_PUBLIC_BASE_PATH: isProd ? "/mindsync" : "",
 	},
