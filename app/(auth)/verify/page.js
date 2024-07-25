@@ -239,22 +239,22 @@ const Verify = () => {
 		{
 			name: "Gmail",
 			url: `https://mail.google.com/mail/u/0/#search/${fromEmail}`,
-			image: "/images/gmaillogo.svg",
+			image: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/gmaillogo.svg`,
 		},
 		{
 			name: "Outlook",
 			url: `https://outlook.live.com/mail/0/inbox/search?query=${fromEmail}`,
-			image: "/images/outlooklogo.svg",
+			image: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/outlooklogo.svg`,
 		},
 		{
 			name: "Yahoo",
 			url: `https://mail.yahoo.com/search?p=${fromEmail}`,
-			image: "/images/yahoologo.svg",
+			image: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/yahoologo.svg`,
 		},
 		{
 			name: "ProtonMail",
 			url: `https://mail.proton.me/u/0/inbox?keyword=${fromEmail}`,
-			image: "/images/protonmaillogo.svg",
+			image: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/protonmaillogo.svg`,
 		},
 	];
 

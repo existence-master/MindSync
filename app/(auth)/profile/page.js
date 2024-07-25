@@ -207,8 +207,8 @@ const Profile = () => {
 								<Image
 									src={
 										resolvedTheme === "light"
-											? "/images/logofull.svg"
-											: "/images/mindsynclogodarkmode.svg"
+											? `${process.env.NEXT_PUBLIC_BASE_PATH}/images/logofull.svg`
+											: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/mindsynclogodarkmode.svg`
 									}
 									width={300}
 									height={100}
@@ -226,8 +226,8 @@ const Profile = () => {
 									<Image
 										src={
 											resolvedTheme === "light"
-												? "/images/createicon.svg"
-												: "/images/createicondark.svg"
+												? `${process.env.NEXT_PUBLIC_BASE_PATH}/images/createicon.svg`
+												: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/createicondark.svg`
 										}
 										width={20}
 										height={20}
@@ -245,8 +245,8 @@ const Profile = () => {
 									<Image
 										src={
 											resolvedTheme === "light"
-												? "/images/savedicon.svg"
-												: "/images/savedicondark.svg"
+												? `${process.env.NEXT_PUBLIC_BASE_PATH}/images/savedicon.svg`
+												: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/savedicondark.svg`
 										}
 										width={20}
 										height={20}
@@ -260,8 +260,8 @@ const Profile = () => {
 							<Image
 								src={
 									resolvedTheme === "light"
-										? "/images/usericon.svg"
-										: "/images/usericondark.svg"
+										? `${process.env.NEXT_PUBLIC_BASE_PATH}/images/usericon.svg`
+										: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/usericondark.svg`
 								}
 								width={30}
 								height={30}

@@ -56,8 +56,8 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit, sample }) => {
 					<Image
 						src={
 							resolvedTheme === "light"
-								? "/images/calendaricon.svg"
-								: "/images/calendaricondark.svg"
+								? `${process.env.NEXT_PUBLIC_BASE_PATH}/images/calendaricon.svg`
+								: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/calendaricondark.svg`
 						}
 						alt={mindmap.name}
 						width={20}
@@ -81,8 +81,8 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit, sample }) => {
 				<Image
 					src={
 						resolvedTheme === "light"
-							? "/images/threedotsvertical.svg"
-							: "/images/threedotsverticaldark.svg"
+							? `${process.env.NEXT_PUBLIC_BASE_PATH}/images/threedotsvertical.svg`
+							: `${process.env.NEXT_PUBLIC_BASE_PATH}/images/threedotsverticaldark.svg`
 					}
 					width={20}
 					height={20}
