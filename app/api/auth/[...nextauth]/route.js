@@ -102,6 +102,7 @@ export const authOptions = {
 			return true;
 		},
 	},
+	basePath: process.env.NEXTAUTH_URL,
 };
 
 // Define the handler for NextAuth using the specified options
