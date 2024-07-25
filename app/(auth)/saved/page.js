@@ -297,7 +297,7 @@ const Saved = () => {
 										alt="Logo"
 									/>
 									<Link
-										href={`/dashboard`}
+										href={`${process.env.NEXT_PUBLIC_BASE_PATH}/dashboard`}
 										onClick={handleNavigate}
 									>
 										Create
@@ -320,7 +320,11 @@ const Saved = () => {
 										height={20}
 										alt="Logo"
 									/>
-									<Link href={`/saved`}>Saved</Link>
+									<Link
+										href={`${process.env.NEXT_PUBLIC_BASE_PATH}/saved`}
+									>
+										Saved
+									</Link>
 								</button>
 							</div>
 						</div>
@@ -336,7 +340,7 @@ const Saved = () => {
 								alt="Logo"
 							/>
 							<Link
-								href={`/profile`}
+								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile`}
 								onClick={handleNavigate}
 								className="text-tawnyPort dark:text-paleRose"
 							>
@@ -568,7 +572,10 @@ const Saved = () => {
 									Home
 								</span>
 							</button>
-							<Link href={`/dashboard`} onClick={handleNavigate}>
+							<Link
+								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/dashboard`}
+								onClick={handleNavigate}
+							>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${
@@ -585,7 +592,9 @@ const Saved = () => {
 									</span>
 								</button>
 							</Link>
-							<Link href={`/saved`}>
+							<Link
+								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/saved`}
+							>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${
@@ -602,7 +611,10 @@ const Saved = () => {
 									</span>
 								</button>
 							</Link>
-							<Link href={`/profile`} onClick={handleNavigate}>
+							<Link
+								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile`}
+								onClick={handleNavigate}
+							>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${
