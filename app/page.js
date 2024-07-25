@@ -119,7 +119,7 @@ const Home = () => {
 			>
 				{imageUrl && (
 					<NextImage
-						src={imageUrl}
+						src={`${process.env.NEXT_PUBLIC_BASE_PATH}/${imageUrl}`}
 						alt="Mindmap Skeleton"
 						width={imageWidth}
 						height={imageHeight}
@@ -144,32 +144,52 @@ const Home = () => {
 			title: "Multimodal Inputs",
 			description:
 				"Text, image, audio and video to mindmap. Attach everything and create your mindmap.",
-			header: <Skeleton imageUrl="/images/feature1.svg" />,
+			header: (
+				<Skeleton
+					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature1.svg`}
+				/>
+			),
 			icon: <IconAbc className="h-4 w-4 text-neutral-100" />,
 		},
 		{
 			title: "Save Your Mindmap",
 			description: "Save Mindmaps to your MindSync account with ease.",
-			header: <Skeleton imageUrl="/images/feature2.svg" />,
+			header: (
+				<Skeleton
+					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature2.svg`}
+				/>
+			),
 			icon: <IconClipboardCopy className="h-4 w-4 text-neutral-100" />,
 		},
 		{
 			title: "Export Your Mindmap",
 			description: "Export Mindmaps in different formats.",
-			header: <Skeleton imageUrl="/images/feature3.svg" />,
+			header: (
+				<Skeleton
+					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature3.svg`}
+				/>
+			),
 			icon: <IconFileBroken className="h-4 w-4 text-neutral-100" />,
 		},
 		{
 			title: "AI Mindmap Editor",
 			description:
 				"Edit Mindmaps with textual instructions or multimodal inputs.",
-			header: <Skeleton imageUrl="/images/feature4.svg" />,
+			header: (
+				<Skeleton
+					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature4.svg`}
+				/>
+			),
 			icon: <IconTableColumn className="h-4 w-4 text-neutral-100" />,
 		},
 		{
 			title: "Dark and Light Mode",
 			description: "Switch between light and dark mode.",
-			header: <Skeleton imageUrl="/images/feature5.svg" />,
+			header: (
+				<Skeleton
+					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature5.svg`}
+				/>
+			),
 			icon: <IconSun className="h-4 w-4 text-neutral-100" />,
 		},
 	];
@@ -418,7 +438,9 @@ const Home = () => {
 						>
 							Take a Tour
 						</Link>
-						<Link href={`/signup`}>
+						<Link
+							href={`${process.env.NEXT_PUBLIC_BASE_PATH}/signup`}
+						>
 							<button className="relative inline-flex overflow-hidden rounded-lg h-12 p-[2px] hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
 								<span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#8A2846_0%,#FFE0E9_50%,#FF7AA2_100%)]" />
 								<span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-lg bg-stilleto px-3 py-1 text-xl font-medium text-paleRose backdrop-blur-3xl">

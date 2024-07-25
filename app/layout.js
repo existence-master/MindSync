@@ -4,14 +4,14 @@ import AuthProvider from "@components/AuthProvider"; // Import AuthProvider comp
 import DarkModeProvider from "@components/DarkModeProvider";
 
 export const metadata = {
-	title: "MindSync",
-	description: "AI Based Mindmapping Tool",
+  title: "MindSync",
+  description: "AI Based Mindmapping Tool",
 };
 
 export default async function RootLayout({ children }) {
-	const session = await getServerSession(); // Get the server-side session
+  const session = await getServerSession(); // Get the server-side session
 
-	return (
+  return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
 				<link
@@ -21,12 +21,12 @@ export default async function RootLayout({ children }) {
 				<link
 					rel="icon"
 					type="image/svg+xml"
-					href={`/images/favicon.svg`}
+					href={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/favicon.svg`}
 				/>
 				<link
 					rel="icon"
 					type="image/png"
-					href={`/images/favicon.png`}
+					href={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/favicon.png`}
 				/>
 			</head>
 			<body className="bg-paleRose dark:bg-lividBrown">
@@ -43,5 +43,5 @@ export default async function RootLayout({ children }) {
 				</DarkModeProvider>
 			</body>
 		</html>
-	);
+  );
 }

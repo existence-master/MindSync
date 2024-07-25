@@ -60,7 +60,11 @@ const Signup = () => {
 		try {
 			// Send a request to set the session with email, password, and username
 			const response = await fetch(
+<<<<<<< HEAD
 				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/set-session`,
+=======
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+>>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
 				{
 					method: "POST",
 					headers: {
@@ -79,7 +83,11 @@ const Signup = () => {
 
 			// Set the signup-flow cookie
 			const cookieResponse = await fetch(
+<<<<<<< HEAD
 				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/set-cookie`,
+=======
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+>>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
 				{
 					method: "POST",
 					headers: {
@@ -199,7 +207,10 @@ const Signup = () => {
 							</button>
 						</form>
 						<div className="mt-4 flex flex-col items-center">
-							<Link href={`/login`} className="text-blue-500">
+							<Link
+								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/login`}
+								className="text-blue-500"
+							>
 								<span className="text-gray-500 dark:text-gray-300">
 									Already have an account?{" "}
 								</span>
