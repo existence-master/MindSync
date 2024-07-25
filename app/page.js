@@ -120,7 +120,7 @@ const Home = () => {
             alt="Mindmap Skeleton"
             width={imageWidth}
             height={imageHeight}
-            className="bg-paleRose rounded-xl py-2"
+            className="bg-stilleto rounded-xl py-2"
           />
         )}
       </div>
@@ -455,7 +455,7 @@ const Home = () => {
         </section>
         <section
           id="samples"
-          className="flex flex-col items-center bg-paleRose dark:bg-lividBrown md:h-screen xs:min-h-fit"
+          className="flex flex-col items-center bg-paleRose dark:bg-lividBrown md:h-[700px] xs:min-h-fit"
         >
           <h1 className="xs:mt-8 md:mt-40 mb-4 xs:text-3xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Check out some sample Mindmaps here!
@@ -477,22 +477,22 @@ const Home = () => {
         </section>
         <section
           id="generated"
-          className="relative flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown xs:min-h-fit md:h-[300px]"
+          className="relative flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown xs:min-h-fit md:h-[350px]"
         >
-          <NextImage
+          {/* <NextImage
             src="/images/featuresection-shape1.svg"
             alt="Feature Section Shapes"
             width={200}
             height={200}
             className="xs:hidden md:block absolute -top-20 left-0"
             style={{ zIndex: 100 }}
-          />
+          /> */}
           <NextImage
             src="/images/featuresection-shape2.svg"
             alt="Feature Section Shapes"
             width={200}
             height={200}
-            className="xs:hidden md:block absolute -bottom-20 left-40"
+            className="xs:hidden md:block absolute top-36 left-40"
             style={{ zIndex: 100 }}
           />
           <NextImage
@@ -503,14 +503,14 @@ const Home = () => {
             className="xs:hidden md:block absolute bottom-10 right-20"
             style={{ zIndex: 100 }}
           />
-          <NextImage
+          {/* <NextImage
             src="/images/featuresection-shape4.svg"
             alt="Feature Section Shapes"
             width={150}
             height={150}
             className="xs:hidden md:block absolute -bottom-20 right-60"
             style={{ zIndex: 100 }}
-          />
+          /> */}
           <h1 className="xs:mt-4 mb-4 xs:text-6xl md:text-8xl font-lora font-normal text-center text-transparent bg-gradient-to-r from-hibiscus to-tawnyPort dark:from-[#B9375E] dark:to-[#FFD7E0] bg-clip-text">
             {mindmapCount}+
           </h1>
@@ -520,7 +520,7 @@ const Home = () => {
         </section>
         <section
           id="features"
-          className="flex md:flex-row xs:flex-col items-center justify-center bg-paleRose dark:bg-lividBrown md:h-screen xs:min-h-fit"
+          className="flex md:flex-row xs:flex-col items-center justify-center bg-paleRose dark:bg-lividBrown md:h-[750px] xs:min-h-fit xs:px-4"
         >
           <h1 className="xs:block md:hidden mt-20 mb-4 xs:text-3xl md:text-8xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Features
@@ -541,7 +541,7 @@ const Home = () => {
         </section>
         <section
           id="Testimonials"
-          className="flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown min-h-fit"
+          className="flex flex-col items-center justify-center bg-paleRose dark:bg-lividBrown md:h-[500px] xs:h-[400px]"
         >
           <h1 className="mt-20 mb-4 xs:text-2xl md:text-5xl font-lora font-normal text-center dark:text-paleRose text-lividBrown">
             Testimonials

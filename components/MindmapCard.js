@@ -52,24 +52,26 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit, sample }) => {
         <h3 className="primary-text text-xl mt-3 font-inter font-medium text-white dark:text-lividBrown">
           {mindmap.name}
         </h3>
-        <h3 className="primary-text text-xl mt-3 font-inter font-medium text-white dark:text-lividBrown flex flex-row gap-2">
-          <Image
-            src={
-              resolvedTheme === "light"
-                ? "/images/calendaricon.svg"
-                : "/images/calendaricondark.svg"
-            }
-            alt={mindmap.name}
-            width={20}
-            height={20}
-          />
-          {new Date(mindmap.createdAt).toLocaleString("en-US", {
-            day: "2-digit",
-            weekday: "short",
-            year: "numeric",
-            month: "short",
-          })}
-        </h3>
+        {mindmap.createdAt && (
+          <h3 className="primary-text text-xl mt-3 font-inter font-medium text-white dark:text-lividBrown flex flex-row gap-2">
+            <Image
+              src={
+                resolvedTheme === "light"
+                  ? "/images/calendaricon.svg"
+                  : "/images/calendaricondark.svg"
+              }
+              alt={mindmap.name}
+              width={20}
+              height={20}
+            />
+            {new Date(mindmap.createdAt).toLocaleString("en-US", {
+              day: "2-digit",
+              weekday: "short",
+              year: "numeric",
+              month: "short",
+            })}
+          </h3>
+        )}
       </div>
       <button
         className="absolute top-2 right-2 bg-stilleto dark:bg-paleRose rounded-lg p-2"
@@ -90,10 +92,10 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit, sample }) => {
         />
       </button>
       {showDropdown && (
-        <div className="absolute right-2 top-8 bg-paleRose border-2 border-stilleto shadow-lg rounded-lg p-2">
+        <div className="absolute right-2 top-8 bg-paleRose dark:bg-lividBrown border-2 border-stilleto shadow-lg rounded-lg p-2">
           <button
             onClick={handleEdit}
-            className="flex w-full text-right p-2 flex-row gap-2 primary-text text-lg font-inter font-medium text-stilleto"
+            className="flex w-full text-right p-2 flex-row gap-2 primary-text text-lg font-inter font-medium text-stilleto dark:text-paleRose"
           >
             <Image
               src="/images/editicon.svg"
@@ -104,23 +106,24 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit, sample }) => {
             />
             Edit
           </button>
-          {!sample && <button
-            onClick={() => setShowDialog(true)}
-            className="flex w-full text-right p-2 flex-row gap-2 primary-text text-lg font-inter font-medium text-stilleto"
-          >
-            <Image
-              src="/images/deleteicon.svg"
-              width={20}
-              height={20}
-              alt="Options"
-              className="translate-y-0.5"
-            />
-            Delete
-          </button>
-          }
+          {!sample && (
+            <button
+              onClick={() => setShowDialog(true)}
+              className="flex w-full text-right p-2 flex-row gap-2 primary-text text-lg font-inter font-medium text-stilleto dark:text-paleRose"
+            >
+              <Image
+                src="/images/deleteicon.svg"
+                width={20}
+                height={20}
+                alt="Options"
+                className="translate-y-0.5"
+              />
+              Delete
+            </button>
+          )}
           <button
             onClick={handleExportClick}
-            className="flex w-full text-right p-2 flex-row gap-2 primary-text text-lg font-inter font-medium text-stilleto"
+            className="flex w-full text-right p-2 flex-row gap-2 primary-text text-lg font-inter font-medium text-stilleto dark:text-paleRose"
           >
             <Image
               src="/images/exporticon.svg"
@@ -132,16 +135,16 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit, sample }) => {
             Export
           </button>
           {showExportDropdown && (
-            <div className="absolute right-2 top-16 bg-white shadow-lg rounded-lg p-2">
+            <div className="absolute right-2 top-16 border-2 border-hibiscus dark:bg-lividBrown bg-paleRose shadow-lg rounded-lg p-2 w-36">
               <button
                 onClick={() => handleExport("svg")}
-                className="block w-full text-left p-2"
+                className="block w-full rounded-lg border-b-2 border-hibiscus hover:bg-stilleto text-left p-2 mb-1"
               >
                 Export as SVG
               </button>
               <button
                 onClick={() => handleExport("png")}
-                className="block w-full text-left p-2"
+                className="block w-full rounded-lg border-b-2 border-hibiscus hover:bg-stilleto text-left p-2"
               >
                 Export as PNG
               </button>

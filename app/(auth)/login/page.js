@@ -62,7 +62,7 @@ const Login = () => {
       }
 
       if (!res.ok) {
-        throw new Error("Something went wrong");
+        throw new Error("Incorrect username or password.");
       }
     } catch (err) {
       setError(err.message);
