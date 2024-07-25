@@ -102,7 +102,7 @@ export const authOptions = {
 			return true;
 		},
 	},
-	basePath: process.env.NEXTAUTH_URL,
+	basePath: "/mindsync/api/auth", // Base path for the API routes
 };
 
 // Define the handler for NextAuth using the specified options
