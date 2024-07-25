@@ -146,7 +146,7 @@ const Home = () => {
 				"Text, image, audio and video to mindmap. Attach everything and create your mindmap.",
 			header: (
 				<Skeleton
-					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature1.svg`}
+					imageUrl={`/images/feature1.svg`}
 				/>
 			),
 			icon: <IconAbc className="h-4 w-4 text-neutral-100" />,
@@ -156,7 +156,7 @@ const Home = () => {
 			description: "Save Mindmaps to your MindSync account with ease.",
 			header: (
 				<Skeleton
-					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature2.svg`}
+					imageUrl={`/images/feature2.svg`}
 				/>
 			),
 			icon: <IconClipboardCopy className="h-4 w-4 text-neutral-100" />,
@@ -166,7 +166,7 @@ const Home = () => {
 			description: "Export Mindmaps in different formats.",
 			header: (
 				<Skeleton
-					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature3.svg`}
+					imageUrl={`/images/feature3.svg`}
 				/>
 			),
 			icon: <IconFileBroken className="h-4 w-4 text-neutral-100" />,
@@ -177,7 +177,7 @@ const Home = () => {
 				"Edit Mindmaps with textual instructions or multimodal inputs.",
 			header: (
 				<Skeleton
-					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature4.svg`}
+					imageUrl={`/images/feature4.svg`}
 				/>
 			),
 			icon: <IconTableColumn className="h-4 w-4 text-neutral-100" />,
@@ -187,7 +187,7 @@ const Home = () => {
 			description: "Switch between light and dark mode.",
 			header: (
 				<Skeleton
-					imageUrl={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/feature5.svg`}
+					imageUrl={`/images/feature5.svg`}
 				/>
 			),
 			icon: <IconSun className="h-4 w-4 text-neutral-100" />,
