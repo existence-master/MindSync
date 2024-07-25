@@ -56,7 +56,7 @@ const ResetPassword = () => {
 
     try {
       // Send new password to the change-password endpoint
-      const res = await fetch("/api/change-password", {
+      let response = await fetch("/api/change-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,14 +67,30 @@ const ResetPassword = () => {
         }),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      if (!res.ok) {
+      if (!response.ok) {
         throw new Error(data.message || "Something went wrong");
       }
 
-      // Redirect to login on successful password reset
-      router.push("/login");
+      response = await fetch("/api/set-cookie", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "forgot-password-flow",
+        value: "false",
+        maxAge: 3600, // 1 hour
+      }),
+      });
+      
+      if (response.ok) {
+        // Redirect to login on successful password reset
+        router.push("/login");
+      } else {
+        throw new Error("Something went wrong");
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -142,7 +158,7 @@ const ResetPassword = () => {
       </main>
       <div className="xs:max-md:hidden absolute top-[100px] xs:max-md:-right-[225px] lg:max-lg:-right-[250px] -right-[275px]">
         <NextImage
-          src="/images/blob-1.svg"
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/blob-1.svg`}
           width={0}
           height={0}
           alt="Blob 1"
@@ -151,7 +167,7 @@ const ResetPassword = () => {
       </div>
       <div className="xs:max-md:hidden absolute -bottom-[275px] xs:max-md:-left-[175px] md:max-lg:-left-[200px] -left-[225px]">
         <NextImage
-          src="/images/blob-2.svg"
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/blob-2.svg`}
           width={0}
           height={0}
           alt="Blob 2"

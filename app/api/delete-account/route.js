@@ -7,6 +7,7 @@ import { NextResponse } from "next/server"; // Import Next.js server response
 
 export const POST = async (request) => {
 	await connect(); // Connect to the database
+
 	try {
 		// Get the current user session
 		const session = await getServerSession(authOptions);
@@ -22,14 +23,19 @@ export const POST = async (request) => {
 		// Extract username from the request
 		const { username } = await request.json();
 
-		if (!username || username.trim() === "") {
+		// Validate the username input
+		if (
+			!username ||
+			typeof username !== "string" ||
+			username.trim() === ""
+		) {
 			return new NextResponse("Username is required to delete account", {
 				status: 400,
 			}); // 400 Bad Request
 		}
 
 		// Find the user by their email
-		const user = await User.findOne({ email: email });
+		const user = await User.findOne({ email });
 
 		if (!user) {
 			return new NextResponse(`User with email ${email} not found`, {
@@ -45,7 +51,7 @@ export const POST = async (request) => {
 		}
 
 		// Delete the user from the database
-		await User.deleteOne({ email: email });
+		await User.deleteOne({ email });
 
 		return new NextResponse(
 			JSON.stringify({ message: "Account deleted successfully" }),
