@@ -92,7 +92,7 @@ const Sample = () => {
 		const fetchMindmapDetails = async () => {
 			try {
 				const response = await fetch(
-					`/api/get-mindmap-details?id=${id}&sample=true`
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/get-mindmap-details?id=${id}&sample=true`
 				);
 				if (response.ok) {
 					const data = await response.json();
@@ -191,10 +191,13 @@ const Sample = () => {
 				) {
 					const formData = new FormData();
 					formData.append("text", file);
-					const response = await fetch("/api/extract-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/extract-text`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
@@ -202,10 +205,13 @@ const Sample = () => {
 				} else if (fileType.startsWith("audio/")) {
 					const formData = new FormData();
 					formData.append("audio", file);
-					const response = await fetch("/api/audio-to-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/audio-to-text`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
@@ -213,10 +219,13 @@ const Sample = () => {
 				} else if (fileType.startsWith("image/")) {
 					const formData = new FormData();
 					formData.append("image", file);
-					const response = await fetch("/api/image-to-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/image-to-text`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
@@ -224,22 +233,28 @@ const Sample = () => {
 				} else if (fileType.startsWith("video/")) {
 					const formData = new FormData();
 					formData.append("video", file);
-					const response = await fetch("/api/video-to-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/video-to-text`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
 					}
 				} else if (fileType.startsWith("link")) {
-					const response = await fetch("/api/video-to-text", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({ url: videoLinkInput.value }),
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/video-to-text`,
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ url: videoLinkInput.value }),
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
@@ -249,13 +264,16 @@ const Sample = () => {
 				}
 			}
 
-			const response = await fetch("/api/update-with-message", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ instruction, mindmapCode }),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/update-with-message`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ instruction, mindmapCode }),
+				}
+			);
 
 			if (response.ok) {
 				const { mindmap } = await response.json();

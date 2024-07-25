@@ -87,7 +87,9 @@ const Dashboard = () => {
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			try {
-				const response = await fetch("/api/get-user-details");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/get-user-details`
+				);
 				if (response.ok) {
 					const data = await response.json();
 					setUser(data);
@@ -105,13 +107,16 @@ const Dashboard = () => {
 	useEffect(() => {
 		const checkFeedback = async () => {
 			try {
-				const response = await fetch("/api/check-feedback", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ columnName: "Create" }),
-				});
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/check-feedback`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ columnName: "Create" }),
+					}
+				);
 
 				if (response.ok) {
 					const data = await response.json();
@@ -164,13 +169,16 @@ const Dashboard = () => {
 
 	const updateMindmapCount = async (increment) => {
 		try {
-			const response = await fetch("/api/mindmap-count", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ increment }),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/mindmap-count`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ increment }),
+				}
+			);
 
 			if (!response.ok) {
 				throw new Error("Failed to update mindmap count");
@@ -200,10 +208,13 @@ const Dashboard = () => {
 				) {
 					const formData = new FormData();
 					formData.append("text", file);
-					const response = await fetch("/api/extract-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/extract-text`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						textResponse += `\n${output.text}`;
@@ -211,10 +222,13 @@ const Dashboard = () => {
 				} else if (fileType.startsWith("audio/")) {
 					const formData = new FormData();
 					formData.append("audio", file);
-					const response = await fetch("/api/audio-to-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/audio-to-text`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						textResponse += `\n${output.text}`;
@@ -222,10 +236,13 @@ const Dashboard = () => {
 				} else if (fileType.startsWith("image/")) {
 					const formData = new FormData();
 					formData.append("image", file);
-					const response = await fetch("/api/image-to-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/image-to-text`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						textResponse += `\n${output.text}`;
@@ -233,22 +250,28 @@ const Dashboard = () => {
 				} else if (fileType.startsWith("video/")) {
 					const formData = new FormData();
 					formData.append("video", file);
-					const response = await fetch("/api/video-to-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/video-to-text`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						textResponse += `\n${output.text}`;
 					}
 				} else if (fileType.startsWith("link")) {
-					const response = await fetch("/api/video-to-text", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({ url: videoLinkInput.value }),
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/video-to-text`,
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ url: videoLinkInput.value }),
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						textResponse += `\n${output.text}`;
@@ -258,13 +281,16 @@ const Dashboard = () => {
 				}
 			}
 
-			const response = await fetch("/api/text-to-mindmap", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ text: textResponse }),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/text-to-mindmap`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ text: textResponse }),
+				}
+			);
 
 			if (response.ok) {
 				const { mindmap } = await response.json();
@@ -337,10 +363,13 @@ const Dashboard = () => {
 			formData.append("mindmapName", mindmapName);
 			formData.append("previewImage", previewImageDataURL);
 
-			const response = await fetch("/api/save-mindmap", {
-				method: "POST",
-				body: formData,
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/save-mindmap`,
+				{
+					method: "POST",
+					body: formData,
+				}
+			);
 			if (response.ok) {
 				setShowDialog(false);
 			} else {
@@ -364,16 +393,19 @@ const Dashboard = () => {
 
 	const handleFeedbackSubmit = async (feedbackText) => {
 		try {
-			const response = await fetch("/api/update-feedback", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					columnName: "Create",
-					feedback: feedbackText,
-				}),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/update-feedback`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						columnName: "Create",
+						feedback: feedbackText,
+					}),
+				}
+			);
 
 			if (response.ok) {
 				setShowFeedbackForm(false);

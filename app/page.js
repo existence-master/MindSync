@@ -42,7 +42,9 @@ const Home = () => {
 	useEffect(() => {
 		const fetchMindmapCount = async () => {
 			try {
-				const response = await fetch("/api/mindmap-count");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/mindmap-count`
+				);
 				if (!response.ok) {
 					throw new Error("Failed to fetch mindmap count");
 				}
@@ -74,7 +76,7 @@ const Home = () => {
 			for (const id of sampleIds) {
 				try {
 					const response = await fetch(
-						`/api/get-mindmap-details?id=${id}&sample=true`
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/get-mindmap-details?id=${id}&sample=true`
 					);
 					if (!response.ok) {
 						throw new Error(
@@ -570,7 +572,7 @@ const Home = () => {
 							e.preventDefault();
 							const email = e.target.email.value;
 							const response = await fetch(
-								"/api/send-beta-signup-mail",
+								`${process.env.NEXT_PUBLIC_BASE_PATH}/api/send-beta-signup-mail`,
 								{
 									method: "POST",
 									headers: {

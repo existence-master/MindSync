@@ -37,7 +37,9 @@ const Saved = () => {
 		const fetchMindmaps = async () => {
 			setLoadingMaps(true); // Set loading state to true before making the API call
 			try {
-				const response = await fetch("/api/fetch-mindmaps");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/fetch-mindmaps`
+				);
 				if (!response.ok) throw new Error("Failed to fetch mindmaps");
 				const mindmaps = await response.json();
 				setMindmaps(mindmaps);
@@ -56,7 +58,9 @@ const Saved = () => {
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			try {
-				const response = await fetch("/api/get-user-details");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/get-user-details`
+				);
 				if (response.ok) {
 					const data = await response.json();
 					setUser(data);
@@ -74,13 +78,16 @@ const Saved = () => {
 	useEffect(() => {
 		const checkFeedback = async () => {
 			try {
-				const response = await fetch("/api/check-feedback", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ columnName: "Saved" }),
-				});
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/check-feedback`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ columnName: "Saved" }),
+					}
+				);
 
 				if (response.ok) {
 					const data = await response.json();
@@ -110,13 +117,16 @@ const Saved = () => {
 
 	const handleDelete = async (id) => {
 		try {
-			const response = await fetch(`/api/delete-mindmap`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ id }),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/delete-mindmap`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ id }),
+				}
+			);
 			if (!response.ok) throw new Error("Failed to delete mindmap");
 			setMindmaps((prev) => prev.filter((mindmap) => mindmap._id !== id));
 		} catch (err) {
@@ -178,14 +188,16 @@ const Saved = () => {
 			// Only fetch if searchQuery is not empty
 			if (searchQuery !== "") {
 				const response = await fetch(
-					`/api/search-mindmaps?query=${searchQuery}`
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/search-mindmaps?query=${searchQuery}`
 				);
 				if (!response.ok) throw new Error("Failed to search mindmaps");
 				const results = await response.json();
 				setMindmaps(results);
 			} else {
 				// If searchQuery is empty, fetch all mindmaps
-				const response = await fetch("/api/fetch-mindmaps");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/fetch-mindmaps`
+				);
 				if (!response.ok) throw new Error("Failed to fetch mindmaps");
 				const mindmaps = await response.json();
 				setMindmaps(mindmaps);
@@ -197,16 +209,19 @@ const Saved = () => {
 
 	const handleFeedbackSubmit = async (feedbackText) => {
 		try {
-			const response = await fetch("/api/update-feedback", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					columnName: "Saved",
-					feedback: feedbackText,
-				}),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/update-feedback`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						columnName: "Saved",
+						feedback: feedbackText,
+					}),
+				}
+			);
 
 			if (response.ok) {
 				setShowFeedbackForm(false);
