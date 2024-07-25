@@ -60,11 +60,7 @@ const Signup = () => {
 		try {
 			// Send a request to set the session with email, password, and username
 			const response = await fetch(
-<<<<<<< HEAD
 				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/set-session`,
-=======
-				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
 				{
 					method: "POST",
 					headers: {
@@ -83,11 +79,7 @@ const Signup = () => {
 
 			// Set the signup-flow cookie
 			const cookieResponse = await fetch(
-<<<<<<< HEAD
 				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/set-cookie`,
-=======
-				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
 				{
 					method: "POST",
 					headers: {

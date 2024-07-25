@@ -1,6 +1,6 @@
 "use client";
 
-import SignoutButton from "@components/SignoutButton";
+import SignoutButton from "@components/SignoutButton"; //Custom signout button
 import FileDisplay from "@components/FileDisplay";
 import { useState, useRef, useEffect, Fragment } from "react";
 import { useSession } from "next-auth/react";
@@ -88,11 +88,7 @@ const Dashboard = () => {
 		const fetchUserDetails = async () => {
 			try {
 				const response = await fetch(
-<<<<<<< HEAD
 					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/get-user-details`
-=======
-					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
 				);
 				if (response.ok) {
 					const data = await response.json();
@@ -112,16 +108,8 @@ const Dashboard = () => {
 		const checkFeedback = async () => {
 			try {
 				const response = await fetch(
-<<<<<<< HEAD
 					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/check-feedback`,
-=======
-					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
 					{
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
 						body: JSON.stringify({ columnName: "Create" }),
 					}
 				);
@@ -178,11 +166,7 @@ const Dashboard = () => {
 	const updateMindmapCount = async (increment) => {
 		try {
 			const response = await fetch(
-<<<<<<< HEAD
 				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/mindmap-count`,
-=======
-				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
 				{
 					method: "POST",
 					headers: {
@@ -221,11 +205,8 @@ const Dashboard = () => {
 					const formData = new FormData();
 					formData.append("text", file);
 					const response = await fetch(
-<<<<<<< HEAD
 						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/extract-text`,
-=======
-						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
+
 						{
 							method: "POST",
 							body: formData,
@@ -239,11 +220,8 @@ const Dashboard = () => {
 					const formData = new FormData();
 					formData.append("audio", file);
 					const response = await fetch(
-<<<<<<< HEAD
 						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/audio-to-text`,
-=======
-						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
+
 						{
 							method: "POST",
 							body: formData,
@@ -257,11 +235,8 @@ const Dashboard = () => {
 					const formData = new FormData();
 					formData.append("image", file);
 					const response = await fetch(
-<<<<<<< HEAD
 						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/image-to-text`,
-=======
-						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
+
 						{
 							method: "POST",
 							body: formData,
@@ -275,11 +250,8 @@ const Dashboard = () => {
 					const formData = new FormData();
 					formData.append("video", file);
 					const response = await fetch(
-<<<<<<< HEAD
 						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/video-to-text`,
-=======
-						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
+
 						{
 							method: "POST",
 							body: formData,
@@ -291,11 +263,8 @@ const Dashboard = () => {
 					}
 				} else if (fileType.startsWith("link")) {
 					const response = await fetch(
-<<<<<<< HEAD
 						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/video-to-text`,
-=======
-						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
+
 						{
 							method: "POST",
 							headers: {
@@ -314,11 +283,8 @@ const Dashboard = () => {
 			}
 
 			const response = await fetch(
-<<<<<<< HEAD
 				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/text-to-mindmap`,
-=======
-				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
+
 				{
 					method: "POST",
 					headers: {
@@ -400,11 +366,8 @@ const Dashboard = () => {
 			formData.append("previewImage", previewImageDataURL);
 
 			const response = await fetch(
-<<<<<<< HEAD
 				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/save-mindmap`,
-=======
-				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
+
 				{
 					method: "POST",
 					body: formData,
@@ -434,11 +397,8 @@ const Dashboard = () => {
 	const handleFeedbackSubmit = async (feedbackText) => {
 		try {
 			const response = await fetch(
-<<<<<<< HEAD
 				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/update-feedback`,
-=======
-				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
->>>>>>> 732d1a6e2f4e7adafbf33c965311a8b46e0eb21e
+
 				{
 					method: "POST",
 					headers: {
