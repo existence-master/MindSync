@@ -96,7 +96,6 @@ const Home = () => {
 		fetchSampleMindmaps(SAMPLE_IDS);
 	}, []);
 
-	console.log(sampleMindmaps);
 
 	const Skeleton = ({ imageUrl }) => {
 		const containerRef = useRef(null);
@@ -604,10 +603,9 @@ const Home = () => {
 								}
 							);
 							if (response.ok) {
-								console.log("Thank you for signing up!");
 								setBetaSignedUp(true);
 							} else {
-								console.log(
+								setError(
 									"Something went wrong. Please try again later."
 								);
 							}
