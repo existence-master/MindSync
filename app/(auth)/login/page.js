@@ -216,7 +216,7 @@ const Login = () => {
 								onClick={() => signIn("google")} // Sign in with Google on click
 							>
 								<NextImage
-									src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/googlelogo.webp`} // Google logo source
+									src={`${process.env.NEXT_PUBLIC_BASE_PATH ? process.env.NEXT_PUBLIC_BASE_PATH : ""}/images/googlelogo.webp`} // Google logo source
 									width={20} // Image width
 									height={20} // Image height
 									alt="Google Logo" // Description for Google logo
