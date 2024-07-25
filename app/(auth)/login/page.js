@@ -89,17 +89,20 @@ const Login = () => {
 		}
 
 		// Make a POST request to set the changePasswordFlow cookie
-		const response = await fetch("/api/set-cookie", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				name: "forgot-password-flow",
-				value: "true",
-				maxAge: 3600, // 1 hour
-			}),
-		});
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					name: "forgot-password-flow",
+					value: "true",
+					maxAge: 3600, // 1 hour
+				}),
+			}
+		);
 
 		// Check if the cookie was set successfully
 		if (response.ok) {

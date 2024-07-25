@@ -37,7 +37,9 @@ const Saved = () => {
 		const fetchMindmaps = async () => {
 			setLoadingMaps(true); // Set loading state to true before making the API call
 			try {
-				const response = await fetch("/api/fetch-mindmaps");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`
+				);
 				if (!response.ok) throw new Error("Failed to fetch mindmaps");
 				const mindmaps = await response.json();
 				setMindmaps(mindmaps);
@@ -56,7 +58,9 @@ const Saved = () => {
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			try {
-				const response = await fetch("/api/get-user-details");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`
+				);
 				if (response.ok) {
 					const data = await response.json();
 					setUser(data);
@@ -74,13 +78,16 @@ const Saved = () => {
 	useEffect(() => {
 		const checkFeedback = async () => {
 			try {
-				const response = await fetch("/api/check-feedback", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ columnName: "Saved" }),
-				});
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ columnName: "Saved" }),
+					}
+				);
 
 				if (response.ok) {
 					const data = await response.json();
@@ -185,7 +192,9 @@ const Saved = () => {
 				setMindmaps(results);
 			} else {
 				// If searchQuery is empty, fetch all mindmaps
-				const response = await fetch("/api/fetch-mindmaps");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`
+				);
 				if (!response.ok) throw new Error("Failed to fetch mindmaps");
 				const mindmaps = await response.json();
 				setMindmaps(mindmaps);
@@ -197,16 +206,19 @@ const Saved = () => {
 
 	const handleFeedbackSubmit = async (feedbackText) => {
 		try {
-			const response = await fetch("/api/update-feedback", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					columnName: "Saved",
-					feedback: feedbackText,
-				}),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						columnName: "Saved",
+						feedback: feedbackText,
+					}),
+				}
+			);
 
 			if (response.ok) {
 				setShowFeedbackForm(false);

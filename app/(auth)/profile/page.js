@@ -34,7 +34,9 @@ const Profile = () => {
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			try {
-				const response = await fetch("/api/get-user-details");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`
+				);
 				if (response.ok) {
 					const data = await response.json();
 					setUser(data);
@@ -69,15 +71,18 @@ const Profile = () => {
 	const handleSaveUsername = async () => {
 		try {
 			setIsChangingUsername(true);
-			const response = await fetch("/api/change-username", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					newUsername: username,
-				}),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						newUsername: username,
+					}),
+				}
+			);
 
 			if (response.ok) {
 				setSuccessMessage("Username changed successfully.");
@@ -99,16 +104,19 @@ const Profile = () => {
 	const handleSavePassword = async () => {
 		try {
 			setIsChangingPassword(true);
-			const response = await fetch("/api/change-password", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					currentPassword,
-					newPassword,
-				}),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						currentPassword,
+						newPassword,
+					}),
+				}
+			);
 
 			if (response.ok) {
 				setSuccessMessage("Password changed successfully.");
@@ -125,15 +133,18 @@ const Profile = () => {
 	const handleDeleteAccount = async () => {
 		try {
 			setIsDeletingAccount(true);
-			const response = await fetch("/api/delete-account", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					username: deleteUsername,
-				}),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						username: deleteUsername,
+					}),
+				}
+			);
 
 			if (response.ok) {
 				await signOut({ callbackUrl: "/" }); // Sign out with redirect

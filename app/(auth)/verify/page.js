@@ -60,13 +60,16 @@ const Verify = () => {
 		if (token) {
 			const verifyToken = async () => {
 				try {
-					let response = await fetch("/api/verify-magic-link", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({ token }),
-					});
+					let response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ token }),
+						}
+					);
 
 					if (response.ok) {
 						// Check which flow the user is in
@@ -79,41 +82,51 @@ const Verify = () => {
 						if (signupFlow) {
 							// Proceed with the signup flow
 							// Get user session data from the server
-							let response = await fetch("/api/get-session", {
-								method: "GET",
-								headers: {
-									"Content-Type": "application/json",
-								},
-							});
+							let response = await fetch(
+								`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+								{
+									method: "GET",
+									headers: {
+										"Content-Type": "application/json",
+									},
+								}
+							);
 
 							if (response.ok) {
 								// If the session data retrieval is successful, proceed to signup
 								const { email, password, username } =
 									await response.json(); // Get user details from the server response
-								response = await fetch("/api/signup", {
-									method: "POST",
-									headers: {
-										"Content-Type": "application/json", // Content type for JSON data
-									},
-									body: JSON.stringify({
-										email,
-										password,
-										username,
-									}),
-								});
-
-								if (response.ok) {
-									response = await fetch("/api/set-cookie", {
+								response = await fetch(
+									`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+									{
 										method: "POST",
 										headers: {
-											"Content-Type": "application/json",
+											"Content-Type": "application/json", // Content type for JSON data
 										},
 										body: JSON.stringify({
-											name: "signup-flow",
-											value: "false",
-											maxAge: 3600, // 1 hour
+											email,
+											password,
+											username,
 										}),
-									});
+									}
+								);
+
+								if (response.ok) {
+									response = await fetch(
+										`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+										{
+											method: "POST",
+											headers: {
+												"Content-Type":
+													"application/json",
+											},
+											body: JSON.stringify({
+												name: "signup-flow",
+												value: "false",
+												maxAge: 3600, // 1 hour
+											}),
+										}
+									);
 
 									if (response.ok) {
 										// Redirect to the login page
@@ -147,17 +160,20 @@ const Verify = () => {
 		} else if (toEmail && subject && message) {
 			const sendMagicLink = async () => {
 				try {
-					const response = await fetch("/api/send-magic-link", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({
-							email: toEmail,
-							subject,
-							message,
-						}),
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({
+								email: toEmail,
+								subject,
+								message,
+							}),
+						}
+					);
 
 					if (response.ok) {
 						setMagicLink(true);
@@ -188,17 +204,20 @@ const Verify = () => {
 	const resendMagicLink = async () => {
 		setResendTimeout(60); // Reset the timer to 60 seconds
 		try {
-			const response = await fetch("/api/send-magic-link", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					email: toEmail,
-					subject,
-					message,
-				}),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						email: toEmail,
+						subject,
+						message,
+					}),
+				}
+			);
 
 			if (response.ok) {
 				setMagicLink(true);

@@ -59,13 +59,16 @@ const Signup = () => {
 
 		try {
 			// Send a request to set the session with email, password, and username
-			const response = await fetch("/api/set-session", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ email, password, username }),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ email, password, username }),
+				}
+			);
 
 			// Check if the session was set successfully
 			if (!response.ok) {
@@ -75,17 +78,20 @@ const Signup = () => {
 			}
 
 			// Set the signup-flow cookie
-			const cookieResponse = await fetch("/api/set-cookie", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					name: "signup-flow",
-					value: "true",
-					maxAge: 3600, // 1 hour
-				}),
-			});
+			const cookieResponse = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						name: "signup-flow",
+						value: "true",
+						maxAge: 3600, // 1 hour
+					}),
+				}
+			);
 
 			// Check if the cookie was set successfully
 			if (cookieResponse.ok) {

@@ -109,7 +109,7 @@ const Edit = () => {
 		const fetchMindmapDetails = async () => {
 			try {
 				const response = await fetch(
-					`/api/get-mindmap-details?id=${id}&sample=false`
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/get-mindmap-details?id=${id}&sample=false`
 				);
 				if (response.ok) {
 					const data = await response.json();
@@ -161,7 +161,9 @@ const Edit = () => {
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			try {
-				const response = await fetch("/api/get-user-details");
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`
+				);
 				if (response.ok) {
 					const data = await response.json();
 					setUser(data);
@@ -179,13 +181,16 @@ const Edit = () => {
 	useEffect(() => {
 		const checkFeedback = async () => {
 			try {
-				const response = await fetch("/api/check-feedback", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ columnName: "Edit" }),
-				});
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ columnName: "Edit" }),
+					}
+				);
 
 				if (response.ok) {
 					const data = await response.json();
@@ -251,10 +256,13 @@ const Edit = () => {
 				) {
 					const formData = new FormData();
 					formData.append("text", file);
-					const response = await fetch("/api/extract-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
@@ -262,10 +270,13 @@ const Edit = () => {
 				} else if (fileType.startsWith("audio/")) {
 					const formData = new FormData();
 					formData.append("audio", file);
-					const response = await fetch("/api/audio-to-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
@@ -273,10 +284,13 @@ const Edit = () => {
 				} else if (fileType.startsWith("image/")) {
 					const formData = new FormData();
 					formData.append("image", file);
-					const response = await fetch("/api/image-to-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
@@ -284,22 +298,28 @@ const Edit = () => {
 				} else if (fileType.startsWith("video/")) {
 					const formData = new FormData();
 					formData.append("video", file);
-					const response = await fetch("/api/video-to-text", {
-						method: "POST",
-						body: formData,
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+						{
+							method: "POST",
+							body: formData,
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
 					}
 				} else if (fileType.startsWith("link")) {
-					const response = await fetch("/api/video-to-text", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({ url: videoLinkInput.value }),
-					});
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ url: videoLinkInput.value }),
+						}
+					);
 					if (response.ok) {
 						const output = await response.json();
 						instruction += `\n${output.text}`;
@@ -309,13 +329,16 @@ const Edit = () => {
 				}
 			}
 
-			const response = await fetch("/api/update-with-message", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ instruction, mindmapCode }),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ instruction, mindmapCode }),
+				}
+			);
 
 			if (response.ok) {
 				const { mindmap } = await response.json();
@@ -406,10 +429,13 @@ const Edit = () => {
 			formData.append("mindmapName", mindmapName);
 			formData.append("previewImage", previewImageDataURL);
 
-			const response = await fetch("/api/edit-mindmap", {
-				method: "POST",
-				body: formData,
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					body: formData,
+				}
+			);
 			if (response.ok) {
 				setIsSubmittingSave(false);
 				router.push("/saved");
@@ -426,16 +452,19 @@ const Edit = () => {
 
 	const handleFeedbackSubmit = async (feedbackText) => {
 		try {
-			const response = await fetch("/api/update-feedback", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					columnName: "Edit",
-					feedback: feedbackText,
-				}),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BASE_PATH}/api/$1`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						columnName: "Edit",
+						feedback: feedbackText,
+					}),
+				}
+			);
 
 			if (response.ok) {
 				setShowFeedbackForm(false);
