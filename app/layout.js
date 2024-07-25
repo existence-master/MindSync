@@ -31,7 +31,7 @@ export default async function RootLayout({ children }) {
 			</head>
 			<body className="bg-paleRose dark:bg-lividBrown">
 				<DarkModeProvider>
-					<AuthProvider session={session}>
+					<AuthProvider session={session} basePath="/mindsync/api/auth">
 						{" "}
 						{/* Provide authentication context */}
 						<div className="h-screen overflow-x-hidden overflow-y-auto relative">
