@@ -491,11 +491,7 @@ const Dashboard = () => {
 										height={20}
 										alt="Logo"
 									/>
-									<Link
-										href={`${process.env.NEXT_PUBLIC_BASE_PATH}/dashboard`}
-									>
-										Create
-									</Link>
+									<Link href={`/dashboard`}>Create</Link>
 								</button>
 								<button
 									className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto hover:bg-tickleMePink"
@@ -515,7 +511,7 @@ const Dashboard = () => {
 										alt="Logo"
 									/>
 									<Link
-										href={`${process.env.NEXT_PUBLIC_BASE_PATH}/saved`}
+										href={`/saved`}
 										onClick={handleNavigate}
 									>
 										Saved
@@ -535,7 +531,7 @@ const Dashboard = () => {
 								alt="Logo"
 							/>
 							<Link
-								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile`}
+								href={`/profile`}
 								onClick={handleNavigate}
 								className="text-tawnyPort dark:text-paleRose"
 							>
@@ -1444,9 +1440,7 @@ const Dashboard = () => {
 									Home
 								</span>
 							</button>
-							<Link
-								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/dashboard`}
-							>
+							<Link href={`/dashboard`}>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${
@@ -1463,10 +1457,7 @@ const Dashboard = () => {
 									</span>
 								</button>
 							</Link>
-							<Link
-								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/saved`}
-								onClick={handleNavigate}
-							>
+							<Link href={`/saved`} onClick={handleNavigate}>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${
@@ -1483,10 +1474,7 @@ const Dashboard = () => {
 									</span>
 								</button>
 							</Link>
-							<Link
-								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile`}
-								onClick={handleNavigate}
-							>
+							<Link href={`/profile`} onClick={handleNavigate}>
 								<button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
 									<Image
 										src={`/images/${

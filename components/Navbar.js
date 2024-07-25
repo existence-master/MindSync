@@ -41,7 +41,7 @@ const Navbar = () => {
 						<ul className="flex flex-col gap-2">
 							<li>
 								<Link
-									href={`${process.env.NEXT_PUBLIC_BASE_PATH}/`}
+									href={`/`}
 									className="ternary-text dark:text-paleRose"
 								>
 									Home
@@ -49,7 +49,7 @@ const Navbar = () => {
 							</li>
 							<li>
 								<Link
-									href={`${process.env.NEXT_PUBLIC_BASE_PATH}/login`}
+									href={`/login`}
 									className="ternary-text dark:text-paleRose"
 								>
 									Login
@@ -57,7 +57,7 @@ const Navbar = () => {
 							</li>
 							<li>
 								<Link
-									href={`${process.env.NEXT_PUBLIC_BASE_PATH}/signup`}
+									href={`/signup`}
 									className="ternary-text dark:text-paleRose"
 								>
 									Sign Up
@@ -65,7 +65,7 @@ const Navbar = () => {
 							</li>
 							<li>
 								<Link
-									href={`${process.env.NEXT_PUBLIC_BASE_PATH}/about`}
+									href={`/about`}
 									className="ternary-text dark:text-paleRose"
 								>
 									About
@@ -73,7 +73,7 @@ const Navbar = () => {
 							</li>
 							<li>
 								<Link
-									href={`${process.env.NEXT_PUBLIC_BASE_PATH}/contact`}
+									href={`/contact`}
 									className="ternary-text dark:text-paleRose"
 								>
 									Contact
@@ -83,7 +83,7 @@ const Navbar = () => {
 					</div>
 				)}
 			</div>
-			<a href={`${process.env.NEXT_PUBLIC_BASE_PATH}/login`}>
+			<a href={`/login`}>
 				<button
 					type="button"
 					className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-tickleMePink bg-[linear-gradient(110deg,#8A2846,45%,#B9375E,55%,#522E38)] bg-[length:200%_100%] px-6 font-medium text-paleRose transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"

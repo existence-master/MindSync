@@ -21,12 +21,12 @@ export default async function RootLayout({ children }) {
 				<link
 					rel="icon"
 					type="image/svg+xml"
-					href={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/favicon.svg`}
+					href={`/images/favicon.svg`}
 				/>
 				<link
 					rel="icon"
 					type="image/png"
-					href={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/favicon.png`}
+					href={`/images/favicon.png`}
 				/>
 			</head>
 			<body className="bg-paleRose dark:bg-lividBrown">

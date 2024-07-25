@@ -8,7 +8,7 @@ import { SessionProvider } from "next-auth/react"; // Importing the SessionProvi
 
 const AuthProvider = ({ children }) => {
 	return (
-		<SessionProvider>
+		<SessionProvider basePath="/mindsync/api/auth">
 			{" "}
 			{/* Provides the session context to child components */}
 			{children}{" "}

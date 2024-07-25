@@ -439,7 +439,7 @@ const Home = () => {
 							Take a Tour
 						</Link>
 						<Link
-							href={`${process.env.NEXT_PUBLIC_BASE_PATH}/signup`}
+							href={`/signup`}
 						>
 							<button className="relative inline-flex overflow-hidden rounded-lg h-12 p-[2px] hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
 								<span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#8A2846_0%,#FFE0E9_50%,#FF7AA2_100%)]" />
