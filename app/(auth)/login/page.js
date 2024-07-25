@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import Navbar from "@components/Navbar"; // Navbar component
 import NextImage from "next/image";
 import ErrorDisplay from "@components/ErrorDisplay"; // Custom error component
-import { signIn, useSession } from "next-auth/react"; // Next.js authentication utilities
+// import { signIn, useSession } from "next-auth/react"; // Next.js authentication utilities
 import { useRouter } from "next/navigation";
 import Link from "next/link"; // Link component for client-side navigation
+import { auth, signIn } from "@auth";
 
 const Login = () => {
 	// States to store email and password
@@ -16,7 +17,7 @@ const Login = () => {
 	const [error, setError] = useState(null); // State to store error
 
 	const router = useRouter(); // Object to handle routing
-	const session = useSession(); // Object to store user session
+	const session = auth(); // Object to store user session
 
 	useEffect(() => {
 		const handleRedirect = async () => {
