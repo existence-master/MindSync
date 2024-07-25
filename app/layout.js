@@ -1,7 +1,7 @@
 import "@styles/globals.css";
-import { getServerSession } from "next-auth"; // Import NextAuth function to fetch the server-side session
 import AuthProvider from "@components/AuthProvider"; // Import AuthProvider component
 import DarkModeProvider from "@components/DarkModeProvider";
+import { auth } from "@auth";
 
 export const metadata = {
   title: "MindSync",
@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const session = await getServerSession(); // Get the server-side session
+  const session = await auth(); // Get the server-side session
 
   return (
 		<html lang="en" suppressHydrationWarning>
