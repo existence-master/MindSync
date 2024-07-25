@@ -6,9 +6,9 @@
 
 import { SessionProvider } from "next-auth/react"; // Importing the SessionProvider from NextAuth
 
-const AuthProvider = ({ children, session }) => {
+const AuthProvider = ({ children, session, basePath }) => {
 	return (
-		<SessionProvider session={session}>
+		<SessionProvider session={session} basePath={basePath}>
 			{" "}
 			{/* Provides the session context to child components */}
 			{children}{" "}
