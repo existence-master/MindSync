@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"; // Import the NextAuth library for authentication
-import GoogleProvider from "next-auth/providers/google"; // Google authentication provider
-import CredentialsProvider from "next-auth/providers/credentials"; // Credentials authentication provider
+import Google from "next-auth/providers/google"; // Google authentication provider
+import Credentials from "next-auth/providers/credentials"; // Credentials authentication provider
 import bcrypt from "bcryptjs"; // Library for hashing and comparing passwords
 import User from "@models/User"; // User model
 import connect from "@utils/db"; // Utility to connect to the database
@@ -10,7 +10,7 @@ export const authOptions = {
 	// Configuration for authentication providers
 	providers: [
 		// Credentials provider for email-password authentication
-		CredentialsProvider({
+		Credentials({
 			id: "credentials", // Unique identifier for the credentials provider
 			name: "Credentials", // Display name for the provider
 			credentials: {
@@ -42,11 +42,7 @@ export const authOptions = {
 		}),
 
 		// Google provider for authentication via Google accounts
-		GoogleProvider({
-			clientId: process.env.GOOGLE_CLIENT_ID, // Google client ID from environment variables
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Google client secret from environment variables
-		}),
-
+		Google
 		// Additional providers can be added here
 	],
 
@@ -102,7 +98,6 @@ export const authOptions = {
 			return true;
 		},
 	},
-	basePath: "/mindsync/api/auth", // Base path for the API routes
 };
 
 // Define the handler for NextAuth using the specified options
