@@ -1,13 +1,12 @@
 import User from "@models/User"; // Import the User model
 import Mindmap from "@models/Mindmap"; // Import the Mindmap model
 import connect from "@utils/db"; // Database connection utility
-import { authOptions } from "../auth/[...nextauth]/route"; // NextAuth configuration
-import { getServerSession } from "next-auth/next"; // Function to get the current session
 import { NextResponse } from "next/server"; // Import Next.js server response handling
+import { auth } from "@auth";
 
 export const POST = async (request) => {
 	await connect(); // Connect to the database
-	const session = await getServerSession(authOptions); // Get the current session
+	const session = await auth(); // Get the current session
 	const { id: mindmapId } = await request.json(); // Get the mindmap ID from the request body
 
 	try {

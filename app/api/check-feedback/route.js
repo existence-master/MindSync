@@ -1,12 +1,11 @@
 import User from "@models/User"; // Import the User model
 import connect from "@utils/db"; // Utility for database connection
-import { authOptions } from "../auth/[...nextauth]/route"; // Import NextAuth options
-import { getServerSession } from "next-auth/next"; // Import NextAuth session handling
 import { NextResponse } from "next/server"; // Import Next.js server response
 import fetch from "node-fetch"; // Import fetch for making API requests
+import { auth } from "@auth";
 
 export const POST = async (request) => {
-	const session = await getServerSession(authOptions); // Get the current user session
+	const session = await auth() // Get the current user session
 	await connect(); // Connect to the database
 
 	try {

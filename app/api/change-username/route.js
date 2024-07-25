@@ -1,15 +1,14 @@
 // /pages/api/change-username.js
 import User from "@models/User"; // Import the User model
 import connect from "@utils/db"; // Import the database connection utility
-import { authOptions } from "../auth/[...nextauth]/route"; // Import NextAuth options
-import { getServerSession } from "next-auth/next"; // Import NextAuth session handling
 import { NextResponse } from "next/server"; // Import Next.js server response
+import { auth } from "@auth";
 
 export const POST = async (request) => {
 	await connect(); // Connect to the database
 	try {
 		// Get the current user session
-		const session = await getServerSession(authOptions);
+		const session = await auth();
 
 		// If the user is not logged in, return unauthorized
 		if (!session || !session.user?.email) {

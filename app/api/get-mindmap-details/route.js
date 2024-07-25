@@ -4,8 +4,8 @@ import { NextResponse } from "next/server";
 import connect from "@utils/db"; // Import your database connection utility
 import Mindmap from "@models/Mindmap"; // Import the Mindmap model
 import User from "@models/User"; // Import the User model
-import { authOptions } from "../auth/[...nextauth]/route"; // Import NextAuth options
-import { getServerSession } from "next-auth/next"; // Import NextAuth session handling
+import { auth } from "@auth";
+
 
 export const GET = async (request) => {
 	const { searchParams } = new URL(request.url);
@@ -17,7 +17,7 @@ export const GET = async (request) => {
 	}
 
 	await connect();
-	const session = await getServerSession(authOptions);
+	const session = await auth();
 
 	if ((!session || !session.user?.email) & (sample !== "true")) {
 		return new NextResponse("Unauthorized", { status: 401 });

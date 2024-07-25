@@ -1,10 +1,9 @@
 import User from "@models/User"; // Import the User model
 import connect from "@utils/db"; // Import the database connection utility
 import bcrypt from "bcryptjs"; // Library for password hashing
-import { authOptions } from "../auth/[...nextauth]/route"; // Import NextAuth options
-import { getServerSession } from "next-auth/next"; // Import NextAuth session handling
 import { NextResponse } from "next/server"; // Import Next.js server response
 import { getCookie } from "cookies-next"; // Import function to get a cookie
+import { auth } from "@auth";
 
 export const POST = async (request) => {
 	// Establish the database connection
@@ -33,7 +32,7 @@ export const POST = async (request) => {
 			}
 		} else {
 			// Get the current user session
-			const session = await getServerSession(authOptions);
+			const session = await auth();
 
 			// If the user is not logged in and forgot-password-flow cookie is not present, return unauthorized
 			if (!session || !session.user?.email) {

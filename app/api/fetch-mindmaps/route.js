@@ -1,13 +1,11 @@
 import User from "@models/User"; // Import the User model
-import Mindmap from "@models/Mindmap"; // Import the Mindmap model
 import connect from "@utils/db"; // Database connection utility
-import { authOptions } from "../auth/[...nextauth]/route"; // NextAuth configuration
-import { getServerSession } from "next-auth/next"; // Function to get the current session
 import { NextResponse } from "next/server"; // Import Next.js server response handling
+import { auth } from "@auth";
 
 export const GET = async () => {
 	await connect(); // Connect to the database
-	const session = await getServerSession(authOptions); // Get the current session
+	const session = await auth(); // Get the current session
 
 	try {
 		const userEmail = session.user?.email; // Get the user email from the session

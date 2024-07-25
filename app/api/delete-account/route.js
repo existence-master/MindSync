@@ -1,8 +1,7 @@
 // /pages/api/delete-account.js
+import { auth } from "@auth";
 import User from "@models/User"; // Import the User model
 import connect from "@utils/db"; // Import the database connection utility
-import { authOptions } from "../auth/[...nextauth]/route"; // Import NextAuth options
-import { getServerSession } from "next-auth/next"; // Import NextAuth session handling
 import { NextResponse } from "next/server"; // Import Next.js server response
 
 export const POST = async (request) => {
@@ -10,7 +9,7 @@ export const POST = async (request) => {
 
 	try {
 		// Get the current user session
-		const session = await getServerSession(authOptions);
+		const session = await auth();
 
 		// If the user is not logged in, return unauthorized
 		if (!session || !session.user?.email) {
