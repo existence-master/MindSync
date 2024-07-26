@@ -59,14 +59,11 @@ export const POST = async (request) => {
 		// Check the value of the specified column
 		const currentMindmapCount = rowData[0][columnName];
 		updatedMindmapCount = currentMindmapCount
-		console.log(updatedMindmapCount)
 
 		// Update the count based on the increment value
 		if (increment) {
 			updatedMindmapCount = Number(currentMindmapCount) + 1;
 		}
-
-		console.log(updatedMindmapCount)
 
 		response = await fetch(
 			`${process.env.SHEETDB_METRICS_API_ENDPOINT}/Metric/Mindmap%20Count`,

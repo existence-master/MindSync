@@ -20,7 +20,6 @@ export const POST = async (request) => {
 
 		const cleanTextModel = genAI.getGenerativeModel({
 			model: "gemini-1.0-pro-latest",
-			systemInstruction: cleanTextSystemPrompt,
 		});
 
 		const createMindmapChatHistory = textMindmapInputOutputPairs
@@ -85,7 +84,7 @@ export const POST = async (request) => {
 		result = await cleanTextChat.sendMessage(intermediateMindmap);
 		response = result.response;
 		mindmap = response.text();
-
+		
 		// Return a successful response
 		return new NextResponse(JSON.stringify({ mindmap }), { status: 200 });
 	} catch (error) {

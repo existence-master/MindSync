@@ -22,8 +22,6 @@ export const POST = async (request) => {
             return accumulator + subtitle.text + " " ;
         }, "");
 
-        console.log(text)
-
 		// Return a successful response
 		return new NextResponse(JSON.stringify({ text }), { status: 200 });
 	} catch (error) {

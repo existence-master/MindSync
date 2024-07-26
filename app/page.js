@@ -94,7 +94,6 @@ const Home = () => {
     fetchSampleMindmaps(SAMPLE_IDS);
   }, []);
 
-  console.log(sampleMindmaps);
 
   const Skeleton = ({ imageUrl }) => {
     const containerRef = useRef(null);
@@ -573,10 +572,9 @@ const Home = () => {
                 body: JSON.stringify({ email }),
               });
               if (response.ok) {
-                console.log("Thank you for signing up!");
                 setBetaSignedUp(true);
               } else {
-                console.log("Something went wrong. Please try again later.");
+                setError("Something went wrong. Please try again later.");
               }
             }}
             className="md:w-1/2 xs:w-3/4 mx-auto mt-20 mb-20"
