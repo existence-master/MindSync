@@ -3,13 +3,24 @@ import connect from "@utils/db"; // Utility to connect to the database
 import bcrypt from "bcryptjs"; // Library for hashing passwords
 import { NextResponse } from "next/server"; // Import Next.js server response handling
 import nodemailer from "nodemailer"; // Library to send emails
-import fetch from "node-fetch"; // Import fetch for making API requests
+import { google } from "googleapis"; // Import googleapis package
+
+// Initialize JWT client
+const client = new google.auth.JWT(
+	process.env.GOOGLE_FEEDBACK_SERVICE_ACCOUNT_EMAIL,
+	null,
+	process.env.GOOGLE_FEEDBACK_SERVICE_ACCOUNT_KEY,
+	["https://www.googleapis.com/auth/spreadsheets"] // Adjust the scope if needed
+);
+
+const sheets = google.sheets({ version: "v4", auth: client });
+const spreadsheetId = process.env.GOOGLE_FEEDBACK_SHEET_ID;
 
 export const POST = async (request) => {
 	try {
 		await connect(); // Connect to the database
 
-		// Extract email and password from the request body
+		// Extract email, password, and username from the request body
 		const { email, password, username } = await request.json();
 
 		if (!email || !password || !username) {
@@ -59,28 +70,22 @@ export const POST = async (request) => {
 			text: `${username} : ${email}`, // Email content
 		});
 
-		await fetch(`${process.env.SHEETDB_FEEDBACK_API_ENDPOINT}`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${process.env.SHEETDB_FEEDBACK_API_TOKEN}`,
-			},
-			body: JSON.stringify({
-				data: [
-					{
-						Email: email,
-						Username: username,
-						Create: "",
-						Saved: "",
-						Edit: "",
-					},
-				],
-			}),
+		// Append new data to Google Sheets
+		const requestBody = {
+			values: [[email, username, "", "", ""]],
+		};
+
+		await sheets.spreadsheets.values.append({
+			spreadsheetId,
+			range: 'Sheet1', // Adjust the sheet name and range if necessary
+			valueInputOption: 'RAW',
+			insertDataOption: 'INSERT_ROWS',
+			requestBody,
 		});
 
-		return new NextResponse({ status: 200 }); // Return the hash as the response with HTTP status 200
+		return new NextResponse({ status: 200 }); // Return success with HTTP status 200
 	} catch (error) {
 		console.error("Error registering user:", error); // Log the error for debugging
-		return new NextResponse("Internal server error", { status: 500 }); // HTTP status 500 Internal Server Error
+		return new NextResponse("Internal server error", { status: 500 }); // HTTP status
 	}
-};
+}

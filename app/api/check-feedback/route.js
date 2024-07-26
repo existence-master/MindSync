@@ -3,7 +3,17 @@ import connect from "@utils/db"; // Utility for database connection
 import { authOptions } from "../auth/[...nextauth]/route"; // Import NextAuth options
 import { getServerSession } from "next-auth/next"; // Import NextAuth session handling
 import { NextResponse } from "next/server"; // Import Next.js server response
-import fetch from "node-fetch"; // Import fetch for making API requests
+import { google } from "googleapis"; // Import googleapis package
+
+// Initialize JWT client
+const client = new google.auth.JWT(
+	process.env.GOOGLE_FEEDBACK_SERVICE_ACCOUNT_EMAIL,
+	null,
+	process.env.GOOGLE_FEEDBACK_SERVICE_ACCOUNT_KEY,
+	["https://www.googleapis.com/auth/spreadsheets"] // Adjust the scope if needed
+);
+
+const sheets = google.sheets({ version: "v4", auth: client });
 
 export const POST = async (request) => {
 	const session = await getServerSession(authOptions); // Get the current user session
@@ -26,21 +36,39 @@ export const POST = async (request) => {
 			return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
 		}
 
-		// Call the SheetsDB API using the username and email
-		const response = await fetch(
-			`${process.env.SHEETDB_FEEDBACK_API_ENDPOINT}/search?Email=${user.email}`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${process.env.SHEETDB_FEEDBACK_API_TOKEN}`,
-				},
-			}
-		);
-		const rowData = await response.json();
+		// Fetch data from Google Sheets
+		const spreadsheetId = process.env.GOOGLE_FEEDBACK_SHEET_ID;
+		const range = "Sheet1"; // Adjust range as necessary
+
+		const response = await sheets.spreadsheets.values.get({
+			spreadsheetId,
+			range,
+		});
+
+		const rows = response.data.values;
+
+		// Find the row with the user's email
+		const row = rows.find((row) => row.includes(user.email));
+
+		// If row not found, return false
+		if (!row) {
+			return new NextResponse(JSON.stringify({ result: false }), {
+				status: 200,
+			}); // 200 OK
+		}
+
+		// Find the column index
+		const columnIndex = rows[0].indexOf(columnName);
+
+		// If column not found, return false
+		if (columnIndex === -1) {
+			return new NextResponse(JSON.stringify({ result: false }), {
+				status: 200,
+			}); // 200 OK
+		}
 
 		// Check the value of the specified column
-		const columnValue = rowData[0][columnName];
+		const columnValue = row[columnIndex];
 
 		// Return false if the column value is null, otherwise return true
 		if (columnValue === "") {

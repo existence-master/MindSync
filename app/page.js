@@ -580,7 +580,7 @@ const Home = () => {
             className="md:w-1/2 xs:w-3/4 mx-auto mt-20 mb-20"
           >
             <label
-              for="email"
+              htmlFor="email"
               className="block mb-2 text-xl font-inter font-medium text-gray-900 dark:text-white"
             >
               Enter your email
