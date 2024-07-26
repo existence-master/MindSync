@@ -14,12 +14,12 @@ export const POST = async (request) => {
 
 		// For text-only input, use the gemini-pro model
 		const createMindmapModel = genAI.getGenerativeModel({
-			model: "gemini-1.5-pro-latest",
+			model: "gemini-1.5-flash",
 			systemInstruction: createMindmapSystemPrompt,
 		});
 
 		const cleanTextModel = genAI.getGenerativeModel({
-			model: "gemini-1.5-pro-latest",
+			model: "gemini-1.0-pro-latest",
 			systemInstruction: cleanTextSystemPrompt,
 		});
 
@@ -79,20 +79,16 @@ export const POST = async (request) => {
 		let result = await createMindmapChat.sendMessage(text);
 		let response = result.response;
 		let mindmap
+
 		const intermediateMindmap = response.text()
 
 		result = await cleanTextChat.sendMessage(intermediateMindmap);
 		response = result.response;
 		mindmap = response.text();
 
-		// mindmap = intermediateMindmap.match(/mindmap\s*([\s\S]*?)(?=\n\n|$)/)[0];
-		console.log(mindmap)
-
 		// Return a successful response
 		return new NextResponse(JSON.stringify({ mindmap }), { status: 200 });
 	} catch (error) {
-		// Handle errors
-		console.error("Error:", error);
 
 		// Return an error response
 		return new NextResponse({ status: 500 });

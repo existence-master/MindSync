@@ -280,7 +280,11 @@ const Dashboard = () => {
         throw new Error("Failed to render mindmap");
       }
     } catch (error) {
-      setError(error.message);
+      if (error.message !== "Unsupported file type" && error.message !== "Failed to render mindmap") {
+        setError("Something went wrong. Please try again after some time");
+      } else {
+        setError(error.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
