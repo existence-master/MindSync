@@ -457,6 +457,10 @@ const Edit = () => {
     }
   };
 
+  const handleError = () => {
+    setError(null);
+  };
+
   // Render loading state if data is being fetched
   if (status === "loading") {
     return (
@@ -595,12 +599,12 @@ const Edit = () => {
           )}
 
           {/* Main Content */}
-          <div className="w-full h-full flex flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-hidden">
+          <div className="w-full h-full flex flex-col justify-center items-center p-4 relative overflow-y-scroll overflow-x-scroll">
             <div className="absolute top-5 right-20">
               <SignoutButton />
             </div>
-            <div className="flex flex-col justify-center items-center">
-              <div className="flex flex-row gap-2 mt-6">
+            <div className="ml-32 flex flex-col justify-center items-center">
+              <div className="flex flex-row gap-0 xl:gap-2 mt-6">
                 <div className="ml-20 w-1/2 p-4 border-2 border-stilleto dark:border-paleRose rounded-xl mr-4">
                   <div className="mb-4">
                     <label

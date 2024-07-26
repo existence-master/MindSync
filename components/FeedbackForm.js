@@ -18,11 +18,11 @@ const FeedbackForm = ({ handleFeedbackSubmit, handleFeedbackCancel }) => {
 
   return (
     <form
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed xs:w-screen inset-0 flex items-center justify-center bg-black bg-opacity-50"
       style={{ zIndex: "9999999" }}
       onSubmit={handleSubmit}
     >
-      <div className="bg-paleRose dark:bg-stilleto border-2 border-tickleMePink p-6 rounded-lg shadow-lg w-1/3">
+      <div className="bg-paleRose dark:bg-stilleto border-2 border-tickleMePink md:p-6 xs:w-[300px] xs:p-3 rounded-lg shadow-lg w-1/3">
         <h2 className="text-lg font-bold mb-4 text-center">
           We'd love to hear your feedback about this feature!
         </h2>
