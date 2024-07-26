@@ -2,6 +2,7 @@ import "@styles/globals.css";
 import { getServerSession } from "next-auth"; // Import NextAuth function to fetch the server-side session
 import AuthProvider from "@components/AuthProvider"; // Import AuthProvider component
 import DarkModeProvider from "@components/DarkModeProvider";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
   title: "MindSync",
@@ -29,6 +30,7 @@ export default async function RootLayout({ children }) {
             <div className="h-screen overflow-x-hidden overflow-y-auto relative">
               {/* Add a container div */}
               {children}
+              <Analytics />
             </div>
             {/* Render the child components within the layout */}
           </AuthProvider>
