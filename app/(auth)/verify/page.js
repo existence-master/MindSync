@@ -67,11 +67,11 @@ const Verify = () => {
 
           if (response.ok) {
             // Check which flow the user is in
-            const signupFlow = getCookie("signup-flow");
-            const forgotPasswordFlow = getCookie("forgot-password-flow");
+            const signupFlowCookie = getCookie("signup-flow");
+            const forgotPasswordFlowCookie = getCookie("forgot-password-flow");
 
             // Redirect based on the flow
-            if (signupFlow) {
+            if (signupFlowCookie === "true") {
               // Proceed with the signup flow
               // Get user session data from the server
               let response = await fetch("/api/get-session", {
@@ -122,7 +122,7 @@ const Verify = () => {
                   setError(errorMessage);
                 }
               }
-            } else if (forgotPasswordFlow) {
+            } else if (forgotPasswordFlowCookie) {
               router.push(`/reset-password?email=${email}`);
             } else {
               router.push("/login");

@@ -24,7 +24,7 @@ const FeedbackForm = ({ handleFeedbackSubmit, handleFeedbackCancel }) => {
     >
       <div className="bg-paleRose dark:bg-stilleto border-2 border-tickleMePink md:p-6 xs:w-[300px] xs:p-3 rounded-lg shadow-lg w-1/3">
         <h2 className="text-lg font-bold mb-4 text-center">
-          We'd love to hear your feedback about this feature!
+          We'd love to hear your feedback about this feature! You can't proceed to the desired page without submitting the feedback
         </h2>
         <textarea
           className="w-full p-2 border border-tickleMePink rounded mb-4 dark:bg-lividBrown dark:text-white"

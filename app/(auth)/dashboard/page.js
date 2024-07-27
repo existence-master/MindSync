@@ -293,53 +293,103 @@ const Dashboard = () => {
     }
   };
 
-  const createMindmapDataURL = (format) => {
-    const mindmapSVG = mindmapRef.current.innerHTML;
-    let dataURL = "";
-    fabric.loadSVGFromString(mindmapSVG, (objects, options) => {
-      const svgElement = mindmapRef.current.childNodes[0];
-      const svgWidth = svgElement.width.baseVal.value;
-      const svgHeight = svgElement.height.baseVal.value;
+const createMindmapDataURL = (format) => {
+	return new Promise((resolve, reject) => {
+		const mindmapSVG = mindmapRef.current.innerHTML;
+		console.log("mindmapSVG:", mindmapSVG);
 
-      const canvas = new fabric.Canvas(document.createElement("canvas"), {
-        width: svgWidth,
-        height: svgHeight,
-      });
+		fabric.loadSVGFromString(mindmapSVG, (objects, options) => {
+			const svgElement = mindmapRef.current.childNodes[0];
+			const svgWidth = svgElement.width.baseVal.value;
+			const svgHeight = svgElement.height.baseVal.value;
+			console.log("svgWidth:", svgWidth, "svgHeight:", svgHeight);
 
-      const svgGroup = fabric.util.groupSVGElements(objects, options);
+			const canvas = new fabric.Canvas(document.createElement("canvas"), {
+				width: svgWidth,
+				height: svgHeight,
+			});
 
-      svgGroup.scaleToWidth(svgWidth);
-      svgGroup.scaleToHeight(svgHeight);
-      svgGroup.set({
-        left: 0,
-        top: 0,
-      });
+			const svgGroup = fabric.util.groupSVGElements(objects, options);
 
-      canvas.add(svgGroup);
-      canvas.renderAll();
+			// Apply colors to all objects in the group
+			svgGroup.forEachObject((obj) => {
+				// Convert color to hex format
+				let fill = obj.fill;
+				let stroke = obj.stroke;
 
-      if (format === "svg") {
-        dataURL = canvas.toSVG();
-      } else if (format === "png") {
-        dataURL = canvas.toDataURL({
-          format: "png",
-          quality: 1,
-        });
-      }
-    });
+				if (fill) {
+					fill = fabric.Color.fromSource(fill).toHex();
+					obj.set("fill", fill);
+				}
+				if (stroke) {
+					stroke = fabric.Color.fromSource(stroke).toHex();
+					obj.set("stroke", stroke);
+				}
+			});
 
-    return dataURL;
-  };
+			svgGroup.scaleToWidth(svgWidth);
+			svgGroup.scaleToHeight(svgHeight);
+			svgGroup.set({
+				left: 0,
+				top: 0,
+			});
 
-  const handleExportMindmap = (format) => {
-    const dataURL = createMindmapDataURL(format);
-    const downloadLink = document.createElement("a");
-    downloadLink.href = dataURL;
-    downloadLink.download = `mindmap.${format}`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
+			canvas.add(svgGroup);
+			canvas.renderAll();
+
+			let dataURL = "";
+			if (format === "svg") {
+				const svgExportOptions = {
+					suppressPreamble: true,
+					enableRetinaScaling: true,
+					useSvgBoundingBox: false,
+					viewBox: {
+						x: 0,
+						y: 0,
+						width: svgWidth,
+						height: svgHeight,
+					},
+					width: svgWidth,
+					height: svgHeight,
+				};
+				dataURL = `data:image/svg+xml;utf8,${encodeURIComponent(
+					canvas.toSVG(svgExportOptions)
+				)}`;
+			} else if (format === "png") {
+				dataURL = canvas.toDataURL({
+					format: "png",
+					quality: 1,
+				});
+			}
+
+			console.log("dataURL:", dataURL);
+
+			if (dataURL) {
+				resolve(dataURL);
+			} else {
+				reject(new Error("Failed to generate data URL"));
+			}
+		});
+	});
+};
+  
+const handleExportMindmap = async (format) => {
+	try {
+		const dataURL = await createMindmapDataURL(format);
+		const downloadLink = document.createElement("a");
+		downloadLink.href = dataURL;
+		downloadLink.download = `mindmap.${format}`;
+		document.body.appendChild(downloadLink);
+		downloadLink.click();
+		document.body.removeChild(downloadLink);
+
+		// Debugging log
+		console.log("Download link clicked for format:", format);
+	} catch (error) {
+		console.error("Error exporting mindmap:", error);
+	}
+};
+
 
   const handleSaveMindmap = async () => {
     try {
