@@ -71,7 +71,7 @@ export const POST = async (request) => {
 		const columnValue = row[columnIndex];
 
 		// Return false if the column value is null, otherwise return true
-		if (columnValue === "") {
+		if (columnValue === undefined || columnValue === null || columnValue === "") {
 			return new NextResponse(JSON.stringify({ result: false }), {
 				status: 200,
 			}); // 200 OK
