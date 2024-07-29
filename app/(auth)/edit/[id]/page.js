@@ -741,7 +741,7 @@ const Edit = () => {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       placeholder="Change/remove/add a node..."
-                      className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort text-md mind-h-[60px]"
+                      className="input w-[600px] h-[60px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[60px]"
                     />
                     <button
                       onClick={() => handleToggleRecording()}
