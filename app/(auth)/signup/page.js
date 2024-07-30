@@ -16,8 +16,7 @@ const Signup = () => {
 	const [error, setError] = useState(null); // State to store error
 	const router = useRouter(); // Object to handle routing
 	const session = useSession(); // Object to store user sessio
-	  const [loading, setLoading] = useState(false);
-
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		const handleRedirect = async () => {
@@ -194,7 +193,10 @@ const Signup = () => {
 							</button>
 						</form>
 						<div className="mt-4 flex flex-col items-center">
-							<Link href="/login" className="text-blue-500">
+							<Link
+								href={`${process.env.NEXT_PUBLIC_BASE_PATH}/login`}
+								className="text-blue-500"
+							>
 								<span className="text-gray-500 dark:text-gray-300">
 									Already have an account?{" "}
 								</span>
@@ -211,7 +213,7 @@ const Signup = () => {
 								onClick={() => signIn("google")} // Sign in with Google on click
 							>
 								<NextImage
-									src="/images/googlelogo.webp" // Google logo source
+									src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/googlelogo.webp`} // Google logo source
 									width={20} // Image width
 									height={20} // Image height
 									alt="Google Logo" // Description for Google logo
@@ -234,7 +236,7 @@ const Signup = () => {
 			</main>
 			<div className="xs:max-md:hidden absolute top-[100px] xs:max-md:-right-[225px] lg:max-lg:-right-[250px] -right-[275px]">
 				<NextImage
-					src="/images/blob-1.svg"
+					src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/blob-1.svg`}
 					width={0}
 					height={0}
 					alt="Blob 1"
@@ -243,7 +245,7 @@ const Signup = () => {
 			</div>
 			<div className="xs:max-md:hidden absolute -bottom-[275px] xs:max-md:-left-[175px] md:max-lg:-left-[200px] -left-[225px]">
 				<NextImage
-					src="/images/blob-2.svg"
+					src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/blob-2.svg`}
 					width={0}
 					height={0}
 					alt="Blob 2"
