@@ -4,30 +4,31 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 
 const MindmapCard = ({ mindmap, onDelete, onExport, onEdit, sample }) => {
-	const [showDropdown, setShowDropdown] = useState(false);
-	const [showExportDropdown, setShowExportDropdown] = useState(false);
-	const [showDialog, setShowDialog] = useState(false);
-	const { resolvedTheme, setTheme } = useTheme();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showExportDropdown, setShowExportDropdown] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
 
-	const handleEdit = () => {
-		onEdit(mindmap._id);
-	};
+  const handleEdit = () => {
+    onEdit(mindmap._id);
+  };
 
-	const handleDelete = () => {
-		setShowDialog(false);
-		setShowDropdown(false);
-		setShowExportDropdown(false);
-		onDelete(mindmap._id);
-	};
+  const handleDelete = () => {
+    setShowDialog(false);
+    setShowDropdown(false);
+    setShowExportDropdown(false);
+    onDelete(mindmap._id);
+  };
 
-	const handleExportClick = () => {
-		setShowExportDropdown(!showExportDropdown);
-	};
+  const handleExportClick = () => {
+    setShowExportDropdown(!showExportDropdown);
+  };
 
-	const handleExport = async (format) => {
-		setShowExportDropdown(false);
-		onExport(mindmap, format);
-	};
+  const handleExport = async (format) => {
+    setShowExportDropdown(false);
+    onExport(mindmap, format);
+  };
+
   return (
     <div className="relative xs:w-[200px] xs:h-[300px] md:w-[300px] md:h-[400px] border rounded-lg p-4 shadow-lg border-stilleto dark:border-paleRose flex flex-col justify-center items-center">
       <div className="w-full h-5/6 flex justify-center items-center">

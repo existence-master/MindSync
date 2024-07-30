@@ -158,7 +158,7 @@ const ResetPassword = () => {
       </main>
       <div className="xs:max-md:hidden absolute top-[100px] xs:max-md:-right-[225px] lg:max-lg:-right-[250px] -right-[275px]">
         <NextImage
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/blob-1.svg`}
+          src="/images/blob-1.svg"
           width={0}
           height={0}
           alt="Blob 1"
@@ -167,7 +167,7 @@ const ResetPassword = () => {
       </div>
       <div className="xs:max-md:hidden absolute -bottom-[275px] xs:max-md:-left-[175px] md:max-lg:-left-[200px] -left-[225px]">
         <NextImage
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/blob-2.svg`}
+          src="/images/blob-2.svg"
           width={0}
           height={0}
           alt="Blob 2"

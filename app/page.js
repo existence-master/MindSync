@@ -11,102 +11,102 @@ import { useRouter } from "next/navigation";
 import { InfiniteMovingCards } from "@components/InfiniteMovingCards";
 import { BentoGrid, BentoGridItem } from "@components/BentoGrid";
 import {
-	IconAbc,
-	IconClipboardCopy,
-	IconFileBroken,
-	IconSun,
-	IconMoon,
-	IconTableColumn,
+  IconAbc,
+  IconClipboardCopy,
+  IconFileBroken,
+  IconSun,
+  IconMoon,
+  IconTableColumn,
 } from "@tabler/icons-react";
 import { BackgroundGradient } from "@components/BackgroundGradient";
 import { FlipWords } from "@components/FlipWords";
 
 const Home = () => {
-	const { setTheme, resolvedTheme } = useTheme("dark");
-	const [isOpen, setIsOpen] = useState(false);
-	const [isScrolled, setIsScrolled] = useState(false);
-	const [sampleMindmaps, setSampleMindmaps] = useState([]);
-	const [error, setError] = useState(null);
-	const [mindmapCount, setMindmapCount] = useState(0);
-	const router = useRouter();
-	const [betaSignedUp, setBetaSignedUp] = useState(false);
+  const { setTheme, resolvedTheme } = useTheme("dark");
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [sampleMindmaps, setSampleMindmaps] = useState([]);
+  const [error, setError] = useState(null);
+  const [mindmapCount, setMindmapCount] = useState(0);
+  const router = useRouter();
+  const [betaSignedUp, setBetaSignedUp] = useState(false);
 
-	const handleEdit = (id) => {
-		router.push(`/sample/${id}`);
-	};
+  const handleEdit = (id) => {
+    router.push(`/sample/${id}`);
+  };
 
-	const handleError = () => {
-		setError(null);
-	};
+  const handleError = () => {
+    setError(null);
+  };
 
-	useEffect(() => {
-		const fetchMindmapCount = async () => {
-			try {
-				const response = await fetch("/api/mindmap-count");
-				if (!response.ok) {
-					throw new Error("Failed to fetch mindmap count");
-				}
-				const { count } = await response.json();
-				setMindmapCount(count);
-			} catch (err) {
-				setError(err.message);
-			}
-		};
+  useEffect(() => {
+    const fetchMindmapCount = async () => {
+      try {
+        const response = await fetch("/api/mindmap-count");
+        if (!response.ok) {
+          throw new Error("Failed to fetch mindmap count");
+        }
+        const { count } = await response.json();
+        setMindmapCount(count);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
 
-		fetchMindmapCount();
-	}, []);
+    fetchMindmapCount();
+  }, []);
 
-	useEffect(() => {
-		const handleScroll = () => {
-			const isUserScrolled = window.scrollY > 0;
-			setIsScrolled(isUserScrolled);
-			setNavbarStyle(isUserScrolled ? "bg-white" : "bg-transparent");
-		};
+  useEffect(() => {
+    const handleScroll = () => {
+      const isUserScrolled = window.scrollY > 0;
+      setIsScrolled(isUserScrolled);
+      setNavbarStyle(isUserScrolled ? "bg-white" : "bg-transparent");
+    };
 
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-	useEffect(() => {
-		const fetchSampleMindmaps = async (sampleIds) => {
-			const sampleMindmapDetails = [];
+  useEffect(() => {
+    const fetchSampleMindmaps = async (sampleIds) => {
+      const sampleMindmapDetails = [];
 
-			for (const id of sampleIds) {
-				try {
-					const response = await fetch(
-						`/api/get-mindmap-details?id=${id}&sample=true`
-					);
-					if (!response.ok) {
-						throw new Error(
-							`Error fetching mindmap with ID ${id}: ${response.statusText}`
-						);
-					}
-					const data = await response.json();
-					sampleMindmapDetails.push(data);
-				} catch (error) {
-					setError(error.message);
-				}
-			}
+      for (const id of sampleIds) {
+        try {
+          const response = await fetch(
+            `/api/get-mindmap-details?id=${id}&sample=true`
+          );
+          if (!response.ok) {
+            throw new Error(
+              `Error fetching mindmap with ID ${id}: ${response.statusText}`
+            );
+          }
+          const data = await response.json();
+          sampleMindmapDetails.push(data);
+        } catch (error) {
+          setError(error.message);
+        }
+      }
 
-			setSampleMindmaps(sampleMindmapDetails);
-		};
+      setSampleMindmaps(sampleMindmapDetails);
+    };
 
-		fetchSampleMindmaps(SAMPLE_IDS);
-	}, []);
+    fetchSampleMindmaps(SAMPLE_IDS);
+  }, []);
 
-	const Skeleton = ({ imageUrl }) => {
-		const containerRef = useRef(null);
-		const [imageWidth, setImageWidth] = useState(0);
-		const [imageHeight, setImageHeight] = useState(0);
 
-		useEffect(() => {
-			if (containerRef.current) {
-				const { width, height } =
-					containerRef.current.getBoundingClientRect();
-				setImageWidth(width);
-				setImageHeight(height);
-			}
-		}, []);
+  const Skeleton = ({ imageUrl }) => {
+    const containerRef = useRef(null);
+    const [imageWidth, setImageWidth] = useState(0);
+    const [imageHeight, setImageHeight] = useState(0);
+
+    useEffect(() => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        setImageWidth(width);
+        setImageHeight(height);
+      }
+    }, []);
 
     return (
       <div
@@ -126,77 +126,83 @@ const Home = () => {
     );
   };
 
-	const words = [
-		"success.",
-		"clarity.",
-		"focus.",
-		"creativity.",
-		"productivity.",
-		"growth.",
-	];
+  const words = [
+    "success.",
+    "clarity.",
+    "focus.",
+    "creativity.",
+    "productivity.",
+    "growth.",
+  ];
 
-	const features = [
-		{
-			title: "Multimodal Inputs",
-			description:
-				"Text, image, audio and video to mindmap. Attach everything and create your mindmap.",
-			header: <Skeleton imageUrl="/images/feature1.svg" />,
-			icon: <IconAbc className="h-4 w-4 text-neutral-100" />,
-		},
-		{
-			title: "Save Your Mindmap",
-			description: "Save Mindmaps to your MindSync account with ease.",
-			header: <Skeleton imageUrl="/images/feature2.svg" />,
-			icon: <IconClipboardCopy className="h-4 w-4 text-neutral-100" />,
-		},
-		{
-			title: "Export Your Mindmap",
-			description: "Export Mindmaps in different formats.",
-			header: <Skeleton imageUrl="/images/feature3.svg" />,
-			icon: <IconFileBroken className="h-4 w-4 text-neutral-100" />,
-		},
-		{
-			title: "AI Mindmap Editor",
-			description:
-				"Edit Mindmaps with textual instructions or multimodal inputs.",
-			header: <Skeleton imageUrl="/images/feature4.svg" />,
-			icon: <IconTableColumn className="h-4 w-4 text-neutral-100" />,
-		},
-		{
-			title: "Dark and Light Mode",
-			description: "Switch between light and dark mode.",
-			header: <Skeleton imageUrl="/images/feature5.svg" />,
-			icon: <IconSun className="h-4 w-4 text-neutral-100" />,
-		},
-	];
+  const features = [
+    {
+      title: "Multimodal Inputs",
+      description:
+        "Text, image, audio and video to mindmap. Attach everything and create your mindmap.",
+      header: <Skeleton imageUrl="/images/feature1.svg" />,
+      icon: <IconAbc className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "Save Your Mindmap",
+      description: "Save Mindmaps to your MindSync account with ease.",
+      header: <Skeleton imageUrl="/images/feature2.svg" />,
+      icon: <IconClipboardCopy className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "Export Your Mindmap",
+      description: "Export Mindmaps in different formats.",
+      header: <Skeleton imageUrl="/images/feature3.svg" />,
+      icon: <IconFileBroken className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "AI Mindmap Editor",
+      description:
+        "Edit Mindmaps with textual instructions or multimodal inputs.",
+      header: <Skeleton imageUrl="/images/feature4.svg" />,
+      icon: <IconTableColumn className="h-4 w-4 text-neutral-100" />,
+    },
+    {
+      title: "Dark and Light Mode",
+      description: "Switch between light and dark mode.",
+      header: <Skeleton imageUrl="/images/feature5.svg" />,
+      icon: <IconSun className="h-4 w-4 text-neutral-100" />,
+    },
+  ];
 
-	const testimonials = [
-		{
-			quote: "bro this app is awesome. mindmapping during class has never been easier.",
-			name: "Sarthak Karandikar",
-			title: "billionaire, playboy, philanthropist",
-		},
-		{
-			quote: "saved me from failing all my classes. i owe my life to mindsync. :D",
-			name: "kabeer ahmed merchant",
-			title: "an average student",
-		},
-		{
-			quote: "makes my daily work so much easier. now all i gotta do is record my lectures and i have a mindmap of the whole thing!",
-			name: "Abhijeet Suryawanshi",
-			title: "Your friendly neighbourhood data scientist",
-		},
-		{
-			quote: "bro i designed the whole damn frontend, of course i will enjoy using it. mindsync is the best.",
-			name: "Ojaswini Prabhune",
-			title: "UI/UX Designer",
-		},
-		{
-			quote: "i am so happy that i found mindsync. mindsync has saved my life in so many ways.",
-			name: "Varad Deshpande",
-			title: "casually became a trillionaire - thanks to mindsync",
-		},
-	];
+  const testimonials = [
+    {
+      quote:
+        "bro this app is awesome. mindmapping during class has never been easier.",
+      name: "Sarthak Karandikar",
+      title: "billionaire, playboy, philanthropist",
+    },
+    {
+      quote:
+        "saved me from failing all my classes. i owe my life to mindsync. :D",
+      name: "kabeer ahmed merchant",
+      title: "an average student",
+    },
+    {
+      quote:
+        "makes my daily work so much easier. now all i gotta do is record my lectures and i have a mindmap of the whole thing!",
+      name: "Abhijeet Suryawanshi",
+      title: "Your friendly neighbourhood data scientist",
+    },
+    {
+      quote:
+        "bro i designed the whole damn frontend, of course i will enjoy using it. mindsync is the best.",
+      name: "Ojaswini Prabhune",
+      title: "UI/UX Designer",
+    },
+    {
+      quote:
+        "i am so happy that i found mindsync. mindsync has saved my life in so many ways.",
+      name: "Varad Deshpande",
+      title: "casually became a trillionaire - thanks to mindsync",
+    },
+  ];
+
   return (
     <>
       <nav
@@ -616,93 +622,87 @@ const Home = () => {
             </div>
           </form>
         </section>
-				{error && (
-					<ErrorDisplay
-						errorMessage={error}
-						handleError={handleError}
-					/>
-				)}
 
-				<footer className="bg-paleRose shadow dark:bg-lividBrown">
-					<div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-						<div className="sm:flex sm:items-center sm:justify-between">
-							<a
-								href="#"
-								className="flex items-center xs:justify-center md:justify-normal mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
-							>
-								<NextImage
-									src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/logofull.svg`}
-									width={200}
-									height={50}
-									alt="MindSync Logo"
-								/>
-							</a>
-							<ul className="flex flex-wrap items-center xs:justify-center md:justify-normal mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
-								<li>
-									<a
-										href="#"
-										className="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
-									>
-										About
-									</a>
-								</li>
-								<li>
-									<a
-										href="#"
-										className="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
-									>
-										Privacy Policy
-									</a>
-								</li>
-								<li>
-									<a
-										href="#"
-										className="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
-									>
-										Licensing
-									</a>
-								</li>
-								<li>
-									<a
-										href="#"
-										className="hover:underline dark:text-paleRose text-lividBrown"
-									>
-										Contact
-									</a>
-								</li>
-							</ul>
-						</div>
-						<hr className="my-6 border-tickleMePink sm:mx-auto lg:my-8" />
-						<span className="block text-sm text-gray-500 xs:text-center dark:text-gray-400">
-							2024{" "}
-							<a href="#" className="hover:underline">
-								MindSync
-							</a>
-							. All Rights Reserved.
-						</span>
-						<span className="w-full flex flex-row md:items-center xs:justify-center gap-x-2 mt-4">
-							Powered by{" "}
-							<Link
-								href={"https://existence-master.netlify.app/"}
-							>
-								<NextImage
-									src={`/images/logo-transparent${
-										resolvedTheme === "dark"
-											? ".png"
-											: "-light.png"
-									}`}
-									width={100}
-									height={25}
-									alt="Existence Logo"
-									className="rounded-xl"
-								/>
-							</Link>
-						</span>
-					</div>
-				</footer>
-			</main>
-		</>
-	);
+        {error && (
+          <ErrorDisplay errorMessage={error} handleError={handleError} />
+        )}
+
+        <footer className="bg-paleRose shadow dark:bg-lividBrown">
+          <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+            <div className="sm:flex sm:items-center sm:justify-between">
+              <a
+                href="#"
+                className="flex items-center xs:justify-center md:justify-normal mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
+              >
+                <NextImage
+                  src="/images/logofull.svg"
+                  width={200}
+                  height={50}
+                  alt="MindSync Logo"
+                />
+              </a>
+              <ul className="flex flex-wrap items-center xs:justify-center md:justify-normal mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+                <li>
+                  <a
+                    href="#"
+                    className="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
+                  >
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:underline me-4 md:me-6 dark:text-paleRose text-lividBrown"
+                  >
+                    Licensing
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:underline dark:text-paleRose text-lividBrown"
+                  >
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <hr className="my-6 border-tickleMePink sm:mx-auto lg:my-8" />
+            <span className="block text-sm text-gray-500 xs:text-center dark:text-gray-400">
+              2024{" "}
+              <a href="#" className="hover:underline">
+                MindSync
+              </a>
+              . All Rights Reserved.
+            </span>
+            <span className="w-full flex flex-row md:items-center xs:justify-center gap-x-2 mt-4">
+              Powered by{" "}
+              <Link href={"https://existence-master.netlify.app/"}>
+                <NextImage
+                  src={`/images/logo-transparent${
+                    resolvedTheme === "dark" ? ".png" : "-light.png"
+                  }`}
+                  width={100}
+                  height={25}
+                  alt="Existence Logo"
+                  className="rounded-xl"
+                />
+              </Link>
+            </span>
+          </div>
+        </footer>
+      </main>
+    </>
+  );
 };
 
 export default Home;
