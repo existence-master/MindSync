@@ -153,11 +153,11 @@ const Profile = () => {
 
   if (status === "loading") {
     return (
-      <div className="bg-paleRose dark:bg-lividBrown flex justify-center items-center h-screen">
+      <div className="bg-paleRose dark:bg-lividBrown flex flex-col justify-center items-center h-screen">
         <div role="status">
           <svg
             aria-hidden="true"
-            className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-stilleto"
+            className="w-24 h-24 text-gray-200 animate-spin dark:text-gray-600 fill-stilleto"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -190,54 +190,60 @@ const Profile = () => {
           <div className="w-1/6 h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink">
             <div className="w-full">
               <div className="p-4 text-center">
-                <Image
-                  src={
-                    resolvedTheme === "light"
-                      ? "/images/logofull.svg"
-                      : "/images/mindsynclogodarkmode.svg"
-                  }
-                  width={300}
-                  height={100}
-                  alt="Logo"
-                />
+                <Link href="/">
+                  <Image
+                    src={
+                      resolvedTheme === "light"
+                        ? "/images/logofull.svg"
+                        : "/images/mindsynclogodarkmode.svg"
+                    }
+                    width={300}
+                    height={100}
+                    alt="Logo"
+                  />
+                </Link>
               </div>
               <div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
-                <button
-                  className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
-                  style={{
-                    boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-                  }}
-                >
-                  <Image
-                    src={
-                      resolvedTheme === "light"
-                        ? "/images/createicon.svg"
-                        : "/images/createicondark.svg"
-                    }
-                    width={20}
-                    height={20}
-                    alt="Logo"
-                  />
-                  <Link href="/dashboard">Create</Link>
-                </button>
-                <button
-                  className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto"
-                  style={{
-                    boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-                  }}
-                >
-                  <Image
-                    src={
-                      resolvedTheme === "light"
-                        ? "/images/savedicon.svg"
-                        : "/images/savedicondark.svg"
-                    }
-                    width={20}
-                    height={20}
-                    alt="Logo"
-                  />
-                  <Link href="/saved">Saved</Link>
-                </button>
+                <Link href="/dashboard" className="w-5/6">
+                  <button
+                    className="secondary-btn flex flex-row gap-4 w-full justify-center bg-stilleto hover:bg-hibiscus dark:hover:bg-hibiscus dark:hover:text-paleRose dark:bg-paleRose dark:text-stilleto"
+                    style={{
+                      boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    <Image
+                      src={
+                        resolvedTheme === "light"
+                          ? "/images/createicon.svg"
+                          : "/images/createicondark.svg"
+                      }
+                      width={20}
+                      height={20}
+                      alt="Logo"
+                    />
+                    Create
+                  </button>
+                </Link>
+                <Link href="/saved" className="w-5/6">
+                  <button
+                    className="secondary-btn flex flex-row gap-4 w-full justify-center bg-stilleto hover:bg-hibiscus dark:hover:bg-hibiscus dark:hover:text-paleRose dark:bg-paleRose dark:text-stilleto"
+                    style={{
+                      boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    <Image
+                      src={
+                        resolvedTheme === "light"
+                          ? "/images/savedicon.svg"
+                          : "/images/savedicondark.svg"
+                      }
+                      width={20}
+                      height={20}
+                      alt="Logo"
+                    />
+                    Saved
+                  </button>
+                </Link>
               </div>
             </div>
             <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
@@ -406,16 +412,15 @@ const Profile = () => {
           )}
           {successMessage && (
             <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-              <div
-                style={{
-                  backgroundColor: "white",
-                  padding: "20px",
-                  borderRadius: "5px",
-                }}
-              >
-                <h2>Success</h2>
+              <div className="w-1/3 p-4 rounded-md border-2 border-tickleMePink bg-paleRose dark:bg-lividBrown dark:text-paleRose text-lividBrown">
+                <p className="text-3xl mb-2">Success</p>
                 <p>{successMessage}</p>
-                <button onClick={() => setSuccessMessage(null)}>Close</button>
+                <button
+                  onClick={() => setSuccessMessage(null)}
+                  className="p-2 rounded-xl border-gray-400 border-2 bg-gray-600 mt-2"
+                >
+                  Close
+                </button>
               </div>
             </div>
           )}
@@ -572,16 +577,13 @@ const Profile = () => {
               )}
               {successMessage && (
                 <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-                  <div
-                    style={{
-                      backgroundColor: "white",
-                      padding: "20px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    <h2>Success</h2>
+                  <div className="w-5/6 rounded-md border-2 border-tickleMePink p-4 bg-paleRose dark:bg-lividBrown dark:text-paleRose text-lividBrown">
+                    <p className="text-3xl mb-2">Success</p>
                     <p>{successMessage}</p>
-                    <button onClick={() => setSuccessMessage(null)}>
+                    <button
+                      onClick={() => setSuccessMessage(null)}
+                      className="p-2 rounded-xl border-gray-400 border-2 bg-gray-600 mt-2"
+                    >
                       Close
                     </button>
                   </div>

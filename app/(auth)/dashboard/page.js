@@ -418,14 +418,29 @@ const Dashboard = () => {
   // Return a loading state while the session status is loading
   if (status === "loading") {
     return (
-      <div className="bg-paleRose dark:bg-lividBrown flex justify-center items-center h-screen">
-        <div className="bg-paleRose flex justify-center items-center h-screen">
-          <div className="text-center">
-            <h1 className="text-8xl font-bold mb-4 text-green-600">
-              Loading...
-            </h1>
-            <p className="text-lg">Please wait</p>
-          </div>
+      <div className="bg-paleRose dark:bg-lividBrown flex flex-col justify-center items-center h-screen">
+        <div role="status">
+          <svg
+            aria-hidden="true"
+            className="w-24 h-24 text-gray-200 animate-spin dark:text-gray-600 fill-stilleto"
+            viewBox="0 0 100 101"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+              fill="currentColor"
+            />
+            <path
+              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+              fill="currentFill"
+            />
+          </svg>
+          <span className="sr-only">Loading...</span>
+        </div>
+        <div className="text-center">
+          <h1 className="text-8xl font-bold mb-4 text-green-600">Loading...</h1>
+          <p className="text-lg">Please wait</p>
         </div>
       </div>
     );
@@ -440,56 +455,60 @@ const Dashboard = () => {
           <div className="w-1/6 h-screen flex flex-col justify-between border-double border-r-4 border-tickleMePink">
             <div className="w-full">
               <div className="p-4 text-center">
-                <Image
-                  src={
-                    resolvedTheme === "light"
-                      ? "/images/logofull.svg"
-                      : "/images/mindsynclogodarkmode.svg"
-                  }
-                  width={300}
-                  height={100}
-                  alt="Logo"
-                />
+                <Link href="/">
+                  <Image
+                    src={
+                      resolvedTheme === "light"
+                        ? "/images/logofull.svg"
+                        : "/images/mindsynclogodarkmode.svg"
+                    }
+                    width={300}
+                    height={100}
+                    alt="Logo"
+                  />
+                </Link>
               </div>
               <div className="p-4 text-center flex flex-col justify-center items-center gap-y-10 mt-10 w-full">
-                <button
-                  className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto hover:bg-tickleMePink"
-                  style={{
-                    boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-                  }}
-                >
-                  <Image
-                    src={
-                      resolvedTheme === "light"
-                        ? "/images/createicon.svg"
-                        : "/images/createicondark.svg"
-                    }
-                    width={20}
-                    height={20}
-                    alt="Logo"
-                  />
-                  <Link href="/dashboard">Create</Link>
-                </button>
-                <button
-                  className="secondary-btn flex flex-row gap-4 w-5/6 justify-center bg-stilleto dark:bg-paleRose dark:text-stilleto hover:bg-tickleMePink"
-                  style={{
-                    boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
-                  }}
-                >
-                  <Image
-                    src={
-                      resolvedTheme === "light"
-                        ? "/images/savedicon.svg"
-                        : "/images/savedicondark.svg"
-                    }
-                    width={20}
-                    height={20}
-                    alt="Logo"
-                  />
-                  <Link href="/saved" onClick={handleNavigate}>
+                <Link href="/dashboard" className="w-5/6">
+                  <button
+                    className="secondary-btn flex flex-row gap-4 w-full justify-center bg-stilleto hover:bg-hibiscus dark:hover:bg-hibiscus dark:hover:text-paleRose dark:bg-paleRose dark:text-stilleto"
+                    style={{
+                      boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    <Image
+                      src={
+                        resolvedTheme === "light"
+                          ? "/images/createicon.svg"
+                          : "/images/createicondark.svg"
+                      }
+                      width={20}
+                      height={20}
+                      alt="Logo"
+                    />
+                    Create
+                  </button>
+                </Link>
+                <Link href="/saved" onClick={handleNavigate} className="w-5/6">
+                  <button
+                    className="secondary-btn flex flex-row gap-4 w-full justify-center bg-stilleto hover:bg-hibiscus dark:hover:bg-hibiscus dark:hover:text-paleRose dark:bg-paleRose dark:text-stilleto"
+                    style={{
+                      boxShadow: "0 4px 4px -2px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    <Image
+                      src={
+                        resolvedTheme === "light"
+                          ? "/images/savedicon.svg"
+                          : "/images/savedicondark.svg"
+                      }
+                      width={20}
+                      height={20}
+                      alt="Logo"
+                    />
                     Saved
-                  </Link>
-                </button>
+                  </button>
+                </Link>
               </div>
             </div>
             <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
@@ -561,16 +580,16 @@ const Dashboard = () => {
                         Export
                       </button>
                       {showExportDropdown && (
-                        <div className="absolute -left-8 flex flex-col justify-center items-center gap-y-2 mt-2">
+                        <div className="absolute -right-3 top-16 border-2 border-hibiscus dark:bg-lividBrown bg-paleRose shadow-lg rounded-lg p-2 w-36">
                           <button
-                            onClick={() => handleExportMindmap("svg")}
-                            className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
+                            onClick={() => handleExport("svg")}
+                            className="block w-full rounded-lg border-b-2 border-hibiscus hover:bg-stilleto text-left p-2 mb-1"
                           >
                             Export as SVG
                           </button>
                           <button
-                            onClick={() => handleExportMindmap("png")}
-                            className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
+                            onClick={() => handleExport("png")}
+                            className="block w-full rounded-lg border-b-2 border-hibiscus hover:bg-stilleto text-left p-2"
                           >
                             Export as PNG
                           </button>
@@ -579,16 +598,13 @@ const Dashboard = () => {
                     </div>
                     <button
                       onClick={() => setShowDialog(true)}
-                      className="relative inline-flex overflow-hidden rounded-lg h-12 w-[120px] p-[2px] hover:bg-tickleMePink transition-colors border-2 border-gray-400 duration-300 font-inter focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                      className="inline-flex h-12 w-[120px] animate-shimmer items-center justify-center rounded-md border border-tickleMePink bg-[linear-gradient(110deg,#8A2846,45%,#B9375E,55%,#522E38)] bg-[length:200%_100%] px-6 font-medium text-paleRose transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                     >
-                      <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#8A2846_0%,#FFE0E9_50%,#FF7AA2_100%)]" />
-                      <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-lg bg-stilleto px-3 py-1 text-xl font-medium text-paleRose backdrop-blur-3xl">
-                        {isSaving ? "Saving..." : "Save"}
-                      </span>
+                      Save
                     </button>
                     <button
                       onClick={handleRestart}
-                      className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-tickleMePink bg-[linear-gradient(110deg,#8A2846,45%,#B9375E,55%,#522E38)] bg-[length:200%_100%] px-6 font-medium text-paleRose transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                      className="inline-flex h-12 w-[120px] animate-shimmer items-center justify-center rounded-md border border-tickleMePink bg-[linear-gradient(110deg,#8A2846,45%,#B9375E,55%,#522E38)] bg-[length:200%_100%] px-6 font-medium text-paleRose transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                     >
                       Restart
                     </button>
@@ -612,11 +628,11 @@ const Dashboard = () => {
                                 onClick={handleSaveMindmap}
                                 className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-tickleMePink bg-[linear-gradient(110deg,#8A2846,45%,#B9375E,55%,#522E38)] bg-[length:200%_100%] px-6 font-medium text-paleRose transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                               >
-                                Save
+                                {isSaving ? "Saving..." : "Save"}
                               </button>
                               <button
                                 onClick={() => setShowDialog(false)}
-                                className="primary-btn h-12 bg-slate-400"
+                                className="w-24 rounded-md h-12 bg-gray-400 border-gray-600 border-2 hover:bg-hibiscus text-paleRose"
                               >
                                 Cancel
                               </button>
@@ -959,7 +975,7 @@ const Dashboard = () => {
                         onClick={() => setShowDialog(true)}
                         className="text-white border-2 border-white flex justify-center items-center bg-gray-400 rounded-xl p-2 w-[120px]"
                       >
-                        {isSaving ? "Saving..." : "Save"}
+                        Save
                       </button>
                       <button
                         onClick={handleRestart}
@@ -987,7 +1003,7 @@ const Dashboard = () => {
                                   onClick={handleSaveMindmap}
                                   className="primary-btn"
                                 >
-                                  Save
+                                  {isSaving ? "Saving..." : "Save"}
                                 </button>
                                 <button
                                   onClick={() => setShowDialog(false)}
