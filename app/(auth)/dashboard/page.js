@@ -43,6 +43,7 @@ const Dashboard = () => {
   const { setTheme, resolvedTheme } = useTheme();
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
 
   const isMobile = windowSize.width <= 768;
 
@@ -343,6 +344,7 @@ const Dashboard = () => {
 
   const handleSaveMindmap = async () => {
     try {
+      setIsSaving(true);
       const previewImageDataURL = createMindmapDataURL("png");
 
       const formData = new FormData();
@@ -354,12 +356,14 @@ const Dashboard = () => {
         method: "POST",
         body: formData,
       });
+      setIsSaving(false); // Set isSaving to false after the response is received
       if (response.ok) {
         setShowDialog(false);
       } else {
         throw new Error("Failed to save mindmap");
       }
     } catch (error) {
+      setIsSaving(false); // Set isSaving to false in case of error
       setError(error.message);
     }
   };
@@ -579,7 +583,7 @@ const Dashboard = () => {
                     >
                       <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#8A2846_0%,#FFE0E9_50%,#FF7AA2_100%)]" />
                       <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-lg bg-stilleto px-3 py-1 text-xl font-medium text-paleRose backdrop-blur-3xl">
-                        Save
+                        {isSaving ? "Saving..." : "Save"}
                       </span>
                     </button>
                     <button
@@ -591,7 +595,7 @@ const Dashboard = () => {
                     {showDialog && (
                       <div className="z-50 fixed inset-0 flex justify-center items-center">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="relative my-auto mx-auto flex justify-center items-center border-2 border-tickleMePink w-[480px] h-[280px] bg-lividBrown rounded-xl">
+                        <div className="relative my-auto mx-auto flex justify-center items-center border-2 border-tickleMePink w-[480px] h-[280px] dark:bg-lividBrown bg-paleRose rounded-xl">
                           <div className="w-full p-4">
                             <h2 className="secondary-text mb-4">
                               Enter Mindmap Name:
@@ -601,7 +605,7 @@ const Dashboard = () => {
                               value={mindmapName}
                               onChange={(e) => setMindmapName(e.target.value)}
                               placeholder="My Mindmap"
-                              className="p-2 border-2 w-full border-tickleMePink bg-lividBrown rounded-xl"
+                              className="p-2 border-2 w-full border-tickleMePink dark:text-paleRose text-lividBrown bg-paleRose dark:bg-lividBrown rounded-xl"
                             />
                             <div className="flex flex-row justify-center items-center mt-5 gap-4">
                               <button
@@ -955,7 +959,7 @@ const Dashboard = () => {
                         onClick={() => setShowDialog(true)}
                         className="text-white border-2 border-white flex justify-center items-center bg-gray-400 rounded-xl p-2 w-[120px]"
                       >
-                        Save
+                        {isSaving ? "Saving..." : "Save"}
                       </button>
                       <button
                         onClick={handleRestart}
