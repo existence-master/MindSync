@@ -60,17 +60,15 @@ const Login = () => {
 			if (res.url) {
 				router.push("/dashboard"); // Redirect to the dashboard on success
 			}
-
-			if (!res.ok) {
-				throw new Error("Something went wrong");
-			}
-		} catch (err) {
-			setError(err.message);
-		} finally {
-			setLoading(false); // Reset loading state when the response is received
-		}
-	};
-
+      if (!res.ok) {
+        throw new Error("Incorrect username or password.");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false); // Reset loading state when the response is received
+    }
+  };
 	const isValidEmail = (email) => {
 		// Regular expression pattern to validate email
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

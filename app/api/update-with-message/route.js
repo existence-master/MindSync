@@ -39,8 +39,7 @@ export const POST = async (request) => {
 		});
 
         const { mindmapCode, instruction } = await request.json();
-        console.log(mindmapCode)
-        console.log(instruction)
+
 		const prompt = updateMindmapPrompt
 			.replace("[MERMAID_MINDMAP_CODE]", mindmapCode)
 			.replace("[INSTRUCTION]", instruction);

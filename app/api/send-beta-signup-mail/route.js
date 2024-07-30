@@ -24,7 +24,7 @@ export const POST = async (req) => {
       from: `"MindSync" <${process.env.GMAIL_USER}>`, // Email sender
       to: email, // Recipient email
       subject: "Welcome to the MindSync Beta Program!", // Email subject
-      text: "Thank you for signing up to the MindSync Beta Program. Your feedback will be invaluable for us to improve our platform and fine-tune it to our user's needs. Click the following link to join our WhatsApp Community: ", // Email content
+      text: "Thank you for signing up to the MindSync Beta Program. Your feedback will be invaluable for us to improve our platform and fine-tune it to our user's needs. Click the following link to join our WhatsApp Community: https://chat.whatsapp.com/BBrZAM1d8JbA1dwE266xKO", // Email content
     });
 
     return new NextResponse({ status: 200 }); // Return the hash as the response with HTTP status 200

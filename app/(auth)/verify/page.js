@@ -67,25 +67,21 @@ const Verify = () => {
 						},
 						body: JSON.stringify({ token }),
 					});
+          if (response.ok) {
+            // Check which flow the user is in
+            const signupFlowCookie = getCookie("signup-flow");
+            const forgotPasswordFlowCookie = getCookie("forgot-password-flow");
 
-					if (response.ok) {
-						// Check which flow the user is in
-						const signupFlow = getCookie("signup-flow");
-						const forgotPasswordFlow = getCookie(
-							"forgot-password-flow"
-						);
-
-						// Redirect based on the flow
-						if (signupFlow) {
-							// Proceed with the signup flow
-							// Get user session data from the server
-							let response = await fetch("/api/get-session", {
-								method: "GET",
-								headers: {
-									"Content-Type": "application/json",
-								},
-							});
-
+            // Redirect based on the flow
+            if (signupFlowCookie === "true") {
+              // Proceed with the signup flow
+              // Get user session data from the server
+              let response = await fetch("/api/get-session", {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              });
 							if (response.ok) {
 								// If the session data retrieval is successful, proceed to signup
 								const { email, password, username } =
@@ -114,51 +110,60 @@ const Verify = () => {
 											maxAge: 3600, // 1 hour
 										}),
 									});
-
-									if (response.ok) {
-										// Redirect to the login page
-										router.push("/login");
-									} else {
-										const errorMessage =
-											await response.text();
-										setError(errorMessage);
-									}
-								} else {
-									const errorMessage = await response.text();
-									setError(errorMessage);
-								}
-							}
-						} else if (forgotPasswordFlow) {
-							router.push(`/reset-password?email=${email}`);
-						} else {
-							router.push("/login");
-						}
-					} else {
-						throw new Error("Failed to verify magic link");
-					}
-				} catch (error) {
-					console.error("Invalid token", error);
-					setError(
-						"Invalid or expired token. Please request a new magic link."
-					);
-				}
-			};
-			verifyToken();
-		} else if (toEmail && subject && message) {
-			const sendMagicLink = async () => {
-				try {
-					const response = await fetch("/api/send-magic-link", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({
-							email: toEmail,
-							subject,
-							message,
-						}),
-					});
-
+                response = await fetch("/api/set-cookie", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  name: "signup-flow",
+                  value: "false",
+                  maxAge: 3600, // 1 hour
+                }),
+                });
+                  
+                if (response.ok) {
+                  // Redirect to the login page
+                  router.push("/login");
+                } else {
+                  const errorMessage = await response.text();
+                  setError(errorMessage);
+                }
+                } else {
+                  const errorMessage = await response.text();
+                  setError(errorMessage);
+                }
+              }
+            } else if (forgotPasswordFlowCookie) {
+              router.push(`/reset-password?email=${email}`);
+            } else {
+              router.push("/login");
+            }
+          } else {
+            throw new Error("Failed to verify magic link");
+          }
+        } catch (error) {
+          console.error("Invalid token", error);
+          setError(
+            "Invalid or expired token. Please request a new magic link."
+          );
+        }
+      };
+      verifyToken();
+    } else if (toEmail && subject && message) {
+      const sendMagicLink = async () => {
+        try {
+          const response = await fetch("/api/send-magic-link", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: toEmail,
+              subject,
+              message,
+            }),
+          });
 					if (response.ok) {
 						setMagicLink(true);
 						setResendTimeout(60);

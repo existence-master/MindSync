@@ -1,29 +1,36 @@
 import { NextResponse } from "next/server"; // Import Next.js server response handling
-import fetch from "node-fetch"; // Import fetch for making API requests
+import { google } from "googleapis"; // Import googleapis package
+
+// Initialize JWT client
+
+const client = new google.auth.JWT(
+	process.env.GOOGLE_METRICS_SERVICE_ACCOUNT_EMAIL,
+	null,
+	process.env.GOOGLE_METRICS_SERVICE_ACCOUNT_KEY,
+	["https://www.googleapis.com/auth/spreadsheets"] // Adjust the scope if needed
+);
+
+const sheets = google.sheets({ version: "v4", auth: client });
+
+const spreadsheetId = process.env.GOOGLE_METRICS_SHEET_ID;
+const sheetName = "Sheet1";
 
 // Handle GET request
 export const GET = async () => {
 	try {
-		// Sort results by id in descending order, take two
-		// and return the age as an integer.
-		const columnName = "Value"
+		const response = await sheets.spreadsheets.values.get({
+			spreadsheetId,
+			range: `${sheetName}!A:B`, // Adjust range as necessary
+		});
 
-		const response = await fetch(
-			`${process.env.SHEETDB_METRICS_API_ENDPOINT}/`,
-			{
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${process.env.SHEETDB_METRICS_API_TOKEN}`,
-				},
-			}
-		)
+		const rows = response.data.values;
 
-		const rowData = await response.json();
-		// Check the value of the specified column
-		const columnValue = rowData[0][columnName];
+		// Find the row with the metric name "Mindmap Count"
+		const row = rows.find((row) => row[0] === "Mindmap Count");
 
-		// Return false if the column value is null, otherwise return true
+		// If row not found, return count as 0
+		const columnValue = row ? row[1] : 0;
+
 		return new NextResponse(JSON.stringify({ count: columnValue }), {
 			status: 200,
 		}); // 200 OK
@@ -36,58 +43,53 @@ export const GET = async () => {
 // Handle POST request
 export const POST = async (request) => {
 	try {
-		let updatedMindmapCount
-		const columnName = "Value";
 		const { increment } = await request.json(); // Extract increment value from the request body
 
 		if (typeof increment !== "boolean") {
 			return new NextResponse("Invalid increment value", { status: 400 }); // HTTP status 400 Bad Request
 		}
 
-		let response = await fetch(
-			`${process.env.SHEETDB_METRICS_API_ENDPOINT}/`,
-			{
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${process.env.SHEETDB_METRICS_API_TOKEN}`,
-				},
-			}
-		);
+		const response = await sheets.spreadsheets.values.get({
+			spreadsheetId,
+			range: `${sheetName}!A:B`, // Adjust range as necessary
+		});
 
-		const rowData = await response.json();
-		// Check the value of the specified column
-		const currentMindmapCount = rowData[0][columnName];
-		updatedMindmapCount = currentMindmapCount
-		console.log(updatedMindmapCount)
+		const rows = response.data.values;
+
+		// Find the row with the metric name "Mindmap Count"
+		const rowIndex = rows.findIndex((row) => row[0] === "Mindmap Count");
+
+		let currentMindmapCount = 0;
+
+		// If row not found, initialize the count as 0
+		if (rowIndex !== -1) {
+			currentMindmapCount = Number(rows[rowIndex][1]);
+		}
+
+		let updatedMindmapCount = currentMindmapCount;
 
 		// Update the count based on the increment value
 		if (increment) {
-			updatedMindmapCount = Number(currentMindmapCount) + 1;
+			updatedMindmapCount = currentMindmapCount + 1;
 		}
 
-		console.log(updatedMindmapCount)
+		const updateRange = `${sheetName}!B${rowIndex + 1}`;
 
-		response = await fetch(
-			`${process.env.SHEETDB_METRICS_API_ENDPOINT}/Metric/Mindmap%20Count`,
+		await sheets.spreadsheets.values.update({
+			spreadsheetId,
+			range: updateRange,
+			valueInputOption: "RAW",
+			requestBody: {
+				values: [[updatedMindmapCount]],
+			},
+		});
+
+		return new NextResponse(
+			JSON.stringify({ count: updatedMindmapCount }),
 			{
-				method: "PATCH",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${process.env.SHEETDB_METRICS_API_TOKEN}`,
-				},
-				body: JSON.stringify({
-					data: {
-						[columnName]: updatedMindmapCount,
-					},
-				}),
+				status: 200,
 			}
-		);
-
-		return new NextResponse(JSON.stringify({ count: updatedMindmapCount }), {
-			status: 200,
-		}); // Return the updated count with HTTP status 200
+		); // Return the updated count with HTTP status 200
 	} catch (error) {
 		console.error("Error updating count:", error); // Log the error for debugging
 		return new NextResponse("Internal server error", { status: 500 }); // HTTP status 500 Internal Server Error

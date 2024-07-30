@@ -362,6 +362,10 @@ Mindmap Code: [MERMAID_MINDMAP_CODE]`;
 const cleanTextSystemPrompt = `You are a helpful AI agent who cleans up text and returns only the mindmap code contained in the text. Remove any additional text that is not part of the mindmap code. Also remove any special characters like ()[]{} from the mindmap code. If there is any text following a font awesome icon, please take it on the next line. If there is no additional text before or after the mindmap code, return the input as it is.`;
 
 const cleanTextInputOutputPairs = [
+    {
+        input: `You are a helpful AI agent who cleans up text and returns only the mindmap code contained in the text. Remove any additional text that is not part of the mindmap code. Also remove any special characters like ()[]{} from the mindmap code. If there is any text following a font awesome icon, please take it on the next line. If there is no additional text before or after the mindmap code, return the input as it is.`,
+        output: `Sure, I will be happy to help with that`
+    },
 	{
 		input: `This is a mindmap explaining the concept of a tree:
 mindmap
