@@ -23,7 +23,7 @@ export const POST = async (req) => {
         jwtid: uuidv4(),
     });
 
-    const magicLink = `${process.env.APP_URL}/verify?email=${email}&token=${token}`;
+    const magicLink = `${process.env.NEXT_PUBLIC_APP_URL}/verify?email=${email}&token=${token}`;
 
     try {
 		// Send the OTP to the user's email

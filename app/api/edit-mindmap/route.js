@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import connect from "@utils/db"; // Import your database connection utility
 import Mindmap from "@models/Mindmap"; // Import the Mindmap model
-import { v4 as uuidv4 } from "uuid";
 import cloudinary from "@utils/cloudinary"; // Import Cloudinary configuration
 
 export const POST = async (request) => {
@@ -18,25 +17,10 @@ export const POST = async (request) => {
 	await connect();
 
 	try {
-		// Read the file as a buffer
-		const arrayBuffer = await previewImage.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
-
-		// Generate a unique filename
-		const fileName = `${uuidv4()}-${previewImage.name}`;
-
-		// Upload the preview image to Cloudinary directly from the buffer
-		const uploadResult = await cloudinary.uploader
-			.upload_stream(
-				{ folder: "mindmap_previews", public_id: fileName },
-				(error, result) => {
-					if (error) {
-						throw new Error("Cloudinary upload failed");
-					}
-					return result;
-				}
-			)
-			.end(buffer);
+		// Upload the preview image to Cloudinary
+		const uploadResult = await cloudinary.uploader.upload(previewImage, {
+			folder: "mindmap_previews",
+		});
 
 		// Update the mindmap in the database
 		const updatedMindmap = await Mindmap.findByIdAndUpdate(

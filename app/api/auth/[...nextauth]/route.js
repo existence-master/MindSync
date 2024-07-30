@@ -4,7 +4,18 @@ import CredentialsProvider from "next-auth/providers/credentials"; // Credential
 import bcrypt from "bcryptjs"; // Library for hashing and comparing passwords
 import User from "@models/User"; // User model
 import connect from "@utils/db"; // Utility to connect to the database
-import fetch from "node-fetch";
+import { google } from "googleapis"; // Import googleapis package
+
+// Initialize JWT client
+const client = new google.auth.JWT(
+	process.env.GOOGLE_FEEDBACK_SERVICE_ACCOUNT_EMAIL,
+	null,
+	process.env.GOOGLE_FEEDBACK_SERVICE_ACCOUNT_KEY,
+	["https://www.googleapis.com/auth/spreadsheets"] // Adjust the scope if needed
+);
+
+const sheets = google.sheets({ version: "v4", auth: client });
+const spreadsheetId = process.env.GOOGLE_FEEDBACK_SHEET_ID; // Google Sheets ID
 
 export const authOptions = {
 	// Configuration for authentication providers
@@ -71,27 +82,19 @@ export const authOptions = {
 						});
 
 						await newUser.save(); // Save the new user to the database
-						await fetch(
-							`${process.env.SHEETDB_FEEDBACK_API_ENDPOINT}`,
-							{
-								method: "POST",
-								headers: {
-									"Content-Type": "application/json",
-									Authorization: `Bearer ${process.env.SHEETDB_FEEDBACK_API_TOKEN}`,
-								},
-								body: JSON.stringify({
-									data: [
-										{
-											Email: user.email,
-											Username: user.name,
-											Create: "",
-											Saved: "",
-											Edit: "",
-										},
-									],
-								}),
-							}
-						);
+
+						// Append new data to Google Sheets
+						const requestBody = {
+							values: [[user.email, user.name, "", "", ""]],
+						};
+
+						await sheets.spreadsheets.values.append({
+							spreadsheetId,
+							range: "Sheet1", // Adjust the sheet name and range if necessary
+							valueInputOption: "RAW",
+							insertDataOption: "INSERT_ROWS",
+							requestBody,
+						});
 					}
 					return true;
 				} catch (err) {
