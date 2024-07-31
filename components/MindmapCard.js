@@ -136,12 +136,12 @@ const MindmapCard = ({ mindmap, onDelete, onExport, onEdit, sample }) => {
           </button>
           {showExportDropdown && (
             <div className="absolute right-2 top-16 border-2 border-hibiscus dark:bg-lividBrown bg-paleRose shadow-lg rounded-lg p-2 w-36">
-              <button
+              {/* <button
                 onClick={() => handleExport("svg")}
                 className="block w-full rounded-lg border-b-2 border-hibiscus hover:bg-stilleto text-left p-2 mb-1"
               >
                 Export as SVG
-              </button>
+              </button> */}
               <button
                 onClick={() => handleExport("png")}
                 className="block w-full rounded-lg border-b-2 border-hibiscus hover:bg-stilleto text-left p-2"

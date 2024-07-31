@@ -687,12 +687,12 @@ const Sample = () => {
                     </button>
                     {showExportDropdown && (
                       <div className="absolute -left-8 flex flex-col justify-center items-center gap-y-2 mt-2">
-                        <button
+                        {/* <button
                           onClick={() => handleExportMindmap("svg")}
                           className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
                         >
                           Export as SVG
-                        </button>
+                        </button> */}
                         <button
                           onClick={() => handleExportMindmap("png")}
                           className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
@@ -1021,12 +1021,12 @@ const Sample = () => {
                 </button>
                 {showExportDropdown && (
                   <div className="absolute -left-8 flex flex-col justify-center items-center gap-y-2 mt-2">
-                    <button
+                    {/* <button
                       onClick={() => handleExportMindmap("svg")}
                       className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
                     >
                       Export as SVG
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => handleExportMindmap("png")}
                       className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"

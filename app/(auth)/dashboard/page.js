@@ -581,12 +581,12 @@ const Dashboard = () => {
                       </button>
                       {showExportDropdown && (
                         <div className="absolute -right-3 top-16 border-2 border-hibiscus dark:bg-lividBrown bg-paleRose shadow-lg rounded-lg p-2 w-36">
-                          <button
+                          {/* <button
                             onClick={() => handleExport("svg")}
                             className="block w-full rounded-lg border-b-2 border-hibiscus hover:bg-stilleto text-left p-2 mb-1"
                           >
                             Export as SVG
-                          </button>
+                          </button> */}
                           <button
                             onClick={() => handleExport("png")}
                             className="block w-full rounded-lg border-b-2 border-hibiscus hover:bg-stilleto text-left p-2"
@@ -956,12 +956,12 @@ const Dashboard = () => {
                         </button>
                         {showExportDropdown && (
                           <div className="absolute -left-2 flex flex-col justify-center items-center gap-y-2 mt-2">
-                            <button
+                            {/* <button
                               onClick={() => handleExportMindmap("svg")}
                               className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
                             >
                               Export as SVG
-                            </button>
+                            </button> */}
                             <button
                               onClick={() => handleExportMindmap("png")}
                               className="text-white border-2 border-white flex justify-center items-center bg-gray-500 rounded-xl p-2 w-[140px]"
