@@ -29,7 +29,7 @@ export const POST = async (req) => {
 
     return new NextResponse({ status: 200 }); // Return the hash as the response with HTTP status 200
   } catch (error) {
-    console.error("Error sending email:", error); // Log the error for debugging
+    //console.error("Error sending email:", error); // Log the error for debugging
     return new NextResponse(
       JSON.stringify({ error: "Failed to send email" }), // Return error message
       { status: 400 } // HTTP status 400 Bad Request

@@ -413,7 +413,7 @@ const Edit = () => {
         throw new Error("Failed to save mindmap");
       }
     } catch (error) {
-      console.error("Error:", error);
+      //console.error("Error:", error);
       setError(error.message);
     } finally {
       setIsSubmittingSave(false);
