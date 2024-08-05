@@ -7,54 +7,54 @@ import { NextResponse } from "next/server"; // Import Next.js server response
 import cloudinary from "@utils/cloudinary"; // Import Cloudinary configuration
 
 export const POST = async (request) => {
-	const session = await getServerSession(authOptions); // Get the current user session
-	await connect(); // Connect to the database
+  const session = await getServerSession(authOptions); // Get the current user session
+  await connect(); // Connect to the database
 
-	try {
-		// If there's no session or user email in the session, return unauthorized
-		if (!session || !session.user?.email) {
-			return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
-		}
+  try {
+    // If there's no session or user email in the session, return unauthorized
+    if (!session || !session.user?.email) {
+      return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
+    }
 
-		// Extract mindmap data and name from the request body
-		const formData = await request.formData();
-		const mindmap = formData.get("mindmap");
-		const processedCode = mindmap.replace(/\\n/g, "\n").replace(/\"/g, "");
-		const mindmapName = formData.get("mindmapName");
-		const previewImage = formData.get("previewImage");
+    // Extract mindmap data and name from the request body
+    const formData = await request.formData();
+    const mindmap = formData.get("mindmap");
+    const processedCode = mindmap.replace(/\\n/g, "\n").replace(/\"/g, "");
+    const mindmapName = formData.get("mindmapName");
+    const previewImage = formData.get("previewImage");
 
-		// Find the user based on the email in the session
-		const user = await User.findOne({ email: session.user.email });
+    // Find the user based on the email in the session
+    const user = await User.findOne({ email: session.user.email });
 
-		// If user not found, return unauthorized
-		if (!user) {
-			return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
-		}
+    // If user not found, return unauthorized
+    if (!user) {
+      return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
+    }
 
-		const uploadResult = await cloudinary.uploader.upload(previewImage, {
-			folder: "mindmap_previews",
-		});
+    const uploadResult = await cloudinary.uploader.upload(previewImage, {
+      folder: "mindmap_previews",
+    });
 
-		// Create a new mindmap object
-		const newMindmap = new Mindmap({
-			name: mindmapName,
-			code: processedCode,
-			previewImageURL: uploadResult.secure_url, // Use the Cloudinary URL
-		});
+    // Create a new mindmap object
+    const newMindmap = new Mindmap({
+      name: mindmapName,
+      code: processedCode,
+      previewImageURL: uploadResult.secure_url, // Use the Cloudinary URL
+    });
 
-		// Save the mindmap to the database
-		await newMindmap.save();
+    // Save the mindmap to the database
+    await newMindmap.save();
 
-		// Add the mindmap to the user's mindmaps array
-		user.mindmaps.push(newMindmap);
+    // Add the mindmap to the user's mindmaps array
+    user.mindmaps.push(newMindmap);
 
-		// Save the user with the updated mindmaps array
-		await user.save();
+    // Save the user with the updated mindmaps array
+    await user.save();
 
-		// Return a success response
-		return new NextResponse("Mindmap saved", { status: 200 }); // 200 OK
-	} catch (error) {
-		console.error("Error saving mindmap:", error); // Log the error for debugging
-		return new NextResponse("Internal server error", { status: 500 }); // 500 Internal Server Error
-	}
+    // Return a success response
+    return new NextResponse("Mindmap saved", { status: 200 }); // 200 OK
+  } catch (error) {
+    //console.error("Error saving mindmap:", error); // Log the error for debugging
+    return new NextResponse("Internal server error", { status: 500 }); // 500 Internal Server Error
+  }
 };

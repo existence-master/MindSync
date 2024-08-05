@@ -97,26 +97,25 @@ const Verify = () => {
                 });
 
                 if (response.ok) {
+                  response = await fetch("/api/set-cookie", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      name: "signup-flow",
+                      value: "false",
+                      maxAge: 3600, // 1 hour
+                    }),
+                  });
 
-                response = await fetch("/api/set-cookie", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  name: "signup-flow",
-                  value: "false",
-                  maxAge: 3600, // 1 hour
-                }),
-                });
-                  
-                if (response.ok) {
-                  // Redirect to the login page
-                  router.push("/login");
-                } else {
-                  const errorMessage = await response.text();
-                  setError(errorMessage);
-                }
+                  if (response.ok) {
+                    // Redirect to the login page
+                    router.push("/login");
+                  } else {
+                    const errorMessage = await response.text();
+                    setError(errorMessage);
+                  }
                 } else {
                   const errorMessage = await response.text();
                   setError(errorMessage);
@@ -131,7 +130,7 @@ const Verify = () => {
             throw new Error("Failed to verify magic link");
           }
         } catch (error) {
-          console.error("Invalid token", error);
+          //console.error("Invalid token", error);
           setError(
             "Invalid or expired token. Please request a new magic link."
           );
@@ -161,7 +160,7 @@ const Verify = () => {
             throw new Error(errorText);
           }
         } catch (error) {
-          console.error(error);
+          //console.error(error);
           setMessage("Failed to send magic link. Please try again.");
         }
       };
@@ -201,7 +200,7 @@ const Verify = () => {
         throw new Error(errorText);
       }
     } catch (error) {
-      console.error(error);
+      //console.error(error);
       setMessage("Failed to resend magic link. Please try again.");
     }
   };

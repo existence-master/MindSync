@@ -94,7 +94,6 @@ const Home = () => {
     fetchSampleMindmaps(SAMPLE_IDS);
   }, []);
 
-
   const Skeleton = ({ imageUrl }) => {
     const containerRef = useRef(null);
     const [imageWidth, setImageWidth] = useState(0);
@@ -290,7 +289,7 @@ const Home = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/about"
                   className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl hover:drop-shadow-glow"
                 >
                   About
@@ -298,7 +297,7 @@ const Home = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/contactus"
                   className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded text-xl hover:drop-shadow-glow"
                 >
                   Contact Us
@@ -345,7 +344,7 @@ const Home = () => {
                     </li>
                     <li>
                       <a
-                        href="#"
+                        href="/about"
                         className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
                       >
                         About
@@ -353,7 +352,7 @@ const Home = () => {
                     </li>
                     <li>
                       <a
-                        href="#"
+                        href="/contactus"
                         className="block py-2 px-3 dark:text-paleRose text-lividBrown hover:text-tickleMePink rounded"
                       >
                         Contact Us

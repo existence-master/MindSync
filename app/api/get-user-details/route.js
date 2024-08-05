@@ -6,32 +6,34 @@ import { getServerSession } from "next-auth/next"; // Import NextAuth session ha
 import { NextResponse } from "next/server"; // Import Next.js server response
 
 export const GET = async (request) => {
-	await connect(); // Connect to the database
-	try {
-		// Get the current user session
-		const session = await getServerSession(authOptions);
+  await connect(); // Connect to the database
+  try {
+    // Get the current user session
+    const session = await getServerSession(authOptions);
 
-		// If the user is not logged in, return unauthorized
-		if (!session || !session.user?.email) {
-			return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
-		}
+    // If the user is not logged in, return unauthorized
+    if (!session || !session.user?.email) {
+      return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
+    }
 
-		// Get the user's email from the session
-		const email = session.user.email;
+    // Get the user's email from the session
+    const email = session.user.email;
 
-		// Find the user by their email
-		const user = await User.findOne({ email: email }).populate("email username googleUser");
+    // Find the user by their email
+    const user = await User.findOne({ email: email }).populate(
+      "email username googleUser"
+    );
 
-		if (!user) {
-			return new NextResponse(`User with email ${email} not found`, {
-				status: 404,
-			}); // 404 Not Found
-		}
+    if (!user) {
+      return new NextResponse(`User with email ${email} not found`, {
+        status: 404,
+      }); // 404 Not Found
+    }
 
-		// Return the user details
-		return new NextResponse(JSON.stringify(user), { status: 200 }); // 200 OK
-	} catch (error) {
-		console.error("Error fetching user details:", error); // Log the error for debugging
-		return new NextResponse("Internal server error", { status: 500 }); // 500 Internal Server Error
-	}
+    // Return the user details
+    return new NextResponse(JSON.stringify(user), { status: 200 }); // 200 OK
+  } catch (error) {
+    //console.error("Error fetching user details:", error); // Log the error for debugging
+    return new NextResponse("Internal server error", { status: 500 }); // 500 Internal Server Error
+  }
 };

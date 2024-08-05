@@ -70,22 +70,33 @@ export const POST = async (request) => {
 			text: `${username} : ${email}`, // Email content
 		});
 
-		// Append new data to Google Sheets
-		const requestBody = {
-			values: [[email, username, "", "", ""]],
-		};
-
-		await sheets.spreadsheets.values.append({
+		// Read existing data from Google Sheets
+		const response = await sheets.spreadsheets.values.get({
 			spreadsheetId,
-			range: 'Sheet1', // Adjust the sheet name and range if necessary
-			valueInputOption: 'RAW',
-			insertDataOption: 'INSERT_ROWS',
-			requestBody,
+			range: "Sheet1", // Adjust the sheet name and range if necessary
 		});
+
+		const rows = response.data.values;
+		const emailExists = rows.some((row) => row[0] === email);
+
+		if (!emailExists) {
+			// Append new data to Google Sheets if email does not exist
+			const requestBody = {
+				values: [[email, username, "", "", ""]],
+			};
+
+			await sheets.spreadsheets.values.append({
+				spreadsheetId,
+				range: "Sheet1", // Adjust the sheet name and range if necessary
+				valueInputOption: "RAW",
+				insertDataOption: "INSERT_ROWS",
+				requestBody,
+			});
+		}
 
 		return new NextResponse({ status: 200 }); // Return success with HTTP status 200
 	} catch (error) {
-		console.error("Error registering user:", error); // Log the error for debugging
-		return new NextResponse("Internal server error", { status: 500 }); // HTTP status
+		//console.error("Error registering user:", error); // Log the error for debugging
+		return new NextResponse("Internal server error", { status: 500 }); // HTTP status 500 Internal Server Error
 	}
-}
+};
