@@ -7,6 +7,7 @@ import SignoutButton from "@components/SignoutButton";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import ErrorDisplay from "@components/ErrorDisplay";
 
 const Profile = () => {
   const { data: session, status } = useSession();
@@ -112,6 +113,8 @@ const Profile = () => {
       if (response.ok) {
         setSuccessMessage("Password changed successfully.");
         setIsChangingPassword(false);
+        setNewPassword("")
+        setCurrentPassword("")
       } else {
         throw new Error("Failed to change password");
       }
