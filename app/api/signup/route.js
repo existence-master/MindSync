@@ -81,8 +81,8 @@ export const POST = async (request) => {
 
 		if (!emailExists) {
 			// Append new data to Google Sheets if email does not exist
-			const requestBody = {
-				values: [[email, username, "", "", ""]],
+			let requestBody = {
+				values: [[userEmail, username, "", "", ""]],
 			};
 
 			await sheets.spreadsheets.values.append({

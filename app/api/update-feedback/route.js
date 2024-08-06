@@ -29,6 +29,8 @@ export const POST = async (request) => {
 		// Extract feedback from the request body
 		const { columnName, feedback } = await request.json();
 
+		let sheet = columnName === "General" ? "Sheet2" : "Sheet1";
+
 		// Find the user based on the email in the session
 		const user = await User.findOne({ email: session.user.email });
 
@@ -37,53 +39,81 @@ export const POST = async (request) => {
 			return new NextResponse("Unauthorized", { status: 401 }); // 401 Unauthorized
 		}
 
-		// Fetch the existing data from the Google Sheet
-		const getResponse = await sheets.spreadsheets.values.get({
-			spreadsheetId,
-			range: "Sheet1", // Adjust the sheet name and range if necessary
-		});
+		if (columnName === "General") {
+			// Append the feedback to the "General" sheet
+			const appendResponse = await sheets.spreadsheets.values.append({
+				spreadsheetId,
+				range: sheet, // Adjust the range if necessary
+				valueInputOption: "RAW",
+				insertDataOption: "INSERT_ROWS",
+				requestBody: {
+					values: [
+						[
+							user.email,
+							user.username,
+							feedback,
+							new Date().toISOString(),
+						],
+					],
+				},
+			});
 
-		const rows = getResponse.data.values;
-
-		// Find the row with the user's email
-		const rowIndex = rows.findIndex((row) => row.includes(user.email));
-
-		if (rowIndex === -1) {
-			return new NextResponse("User email not found in sheet", {
-				status: 404,
-			}); // 404 Not Found
-		}
-
-		// Find the column index
-		const columnIndex = rows[0].indexOf(columnName);
-
-		if (columnIndex === -1) {
-			return new NextResponse("Column name not found in sheet", {
-				status: 404,
-			}); // 404 Not Found
-		}
-
-		// Update the feedback in the appropriate cell
-		rows[rowIndex][columnIndex] = feedback;
-
-		// Write the updated data back to the Google Sheet
-		const updateResponse = await sheets.spreadsheets.values.update({
-			spreadsheetId,
-			range: `Sheet1!${String.fromCharCode(65 + columnIndex)}${
-				rowIndex + 1
-			}`, // Convert column index to letter and adjust for 1-based row index
-			valueInputOption: "RAW",
-			requestBody: {
-				values: [[feedback]],
-			},
-		});
-
-		if (updateResponse.status === 200) {
-			return new NextResponse("Feedback updated", { status: 200 }); // 200 OK
+			if (appendResponse.status === 200) {
+				return new NextResponse("Feedback appended", { status: 200 }); // 200 OK
+			} else {
+				return new NextResponse("Failed to append feedback", {
+					status: 500,
+				}); // 500 Internal Server Error
+			}
 		} else {
-			return new NextResponse("Failed to update feedback", {
-				status: 500,
-			}); // 500 Internal Server Error
+			// Fetch the existing data from the Google Sheet
+			const getResponse = await sheets.spreadsheets.values.get({
+				spreadsheetId,
+				range: sheet, // Adjust the sheet name and range if necessary
+			});
+
+			const rows = getResponse.data.values;
+
+			// Find the row with the user's email
+			const rowIndex = rows.findIndex((row) => row.includes(user.email));
+
+			if (rowIndex === -1) {
+				return new NextResponse("User email not found in sheet", {
+					status: 404,
+				}); // 404 Not Found
+			}
+
+			// Find the column index
+			const columnIndex = rows[0].indexOf(columnName);
+
+			if (columnIndex === -1) {
+				return new NextResponse("Column name not found in sheet", {
+					status: 404,
+				}); // 404 Not Found
+			}
+
+			// Update the feedback in the appropriate cell
+			rows[rowIndex][columnIndex] = feedback;
+
+			// Write the updated data back to the Google Sheet
+			const updateResponse = await sheets.spreadsheets.values.update({
+				spreadsheetId,
+				range: `${sheet}!${String.fromCharCode(65 + columnIndex)}${
+					rowIndex + 1
+				}`, // Convert column index to letter and adjust for 1-based row index
+				valueInputOption: "RAW",
+				requestBody: {
+					values: [[feedback]],
+				},
+			});
+
+			if (updateResponse.status === 200) {
+				return new NextResponse("Feedback updated", { status: 200 }); // 200 OK
+			} else {
+				return new NextResponse("Failed to update feedback", {
+					status: 500,
+				}); // 500 Internal Server Error
+			}
 		}
 	} catch (error) {
 		return new NextResponse("Internal server error", { status: 500 }); // 500 Internal Server Error
