@@ -526,7 +526,7 @@ const Dashboard = () => {
                 </Link>
                 <button
                   onClick={handleReportFeedback}
-                  className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-hibiscus hover:text-white border-2 border-tickleMePink group"
+                  className="flex items-center p-2 dark:text-paleRose text-gray-900 rounded-lg hover:bg-hibiscus hover:text-white border-2 border-tickleMePink group"
                 >
                   <IconInfoCircle />
                   <span className="ms-3">Report Feedback</span>
@@ -1360,7 +1360,7 @@ const Dashboard = () => {
               </Link>
               <button
                 onClick={handleReportFeedback}
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-[#007991] group"
+                className="flex items-center p-2 dark:text-paleRose text-gray-900 rounded-lg hover:bg-hibiscus hover:text-white border-2 border-tickleMePink group"
               >
                 <IconInfoCircle />
                 <span className="ms-3">Report Feedback</span>

@@ -28,6 +28,7 @@ const Profile = () => {
   const { setTheme, resolvedTheme } = useTheme();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -291,7 +292,7 @@ const Profile = () => {
                 </Link>
                 <button
                   onClick={handleReportFeedback}
-                  className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-[#007991] group"
+                  className="flex items-center p-2 dark:text-paleRose text-gray-900 rounded-lg hover:bg-hibiscus hover:text-white border-2 border-tickleMePink group"
                 >
                   <IconInfoCircle />
                   <span className="ms-3">Report Feedback</span>
@@ -344,7 +345,7 @@ const Profile = () => {
                     Change Password (Only for non-Google users)
                   </h2>
                   <div className="flex flex-col gap-2">
-                    <div className="relative mb-8 md:w-4/6 xs:w-5/6">
+                    <div className="relative mb-8 md:w-full xs:w-5/6">
                       <input
                         type={isPasswordVisible ? "text" : "password"}
                         value={currentPassword}
@@ -358,10 +359,10 @@ const Profile = () => {
                         onClick={togglePasswordVisibility}
                         className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
                       >
-                        {isPasswordVisible ? IconEye : IconEyeOff}
+                        {isPasswordVisible ? <IconEye /> : <IconEyeOff />}
                       </button>
                     </div>
-                    <div className="relative mb-8 md:w-4/6 xs:w-5/6">
+                    <div className="relative mb-8 md:w-full xs:w-5/6">
                       <input
                         type={isPasswordVisible ? "text" : "password"}
                         value={newPassword}
@@ -376,7 +377,7 @@ const Profile = () => {
                         onClick={togglePasswordVisibility}
                         className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
                       >
-                        {isPasswordVisible ? IconEye : IconEyeOff}
+                        {isPasswordVisible ? <IconEye /> : <IconEyeOff />}
                       </button>
                     </div>
                   </div>
@@ -389,7 +390,7 @@ const Profile = () => {
                   {/* Change Username */}
                   <button
                     onClick={handleSaveUsername}
-                    className="primary-btn w-full mb-16 dark:bg-paleRose dark:text-stilleto"
+                    className="primary-btn -translate-y-10 w-full mb-16 dark:bg-paleRose dark:text-stilleto"
                     disabled={isChangingUsername}
                   >
                     {isChangingUsername ? "Changing..." : "Save"}
@@ -409,7 +410,7 @@ const Profile = () => {
                       onClick={() =>
                         setTheme(resolvedTheme === "dark" ? "light" : "dark")
                       }
-                      className="primary-btn w-full relative translate-y-12 dark:bg-paleRose dark:text-stilleto"
+                      className="primary-btn w-full relative translate-y-20 dark:bg-paleRose dark:text-stilleto"
                     >
                       {resolvedTheme === "dark" ? "Disable" : "Enable"}
                     </button>
@@ -497,7 +498,7 @@ const Profile = () => {
           )}
           {showFeedbackForm && (
             <FeedbackForm
-              feature="General"
+              feature={"General"}
               handleFeedbackCancel={handleFeedbackCancel}
               handleFeedbackSubmit={handleFeedbackSubmit}
               submitState={isSubmittingFeedback}
@@ -563,7 +564,7 @@ const Profile = () => {
                         onClick={togglePasswordVisibility}
                         className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
                       >
-                        {isPasswordVisible ? IconEye : IconEyeOff}
+                        {isPasswordVisible ? <IconEye /> : <IconEyeOff />}
                       </button>
                       <input
                         type={isPasswordVisible ? "text" : "password"}
@@ -579,7 +580,7 @@ const Profile = () => {
                         onClick={togglePasswordVisibility}
                         className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
                       >
-                        {isPasswordVisible ? IconEye : IconEyeOff}
+                        {isPasswordVisible ? <IconEye /> : <IconEyeOff />}
                       </button>
                       <button
                         onClick={handleSavePassword}
@@ -684,7 +685,7 @@ const Profile = () => {
               )}
               {showFeedbackForm && (
                 <FeedbackForm
-                  feature="General"
+                  feature={"General"}
                   handleFeedbackCancel={handleFeedbackCancel}
                   handleFeedbackSubmit={handleFeedbackSubmit}
                   submitState={isSubmittingFeedback}
