@@ -1,7 +1,13 @@
 import { useState } from "react";
 
-const FeedbackForm = ({ handleFeedbackSubmit, handleFeedbackCancel }) => {
+const FeedbackForm = ({
+  feature,
+  handleFeedbackSubmit,
+  handleFeedbackCancel,
+  submitState,
+}) => {
   const [feedbackText, setFeedbackText] = useState("");
+  //const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleTextChange = (e) => {
     setFeedbackText(e.target.value);
@@ -9,7 +15,9 @@ const FeedbackForm = ({ handleFeedbackSubmit, handleFeedbackCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    //setIsSubmitting(true);
     handleFeedbackSubmit(feedbackText);
+    //setIsSubmitting(false);
   };
 
   const handleCancel = () => {
@@ -24,8 +32,9 @@ const FeedbackForm = ({ handleFeedbackSubmit, handleFeedbackCancel }) => {
     >
       <div className="bg-paleRose dark:bg-stilleto border-2 border-tickleMePink md:p-6 xs:w-[300px] md:w-[600px] xs:p-3 rounded-lg shadow-lg w-1/3">
         <h2 className="text-lg font-bold mb-4 text-center">
-          We'd love to hear your feedback about this feature! You can't proceed
-          to the desired page without submitting the feedback
+          {feature !== "General"
+            ? `We'd love to hear your feedback about the ${feature} page. This is a one time feedback so do try the features on this page extensively before reporting. We appreciate your input!`
+            : "We'd love to hear your feedback about MindSync. We appreciate your input!"}
         </h2>
         <textarea
           className="w-full p-2 border border-tickleMePink rounded mb-4 dark:bg-lividBrown dark:text-white"
@@ -38,7 +47,7 @@ const FeedbackForm = ({ handleFeedbackSubmit, handleFeedbackCancel }) => {
             type="submit"
             className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-tickleMePink bg-[linear-gradient(110deg,#8A2846,45%,#B9375E,55%,#522E38)] bg-[length:200%_100%] px-6 font-medium text-paleRose transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
           >
-            Submit
+            {submitState ? "Submitting..." : "Submit"}
           </button>
           <button
             type="button"

@@ -19,6 +19,7 @@ import {
 import useWindowSize from "@hooks/useWindowSize";
 import ErrorDisplay from "@components/ErrorDisplay";
 import FeedbackForm from "@components/FeedbackForm";
+import { IconInfoCircle } from "@tabler/icons-react";
 
 const Edit = () => {
   const windowSize = useWindowSize();
@@ -51,6 +52,8 @@ const Edit = () => {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [feedback, setFeedback] = useState(false);
   const [navigate, setNavigate] = useState(null);
+  const [feature, setFeature] = useState("Edit");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
   const isMobile = windowSize.width <= 768;
 
@@ -420,23 +423,32 @@ const Edit = () => {
     }
   };
 
+  const handleReportFeedback = () => {
+    setShowFeedbackForm(true);
+    setFeature("General");
+  };
+
   const handleFeedbackSubmit = async (feedbackText) => {
     try {
+      setIsSubmittingFeedback(true);
       const response = await fetch("/api/update-feedback", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          columnName: "Edit",
+          columnName: feature,
           feedback: feedbackText,
         }),
       });
-
+      setIsSubmittingFeedback(false);
       if (response.ok) {
         setShowFeedbackForm(false);
-        setFeedback(true);
-        router.push(navigate);
+        setFeature("Edit");
+        if (feature !== "General") {
+          setFeedback(true);
+          router.push(navigate);
+        }
       } else {
         throw new Error("Failed to submit feedback");
       }
@@ -572,6 +584,13 @@ const Edit = () => {
                       <Link href="/saved" onClick={handleNavigate}>
                         Saved
                       </Link>
+                    </button>
+                    <button
+                      onClick={handleReportFeedback}
+                      className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-hibiscus hover:text-white border-2 border-tickleMePink group"
+                    >
+                      <IconInfoCircle />
+                      <span className="ms-3">Report Feedback</span>
                     </button>
                   </div>
                 </div>
@@ -956,8 +975,10 @@ const Edit = () => {
             )}
             {showFeedbackForm && (
               <FeedbackForm
+                feature={feature}
                 handleFeedbackCancel={handleFeedbackCancel}
                 handleFeedbackSubmit={handleFeedbackSubmit}
+                submitState={isSubmittingFeedback}
               />
             )}
           </div>
@@ -1287,8 +1308,10 @@ const Edit = () => {
 
               {showFeedbackForm && (
                 <FeedbackForm
+                  feature={feature}
                   handleFeedbackCancel={handleFeedbackCancel}
                   handleFeedbackSubmit={handleFeedbackSubmit}
+                  submitState={isSubmittingFeedback}
                 />
               )}
             </div>
@@ -1355,6 +1378,13 @@ const Edit = () => {
                   </span>
                 </button>
               </Link>
+              <button
+                onClick={handleReportFeedback}
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-hibiscus hover:text-white border-2 border-tickleMePink group"
+              >
+                <IconInfoCircle />
+                <span className="ms-3">Report Feedback</span>
+              </button>
             </div>
           </div>
         </div>

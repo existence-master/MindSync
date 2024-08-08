@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import ErrorDisplay from "@components/ErrorDisplay";
+import { IconEye, IconEyeOff, IconInfoCircle } from "@tabler/icons-react";
+import FeedbackForm from "@components/FeedbackForm";
 
 const Profile = () => {
   const { data: session, status } = useSession();
@@ -24,6 +26,12 @@ const Profile = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const { setTheme, resolvedTheme } = useTheme();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -96,6 +104,40 @@ const Profile = () => {
     setError(null);
   };
 
+  const handleReportFeedback = () => {
+    setShowFeedbackForm(true);
+  };
+
+  const handleFeedbackSubmit = async (feedbackText) => {
+    try {
+      setIsSubmittingFeedback(true);
+      const response = await fetch("/api/update-feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          columnName: "General",
+          feedback: feedbackText,
+        }),
+      });
+      setIsSubmittingFeedback(false);
+
+      if (response.ok) {
+        setShowFeedbackForm(false);
+        router.push(navigate);
+      } else {
+        throw new Error("Failed to submit feedback");
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const handleFeedbackCancel = () => {
+    setShowFeedbackForm(false);
+  };
+
   const handleSavePassword = async () => {
     try {
       setIsChangingPassword(true);
@@ -113,8 +155,8 @@ const Profile = () => {
       if (response.ok) {
         setSuccessMessage("Password changed successfully.");
         setIsChangingPassword(false);
-        setNewPassword("")
-        setCurrentPassword("")
+        setNewPassword("");
+        setCurrentPassword("");
       } else {
         throw new Error("Failed to change password");
       }
@@ -247,6 +289,13 @@ const Profile = () => {
                     Saved
                   </button>
                 </Link>
+                <button
+                  onClick={handleReportFeedback}
+                  className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-[#007991] group"
+                >
+                  <IconInfoCircle />
+                  <span className="ms-3">Report Feedback</span>
+                </button>
               </div>
             </div>
             <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
@@ -295,22 +344,41 @@ const Profile = () => {
                     Change Password (Only for non-Google users)
                   </h2>
                   <div className="flex flex-col gap-2">
-                    <input
-                      type="password"
-                      value={currentPassword}
-                      onChange={handleCurrentPasswordChange}
-                      placeholder="Current Password"
-                      className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
-                      disabled={isChangingPassword || user?.googleUser}
-                    />
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={handleNewPasswordChange}
-                      placeholder="New Password"
-                      className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
-                      disabled={isChangingPassword || user?.googleUser}
-                    />
+                    <div className="relative mb-8 md:w-4/6 xs:w-5/6">
+                      <input
+                        type={isPasswordVisible ? "text" : "password"}
+                        value={currentPassword}
+                        onChange={handleCurrentPasswordChange}
+                        placeholder="Current Password"
+                        className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
+                        disabled={isChangingPassword || user?.googleUser}
+                      />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+                      >
+                        {isPasswordVisible ? IconEye : IconEyeOff}
+                      </button>
+                    </div>
+                    <div className="relative mb-8 md:w-4/6 xs:w-5/6">
+                      <input
+                        type={isPasswordVisible ? "text" : "password"}
+                        value={newPassword}
+                        onChange={handleNewPasswordChange}
+                        placeholder="New Password"
+                        className="input w-full h-[40px] px-3 py-4 pl-14 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
+                        disabled={isChangingPassword || user?.googleUser}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+                      >
+                        {isPasswordVisible ? IconEye : IconEyeOff}
+                      </button>
+                    </div>
                   </div>
                   {/* Dark Mode Toggle */}
                   <h2 className="secondary-text mt-10 mb-2 font-semibold text-left dark:text-paleRose">
@@ -427,6 +495,14 @@ const Profile = () => {
               </div>
             </div>
           )}
+          {showFeedbackForm && (
+            <FeedbackForm
+              feature="General"
+              handleFeedbackCancel={handleFeedbackCancel}
+              handleFeedbackSubmit={handleFeedbackSubmit}
+              submitState={isSubmittingFeedback}
+            />
+          )}
         </div>
         {/* Mobile Content */}
         <div className="xs:flex md:hidden">
@@ -474,7 +550,7 @@ const Profile = () => {
                     </label>
                     <div className="flex flex-col gap-y-2">
                       <input
-                        type="password"
+                        type={isPasswordVisible ? "text" : "password"}
                         id="currentPassword"
                         value={currentPassword}
                         onChange={handleCurrentPasswordChange}
@@ -482,8 +558,15 @@ const Profile = () => {
                         className="input w-full mb-1 h-[40px] px-3 py-4 text-tawnyPort dark:text-paleRose text-md min-h-[40px]"
                         disabled={isChangingPassword || user?.googleUser}
                       />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+                      >
+                        {isPasswordVisible ? IconEye : IconEyeOff}
+                      </button>
                       <input
-                        type="password"
+                        type={isPasswordVisible ? "text" : "password"}
                         id="newPassword"
                         value={newPassword}
                         onChange={handleNewPasswordChange}
@@ -491,6 +574,13 @@ const Profile = () => {
                         className="input w-full mb-1 h-[40px] px-3 py-4 text-tawnyPort dark:text-paleRose text-md mind-h-[40px]"
                         disabled={isChangingPassword || user?.googleUser}
                       />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+                      >
+                        {isPasswordVisible ? IconEye : IconEyeOff}
+                      </button>
                       <button
                         onClick={handleSavePassword}
                         className="primary-btn w-1/4 dark:bg-paleRose dark:text-stilleto"
@@ -592,6 +682,14 @@ const Profile = () => {
                   </div>
                 </div>
               )}
+              {showFeedbackForm && (
+                <FeedbackForm
+                  feature="General"
+                  handleFeedbackCancel={handleFeedbackCancel}
+                  handleFeedbackSubmit={handleFeedbackSubmit}
+                  submitState={isSubmittingFeedback}
+                />
+              )}
             </div>
             <div className="fixed bottom-0 w-full flex flex-row gap-10 justify-center dark:bg-lividBrown bg-paleRose p-4 shadow-lg">
               <button className="h-12 w-12 rounded-full flex flex-col justify-center items-center">
@@ -654,6 +752,13 @@ const Profile = () => {
                   </span>
                 </button>
               </Link>
+              <button
+                onClick={handleReportFeedback}
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-hibiscus hover:text-white border-2 border-tickleMePink group"
+              >
+                <IconInfoCircle />
+                <span className="ms-3">Report Feedback</span>
+              </button>
             </div>
           </div>
         </div>

@@ -12,6 +12,7 @@ import { useTheme } from "next-themes";
 import mermaid from "mermaid";
 import ErrorDisplay from "@components/ErrorDisplay";
 import FeedbackForm from "@components/FeedbackForm";
+import { IconInfoCircle } from "@tabler/icons-react";
 
 const Saved = () => {
   const [mindmaps, setMindmaps] = useState([]);
@@ -25,6 +26,8 @@ const Saved = () => {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [feedback, setFeedback] = useState(false);
   const [navigate, setNavigate] = useState(null);
+  const [feature, setFeature] = useState("Saved");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
   // Redirect unauthenticated users
   useEffect(() => {
@@ -195,23 +198,33 @@ const Saved = () => {
     }
   };
 
+  const handleReportFeedback = () => {
+    setShowFeedbackForm(true);
+    setFeature("General");
+  };
+
   const handleFeedbackSubmit = async (feedbackText) => {
     try {
+      setIsSubmittingFeedback(true);
       const response = await fetch("/api/update-feedback", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          columnName: "Saved",
+          columnName: feature,
           feedback: feedbackText,
         }),
       });
+      setIsSubmittingFeedback(false);
 
       if (response.ok) {
         setShowFeedbackForm(false);
-        setFeedback(true);
-        router.push(navigate);
+        setFeature("Saved");
+        if (feature !== "General") {
+          setFeedback(true);
+          router.push(navigate);
+        }
       } else {
         throw new Error("Failed to submit feedback");
       }
@@ -330,6 +343,13 @@ const Saved = () => {
                     Saved
                   </button>
                 </Link>
+                <button
+                  onClick={handleReportFeedback}
+                  className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-hibiscus hover:text-white border-2 border-tickleMePink group"
+                >
+                  <IconInfoCircle />
+                  <span className="ms-3">Report Feedback</span>
+                </button>
               </div>
             </div>
             <div className="p-4 flex flex-row justify-center items-center gap-5 text-center text-xl font-inter font-bold text-tawnyPort">
@@ -436,8 +456,10 @@ const Saved = () => {
           )}
           {showFeedbackForm && (
             <FeedbackForm
+              feature={feature}
               handleFeedbackCancel={handleFeedbackCancel}
               handleFeedbackSubmit={handleFeedbackSubmit}
+              submitState={isSubmittingFeedback}
             />
           )}
         </div>
@@ -529,8 +551,10 @@ const Saved = () => {
                 )}
                 {showFeedbackForm && (
                   <FeedbackForm
+                    feature={feature}
                     handleFeedbackCancel={handleFeedbackCancel}
                     handleFeedbackSubmit={handleFeedbackSubmit}
+                    submitState={isSubmittingFeedback}
                   />
                 )}
               </div>
@@ -596,6 +620,13 @@ const Saved = () => {
                   </span>
                 </button>
               </Link>
+              <button
+                onClick={handleReportFeedback}
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-hibiscus hover:text-white border-2 border-tickleMePink group"
+              >
+                <IconInfoCircle />
+                <span className="ms-3">Report Feedback</span>
+              </button>
             </div>
           </div>
         </div>

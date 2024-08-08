@@ -7,6 +7,7 @@ import NextImage from "next/image";
 import ErrorDisplay from "@components/ErrorDisplay"; // Custom error component
 import { useRouter } from "next/navigation";
 import Link from "next/link"; // Link component for client-side navigation
+import { IconEye, IconEyeOff } from "@tabler/icons-react"; // Eye and EyeOff icons
 
 const Signup = () => {
 	// States to store email, password, and username
@@ -16,7 +17,12 @@ const Signup = () => {
 	const [error, setError] = useState(null); // State to store error
 	const router = useRouter(); // Object to handle routing
 	const session = useSession(); // Object to store user sessio
-	  const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+	const togglePasswordVisibility = () => {
+		setIsPasswordVisible(!isPasswordVisible);
+	};
 
 
 	useEffect(() => {
@@ -178,14 +184,27 @@ const Signup = () => {
 							>
 								Password
 							</label>
-							<input
-								name="password"
-								type="password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								className="mb-8 input md:w-4/6 xs:w-5/6 md:h-12 dark:text-paleRose"
-								required
-							/>
+							<div className="relative mb-8 md:w-4/6 xs:w-5/6">
+								<input
+									name="password"
+									type={
+										isPasswordVisible ? "text" : "password"
+									}
+									value={password}
+									onChange={(e) =>
+										setPassword(e.target.value)
+									}
+									className="mb-8 input md:w-4/6 xs:w-5/6 md:h-12 dark:text-paleRose"
+									required
+								/>
+								<button
+									type="button"
+									onClick={togglePasswordVisibility}
+									className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+								>
+									{isPasswordVisible ? IconEye : IconEyeOff}
+								</button>
+							</div>
 							<button
 								type="submit"
 								className="primary-btn md:w-2/6 xs:w-3/4 xs:h-10 md:h-14"

@@ -74,39 +74,39 @@ export const authOptions = {
           });
 
           if (!existingUser) {
-				// If the user doesn't exist, create a new user
-				const newUser = new User({
-					email: user.email, // Set the email for the new user
-					googleUser: true, // Indicate that the user signed up with Google
-					username: user.name, // Set the username for the new user
-				});
+            // If the user doesn't exist, create a new user
+            const newUser = new User({
+              email: user.email, // Set the email for the new user
+              googleUser: true, // Indicate that the user signed up with Google
+              username: user.name, // Set the username for the new user
+            });
 
-				await newUser.save(); // Save the new user to the database
+            await newUser.save(); // Save the new user to the database
 
-				// Read existing data from Google Sheets
-				const response = await sheets.spreadsheets.values.get({
-					spreadsheetId,
-					range: "Sheet1", // Adjust the sheet name and range if necessary
-				});
+            // Read existing data from Google Sheets
+            const response = await sheets.spreadsheets.values.get({
+              spreadsheetId,
+              range: "Sheet1", // Adjust the sheet name and range if necessary
+            });
 
-				const rows = response.data.values;
-				const emailExists = rows.some((row) => row[0] === email);
+            const rows = response.data.values;
+            const emailExists = rows.some((row) => row[0] === email);
 
-				if (!emailExists) {
-					// Append new data to Google Sheets if email does not exist
-					const requestBody = {
-						values: [[email, username, "", "", ""]],
-					};
+            if (!emailExists) {
+              // Append new data to Google Sheets if email does not exist
+              let requestBody = {
+                values: [[userEmail, username, "", "", ""]],
+              };
 
-					await sheets.spreadsheets.values.append({
-						spreadsheetId,
-						range: "Sheet1", // Adjust the sheet name and range if necessary
-						valueInputOption: "RAW",
-						insertDataOption: "INSERT_ROWS",
-						requestBody,
-					});
-				}
-			}
+              await sheets.spreadsheets.values.append({
+                spreadsheetId,
+                range: "Sheet1", // Adjust the sheet name and range if necessary
+                valueInputOption: "RAW",
+                insertDataOption: "INSERT_ROWS",
+                requestBody,
+              });
+            }
+          }
           return true;
         } catch (err) {
           //console.error("Error in signIn callback:", err); // Log errors that occur during sign-in
