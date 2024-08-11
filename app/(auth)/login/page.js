@@ -7,6 +7,7 @@ import ErrorDisplay from "@components/ErrorDisplay"; // Custom error component
 import { signIn, useSession } from "next-auth/react"; // Next.js authentication utilities
 import { useRouter } from "next/navigation";
 import Link from "next/link"; // Link component for client-side navigation
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
 const Login = () => {
   // States to store email and password
@@ -14,9 +15,14 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null); // State to store error
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const router = useRouter(); // Object to handle routing
   const session = useSession(); // Object to store user session
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   useEffect(() => {
     const handleRedirect = async () => {
@@ -173,15 +179,28 @@ const Login = () => {
               >
                 Password
               </label>
-              <input
-                type="password"
-                placeholder="Password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mb-10 input md:w-4/6 xs:w-5/6 dark:text-paleRose"
-                required
-              />
+              <div className="relative mb-8 md:w-4/6 xs:w-5/6">
+                <input
+                  name="password"
+                  type={isPasswordVisible ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mb-8 input md:w-full xs:w-full dark:text-paleRose"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  style={{ zIndex: 10 }}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+                >
+                  {isPasswordVisible ? (
+                    <IconEye className="dark:text-paleRose text-lividBrown -translate-y-4" />
+                  ) : (
+                    <IconEyeOff className="dark:text-paleRose text-lividBrown -translate-y-4" />
+                  )}
+                </button>
+              </div>
               <button
                 type="submit"
                 className="primary-btn md:w-2/6 xs:w-3/4 text-xl"
